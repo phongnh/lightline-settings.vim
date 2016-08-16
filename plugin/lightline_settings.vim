@@ -201,7 +201,7 @@ function! LightLineFileencoding() abort
 endfunction
 
 function! LightLineFiletype() abort
-    return LightLineDisplayFileinfo() ? strlen(&filetype) ? &filetype : 'unknown' : ''
+    return LightLineDisplayFileinfo() ? &filetype : ''
 endfunction
 
 function! LightLineCtrlPMark() abort
