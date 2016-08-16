@@ -210,7 +210,7 @@ function! LightLineCtrlPMark() abort
 
         return lightline#concatenate([
                     \ g:lightline.ctrlp_prev,
-                    \ g:lightline.ctrlp_item,
+                    \ '<' . g:lightline.ctrlp_item . '>',
                     \ g:lightline.ctrlp_next,
                     \ ], 0)
     else
