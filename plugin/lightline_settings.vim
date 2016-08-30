@@ -65,7 +65,7 @@ let s:FilenameModeMapper = {
             \ '[BufExplorer]':     'BufExplorer',
             \ 'NERD_tree':         'NERDTree',
             \ 'NERD_tree_1':       'NERDTree',
-            \ '[Command Line]':    'CommandLine',
+            \ '[Command Line]':    'Command Line',
             \ }
 
 let s:FiletypeModeMapper = {
@@ -76,7 +76,7 @@ let s:FiletypeModeMapper = {
             \ 'startify':      'Startify',
             \ 'vim-plug':      'VimPlug',
             \ 'help':          'Help',
-            \ 'qf':            'QuickFix',
+            \ 'qf':            'Quickfix',
             \ 'godoc':         'GoDoc',
             \ 'gedoc':         'GeDoc',
             \ 'gitcommit':     'Fugitive',
