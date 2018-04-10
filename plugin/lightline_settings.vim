@@ -32,126 +32,221 @@ if get(g:, 'lightline_set_noshowmode', 1)
     set noshowmode
 endif
 
-let g:lightline = extend(get(g:, 'lightline', {}), {
-            \ 'colorscheme': 'solarized',
+let g:lightline_theme = get(g:, 'lightline_theme', 'powerline')
+
+let g:lightline#bufferline#unicode_symbols   = get(g:, 'lightline_powerline', 0)
+let g:lightline#bufferline#filename_modifier = ':t'
+let g:lightline#bufferline#show_number       = 1
+let g:lightline#bufferline#shorten_path      = 1
+let g:lightline#bufferline#unnamed           = '[No Name]'
+
+let g:lightline = {
+            \ 'colorscheme': g:lightline_theme,
+            \ 'enable': {
+            \   'statusline': 1,
+            \   'tabline': 1,
+            \ },
+            \ 'tabline': {
+            \   'left': [ ['tablabel'], ['tabs'] ],
+            \   'right': [ ['bufferslabel'], ['buffers'] ]
+            \ },
+            \ 'tab': {
+            \   'active': [ 'tabnum', 'readonly', 'filename', 'modified' ],
+            \   'inactive': [ 'tabnum', 'readonly', 'filename', 'modified' ]
+            \ },
             \ 'active': {
             \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ] ],
-            \   'right': [ [ 'ctrlpdir', 'lineinfo' ], [ 'percent' ], [ 'fileformat', 'fileencoding', 'filetype' ] ]
+            \   'right': [ [ 'ctrlpdir' ], [ 'fileformat', 'fileencoding', 'filetype' ] ]
             \ },
             \ 'inactive': {
-            \   'left': [ [ 'filename' ] ],
-            \   'right': [ [ 'lineinfo' ], [ 'percent' ] ],
+            \   'left': [ [ 'relativepath' ] ],
+            \   'right': [ [ 'fileformat', 'fileencoding', 'filetype' ] ]
             \ },
             \ 'component_function': {
-            \   'mode':         'LightLineModeAndClipboard',
-            \   'fugitive':     'LightLineFugitive',
-            \   'filename':     'LightLineFilename',
-            \   'lineinfo':     'LightLineLineinfo',
-            \   'percent':      'LightLinePercent',
-            \   'fileformat':   'LightLineFileformat',
-            \   'fileencoding': 'LightLineFileencoding',
-            \   'filetype':     'LightLineFiletype',
-            \   'ctrlpdir':     'LightLineCtrlPDir',
+            \   'tablabel':     'LightlineTabLabel',
+            \   'bufferslabel': 'LightlineBuffersLabel',
+            \   'mode':         'LightlineModeAndClipboard',
+            \   'fugitive':     'LightlineFugitive',
+            \   'filename':     'LightlineFilename',
+            \   'lineinfo':     'LightlineLineinfo',
+            \   'percent':      'LightlinePercent',
+            \   'fileformat':   'LightlineFileformat',
+            \   'fileencoding': 'LightlineFileencoding',
+            \   'filetype':     'LightlineFiletype',
+            \   'ctrlpdir':     'LightlineCtrlPDir',
+            \ },
+            \ 'component_expand': {
+            \   'buffers': 'lightline#bufferline#buffers',
+            \ },
+            \ 'component_type': {
+            \   'buffers': 'tabsel',
+            \ },
+            \ 'tab_component_function': {
+            \   'tabnum': 'LightlineTabnum',
+            \   'filename': 'LightlineTabFilename',
+            \   'readonly': 'LightlineTabReadonly',
             \ },
             \ 'separator': g:powerline_symbols.separator,
             \ 'subseparator': g:powerline_symbols.subseparator,
-            \ }, 'keep')
-
-let s:FilenameModeMapper = {
-            \ 'ControlP':          'CtrlP',
-            \ '__Tagbar__':        'Tagbar',
-            \ '__Gundo__':         'Gundo',
-            \ '__Gundo_Preview__': 'Gundo Preview',
-            \ '[BufExplorer]':     'BufExplorer',
-            \ 'NERD_tree':         'NERDTree',
-            \ 'NERD_tree_1':       'NERDTree',
-            \ '[Command Line]':    'Command Line',
             \ }
 
-let s:FiletypeModeMapper = {
+let s:filename_modes = {
+            \ 'ControlP':             'CtrlP',
+            \ '__Tagbar__':           'Tagbar',
+            \ '__Gundo__':            'Gundo',
+            \ '__Gundo_Preview__':    'Gundo Preview',
+            \ '[BufExplorer]':        'BufExplorer',
+            \ 'NERD_tree':            'NERDTree',
+            \ 'NERD_tree_1':          'NERDTree',
+            \ '[Command Line]':       'Command Line',
+            \ '[Plugins]':            'Plugins',
+            \ '__committia_status__': 'Committia Status',
+            \ '__committia_diff__':   'Committia Diff',
+            \ }
+
+let s:filetype_modes = {
+            \ 'netrw':         'NetrwTree',
             \ 'nerdtree':      'NERDTree',
+            \ 'startify':      'Startify',
+            \ 'vim-plug':      'Plug',
             \ 'unite':         'Unite',
             \ 'vimfiler':      'VimFiler',
             \ 'vimshell':      'VimShell',
-            \ 'startify':      'Startify',
-            \ 'vim-plug':      'VimPlug',
             \ 'help':          'Help',
             \ 'qf':            'Quickfix',
             \ 'godoc':         'GoDoc',
             \ 'gedoc':         'GeDoc',
-            \ 'gitcommit':     'Fugitive',
+            \ 'gitcommit':     'Commit Message',
             \ 'fugitiveblame': 'FugitiveBlame',
+            \ 'agit':          'Agit',
+            \ 'agit_diff':     'Agit',
+            \ 'agit_stat':     'Agit',
             \ }
 
-function! LightLineDisplayFilename() abort
+let s:short_modes = {
+            \ 'NORMAL':   'N',
+            \ 'INSERT':   'I',
+            \ 'VISUAL':   'V',
+            \ 'V-LINE':   'L',
+            \ 'V-BLOCK':  'B',
+            \ 'COMMAND':  'C',
+            \ 'SELECT':   'S',
+            \ 'S-LINE':   'S-L',
+            \ 'S-BLOCK':  'S-B',
+            \ 'TERMINAL': 'T',
+            \ }
+
+function! LightlineDisplayFilename() abort
     if winwidth(0) >= 50 && &filetype =~? 'help\|gedoc'
         return 1
     endif
-    return LightLineDisplayFileinfo()
+    return LightlineDisplayFileinfo()
 endfunction
 
-function! LightLineDisplayFileinfo() abort
-    if winwidth(0) < 50 || expand('%:t') =~? '^NrrwRgn' || has_key(s:FilenameModeMapper, expand('%:t')) || has_key(s:FiletypeModeMapper, &filetype)
+function! LightlineDisplayFileinfo() abort
+    if winwidth(0) < 50 || expand('%:t') =~? '^NrrwRgn' || has_key(s:filename_modes, expand('%:t')) || has_key(s:filetype_modes, &filetype)
         return 0
     endif
     return 1
 endfunction
 
-function! LightLineDisplayLineinfo() abort
+function! LightlineDisplayLineinfo() abort
     if winwidth(0) >= 50 && &filetype =~? 'help\|qf\|godoc\|gedoc'
         return 1
     endif
-    return LightLineDisplayFileinfo()
+    return LightlineDisplayFileinfo()
 endfunction
 
-function! LightLineNoDisplayBranch() abort
-    return !LightLineDisplayFileinfo()
+function! LightlineNoDisplayBranch() abort
+    return !LightlineDisplayFileinfo()
 endfunction
 
-function! LightLineModified() abort
+function! LightlineModified() abort
     return &filetype =~? 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
 endfunction
 
-function! LightLineReadonly() abort
+function! LightlineReadonly() abort
     return &filetype !~? 'help' && &readonly ? g:powerline_symbols.readonly : ''
 endfunction
 
-function! LightLineClipboard() abort
+function! LightlineClipboard() abort
     return match(&clipboard, 'unnamed') > -1 ? g:powerline_symbols.clipboard : ''
 endfunction
 
-function! LightLineMode() abort
+function! LightlineShortMode(mode) abort
+    if winwidth(0) > 75
+        return a:mode
+    else
+        return get(s:short_modes, a:mode, a:mode)
+    endif
+endfunction
+
+function! LightlineMode() abort
     let fname = expand('%:t')
     if fname =~? '^NrrwRgn'
         return printf('%s#%d', 'NrrwRgn', b:nrrw_instn)
     else
-        return get(s:FilenameModeMapper, fname, get(s:FiletypeModeMapper, &filetype, winwidth(0) >= 50 ? lightline#mode() : ''))
+        return get(s:filename_modes, fname, get(s:filetype_modes, &filetype, LightlineShortMode(lightline#mode())))
     endif
 endfunction
 
-function! LightLineModeAndClipboard() abort
-    return LightLineMode() . LightLineClipboard()
+function! LightlineModeAndClipboard() abort
+    return LightlineMode() . LightlineClipboard()
 endfunction
 
-function! LightLineFugitive() abort
+function! LightlineTabnum(n) abort
+    return printf('[%d]', a:n)
+endfunction
+
+function! LightlineBuffersLabel() abort
+    return 'Buffers'
+endfunction
+
+function! LightlineTabLabel() abort
+    return 'Tabs'
+endfunction
+
+" Copied from https://github.com/itchyny/lightline-powerful
+function! LightlineTabReadonly(n) abort
+  let winnr = tabpagewinnr(a:n)
+  return gettabwinvar(a:n, winnr, '&readonly') ? g:powerline_symbols.readonly : ''
+endfunction
+
+" Copied from https://github.com/itchyny/lightline-powerful
+function! LightlineTabFilename(n) abort
+  let bufnr = tabpagebuflist(a:n)[tabpagewinnr(a:n) - 1]
+  let bufname = expand('#' . bufnr . ':t')
+  let buffullname = expand('#' . bufnr . ':p')
+  let bufnrs = filter(range(1, bufnr('$')), 'v:val != bufnr && len(bufname(v:val)) && bufexists(v:val) && buflisted(v:val)')
+  let i = index(map(copy(bufnrs), 'expand("#" . v:val . ":t")'), bufname)
+  let ft = gettabwinvar(a:n, tabpagewinnr(a:n), '&ft')
+  if strlen(bufname) && i >= 0 && map(bufnrs, 'expand("#" . v:val . ":p")')[i] != buffullname
+    let fname = substitute(buffullname, '.*/\([^/]\+/\)', '\1', '')
+  else
+    let fname = bufname
+  endif
+  return fname =~# '^\[preview' ? 'Preview' : get(s:filename_modes, fname, get(s:filetype_modes, ft, fname))
+endfunction
+
+function! LightlineFugitive() abort
     try
-        if LightLineNoDisplayBranch()
+        if LightlineNoDisplayBranch()
             return ''
         endif
         if winwidth(0) > 100 && exists('*fugitive#head')
             let mark = g:powerline_symbols.branch  " edit here for cool mark
-            let _ = fugitive#head()
-            return strlen(_) ? mark._ : ''
+            let branch = fugitive#head()
+            return strlen(branch) ? mark . branch : ''
         endif
     catch
     endtry
     return ''
 endfunction
 
-function! LightLineFilename() abort
+function! LightlineFilename() abort
     let fname = expand('%:t')
     if fname ==# 'ControlP'
-        return LightLineCtrlPMark()
+        return LightlineCtrlPMark()
     elseif fname ==# '__Tagbar__'
         return g:lightline.fname
     elseif fname =~? '^NrrwRgn'
@@ -163,35 +258,35 @@ function! LightLineFilename() abort
         return vimfiler#get_status_string()
     elseif &filetype ==# 'vimshell'
         return vimshell#get_status_string()
-    elseif LightLineDisplayFilename()
-        return ('' != LightLineReadonly() ? LightLineReadonly() . ' ' : '') .
-                    \ ('' != fname ? expand('%') : '[No Name]') .
-                    \ ('' != LightLineModified() ? ' ' . LightLineModified() : '')
+    elseif LightlineDisplayFilename()
+        return ('' != LightlineReadonly() ? LightlineReadonly() . ' ' : '') .
+                    \ ('' != fname ? expand('%:~:.') : '[No Name]') .
+                    \ ('' != LightlineModified() ? ' ' . LightlineModified() : '')
     else
         return ''
     endif
 endfunction
 
-function! LightLineLineinfo() abort
-    if LightLineDisplayLineinfo()
+function! LightlineLineinfo() abort
+    if LightlineDisplayLineinfo()
         return printf('%s%4d:%3d', g:powerline_symbols.linenr, line('.'), col('.'))
     endif
     return ''
 endfunction
 
-function! LightLinePercent() abort
-    if LightLineDisplayLineinfo()
+function! LightlinePercent() abort
+    if LightlineDisplayLineinfo()
         return printf('%3d%%', line('.') * 100 / line('$'))
     endif
     return ''
 endfunction
 
-function! LightLineFileformat() abort
-    return LightLineDisplayFileinfo() && &fileformat !=? 'unix' ? &fileformat : ''
+function! LightlineFileformat() abort
+    return LightlineDisplayFileinfo() && &fileformat !=? 'unix' ? &fileformat : ''
 endfunction
 
-function! LightLineFileencoding() abort
-    if LightLineDisplayFileinfo()
+function! LightlineFileencoding() abort
+    if LightlineDisplayFileinfo()
         let encoding = strlen(&fenc) ? &fenc : &enc
         if encoding !=? 'utf-8'
             return encoding
@@ -200,11 +295,11 @@ function! LightLineFileencoding() abort
     return ''
 endfunction
 
-function! LightLineFiletype() abort
-    return LightLineDisplayFileinfo() ? &filetype : ''
+function! LightlineFiletype() abort
+    return LightlineDisplayFileinfo() ? &filetype : ''
 endfunction
 
-function! LightLineCtrlPMark() abort
+function! LightlineCtrlPMark() abort
     if expand('%:t') =~ 'ControlP'
         call lightline#link('iR'[g:lightline.ctrlp_regex])
 
@@ -218,7 +313,7 @@ function! LightLineCtrlPMark() abort
     endif
 endfunction
 
-function! LightLineCtrlPDir() abort
+function! LightlineCtrlPDir() abort
     if expand('%:t') =~ 'ControlP'
         return lightline#concatenate([
                     \ g:lightline.ctrlp_focus,
@@ -250,9 +345,9 @@ function! CtrlPStatusFunc_2(str) abort
     return lightline#statusline(0)
 endfunction
 
-let g:tagbar_status_func = 'LightLineTagbar'
+let g:tagbar_status_func = 'LightlineTagbar'
 
-function! LightLineTagbar(current, sort, fname, ...) abort
+function! LightlineTagbar(current, sort, fname, ...) abort
     let g:lightline.fname = a:fname
     return lightline#statusline(0)
 endfunction
