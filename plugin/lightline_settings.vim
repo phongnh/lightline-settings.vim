@@ -229,17 +229,20 @@ function! LightlineTabFilename(n) abort
 endfunction
 
 function! LightlineFugitive() abort
-    try
-        if LightlineNoDisplayBranch()
-            return ''
-        endif
-        if winwidth(0) > 100 && exists('*fugitive#head')
-            let mark = g:powerline_symbols.branch  " edit here for cool mark
+    if LightlineNoDisplayBranch()
+        return ''
+    endif
+    if winwidth(0) > 100 && exists('*fugitive#head')
+        let mark = g:powerline_symbols.branch  " edit here for cool mark
+        try
             let branch = fugitive#head()
-            return strlen(branch) ? mark . branch : ''
-        endif
-    catch
-    endtry
+            let len = strlen(branch)
+            if len > 0 && len < 31
+                return mark . branch
+            endif
+        catch
+        endtry
+    endif
     return ''
 endfunction
 
@@ -259,12 +262,20 @@ function! LightlineFilename() abort
     elseif &filetype ==# 'vimshell'
         return vimshell#get_status_string()
     elseif LightlineDisplayFilename()
-        return ('' != LightlineReadonly() ? LightlineReadonly() . ' ' : '') .
-                    \ ('' != fname ? expand('%:~:.') : '[No Name]') .
-                    \ ('' != LightlineModified() ? ' ' . LightlineModified() : '')
-    else
-        return ''
+        let str = (LightlineReadonly() != '' ? LightlineReadonly() . ' ' : '')
+        if fname != ''
+            let path = expand('%:~:.')
+            if strlen(path) > 50
+                let path = fname
+            endif
+            let str .= path
+        else
+            let str .= '[No Name]'
+        endif
+        let str .= (LightlineModified() != '' ? ' ' . LightlineModified() : '')
+        return str
     endif
+    return ''
 endfunction
 
 function! LightlineLineinfo() abort
