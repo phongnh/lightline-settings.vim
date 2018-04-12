@@ -59,21 +59,22 @@ let g:lightline = {
             \   'right': [ [ 'ctrlpdir' ], [ 'fileformat', 'fileencoding', 'filetype' ] ]
             \ },
             \ 'inactive': {
-            \   'left': [ [ 'relativepath' ] ],
+            \   'left': [ [ 'inactivefilename' ] ],
             \   'right': [ [ 'fileformat', 'fileencoding', 'filetype' ] ]
             \ },
             \ 'component_function': {
-            \   'tablabel':     'LightlineTabLabel',
-            \   'bufferslabel': 'LightlineBuffersLabel',
-            \   'mode':         'LightlineModeAndClipboard',
-            \   'fugitive':     'LightlineFugitive',
-            \   'filename':     'LightlineFilename',
-            \   'lineinfo':     'LightlineLineinfo',
-            \   'percent':      'LightlinePercent',
-            \   'fileformat':   'LightlineFileformat',
-            \   'fileencoding': 'LightlineFileencoding',
-            \   'filetype':     'LightlineFiletype',
-            \   'ctrlpdir':     'LightlineCtrlPDir',
+            \   'tablabel':         'LightlineTabLabel',
+            \   'bufferslabel':     'LightlineBuffersLabel',
+            \   'mode':             'LightlineModeAndClipboard',
+            \   'fugitive':         'LightlineFugitive',
+            \   'filename':         'LightlineFilename',
+            \   'inactivefilename': 'LightlineInactiveFilename',
+            \   'lineinfo':         'LightlineLineinfo',
+            \   'percent':          'LightlinePercent',
+            \   'fileformat':       'LightlineFileformat',
+            \   'fileencoding':     'LightlineFileencoding',
+            \   'filetype':         'LightlineFiletype',
+            \   'ctrlpdir':         'LightlineCtrlPDir',
             \ },
             \ 'component_expand': {
             \   'buffers': 'lightline#bufferline#buffers',
@@ -246,13 +247,14 @@ function! LightlineFugitive() abort
     return ''
 endfunction
 
-function! LightlineFilename() abort
-    let fname = expand('%:t')
-    if fname ==# 'ControlP'
+function! LightlineAlternateFilename(fname) abort
+    if a:fname ==# 'ControlP'
         return LightlineCtrlPMark()
-    elseif fname ==# '__Tagbar__'
+    elseif a:fname ==# '__Tagbar__'
         return g:lightline.fname
-    elseif fname =~? '^NrrwRgn'
+    elseif a:fname =~ '__Gundo\|NERD_tree'
+        return ''
+    elseif a:fname =~? '^NrrwRgn'
         let bufname = (get(b:, 'orig_buf', 0) ? bufname(b:orig_buf) : substitute(bufname('%'), '^Nrrwrgn_\zs.*\ze_\d\+$', submatch(0), ''))
         return bufname
     elseif &filetype ==# 'unite'
@@ -261,12 +263,20 @@ function! LightlineFilename() abort
         return vimfiler#get_status_string()
     elseif &filetype ==# 'vimshell'
         return vimshell#get_status_string()
-    elseif LightlineDisplayFilename()
+    endif
+    return ''
+endfunction
+
+function! LightlineFilenameWithFlags(fname) abort
+    if LightlineDisplayFilename()
         let str = (LightlineReadonly() != '' ? LightlineReadonly() . ' ' : '')
-        if fname != ''
+        if strlen(a:fname)
             let path = expand('%:~:.')
-            if strlen(path) > 50
-                let path = fname
+            if strlen(path) > 60
+                let path = substitute(path, '\v\w\zs.{-}\ze(\\|/)', '', 'g')
+            endif
+            if strlen(path) > 60
+                let path = a:fname
             endif
             let str .= path
         else
@@ -276,6 +286,39 @@ function! LightlineFilename() abort
         return str
     endif
     return ''
+endfunction
+
+function! LightlineFilename() abort
+    let fname = expand('%:t')
+
+    let str = LightlineAlternateFilename(fname)
+
+    if strlen(str)
+        return str
+    endif
+
+    return LightlineFilenameWithFlags(fname)
+endfunction
+
+function! LightlineInactiveFilename() abort
+    let fname = expand('%:t')
+
+    let str = LightlineAlternateFilename(fname)
+
+    if strlen(str)
+        return str
+    endif
+
+    let str = get(s:filename_modes, fname, get(s:filetype_modes, &filetype, ''))
+    if strlen(str)
+        if &filetype ==? 'help'
+            let str .= ' ' .  expand('%:~:.')
+        endif
+
+        return str
+    endif
+
+    return LightlineFilenameWithFlags(fname)
 endfunction
 
 function! LightlineLineinfo() abort
