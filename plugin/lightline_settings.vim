@@ -56,7 +56,7 @@ let g:lightline = {
             \ },
             \ 'active': {
             \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ] ],
-            \   'right': [ [ 'ctrlpdir' ], [ 'fileformat', 'fileencoding', 'filetype' ] ]
+            \   'right': [ [ 'ctrlpdir' ], [ 'fileformat', 'fileencoding', 'spaces', 'filetype' ] ]
             \ },
             \ 'inactive': {
             \   'left': [ [ 'inactivefilename' ] ],
@@ -74,6 +74,7 @@ let g:lightline = {
             \   'fileformat':       'LightlineFileformat',
             \   'fileencoding':     'LightlineFileencoding',
             \   'filetype':         'LightlineFiletype',
+            \   'spaces':           'LightlineTabsOrSpacesStatus',
             \   'ctrlpdir':         'LightlineCtrlPDir',
             \ },
             \ 'component_expand': {
@@ -351,6 +352,18 @@ endfunction
 
 function! LightlineFiletype() abort
     return LightlineDisplayFileinfo() ? &filetype : ''
+endfunction
+
+function! LightlineTabsOrSpacesStatus() abort
+    if LightlineDisplayFileinfo()
+        let shiftwidth = exists('*shiftwidth') ? shiftwidth() : &shiftwidth
+        if &expandtab
+            return 'Spaces: ' . shiftwidth
+        else
+            return 'Tab Size: ' . shiftwidth
+        endif
+    endif
+    return ''
 endfunction
 
 function! LightlineCtrlPMark() abort
