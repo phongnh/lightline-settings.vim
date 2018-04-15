@@ -341,7 +341,7 @@ endfunction
 function! LightlineTabsOrSpacesStatus() abort
     if LightlineDisplayFileinfo()
         let shiftwidth = exists('*shiftwidth') ? shiftwidth() : &shiftwidth
-        return (&expandtab ? 'Spaces: ' : 'Tabs: ') . shiftwidth
+        return (&expandtab ? 'Spaces' : 'Tab Size') . ': ' . shiftwidth
     endif
     return ''
 endfunction
