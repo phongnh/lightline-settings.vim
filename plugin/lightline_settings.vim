@@ -177,7 +177,7 @@ endfunction
 
 function! LightlineMode() abort
     let fname = expand('%:t')
-    if fname =~? '^NrrwRgn'
+    if fname =~? '^NrrwRgn' && exists('b:nrrw_instn')
         return printf('%s#%d', 'NrrwRgn', b:nrrw_instn)
     endif
     return get(s:filename_modes, fname, get(s:filetype_modes, &filetype, LightlineShortMode(lightline#mode())))
@@ -242,6 +242,8 @@ function! LightlineAlternateFilename(fname) abort
     elseif a:fname =~? '^NrrwRgn'
         let bufname = (get(b:, 'orig_buf', 0) ? bufname(b:orig_buf) : substitute(bufname('%'), '^Nrrwrgn_\zs.*\ze_\d\+$', submatch(0), ''))
         return bufname
+    elseif &filetype ==# 'qf'
+        return get(w:, 'quickfix_title', a:fname)
     elseif &filetype ==# 'unite'
         return unite#get_status_string()
     elseif &filetype ==# 'vimfiler'
