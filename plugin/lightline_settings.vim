@@ -34,12 +34,6 @@ endif
 
 let g:lightline_theme = get(g:, 'lightline_theme', 'powerline')
 
-let g:lightline#bufferline#unicode_symbols   = get(g:, 'lightline_powerline', 0)
-let g:lightline#bufferline#filename_modifier = ':t'
-let g:lightline#bufferline#show_number       = 1
-let g:lightline#bufferline#shorten_path      = 1
-let g:lightline#bufferline#unnamed           = '[No Name]'
-
 let g:lightline = {
             \ 'colorscheme': g:lightline_theme,
             \ 'enable': {
@@ -84,6 +78,29 @@ let g:lightline = {
             \ 'separator':    g:powerline_symbols.separator,
             \ 'subseparator': g:powerline_symbols.subseparator,
             \ }
+
+if findfile('plugin/bufferline.vim', &rtp) != '' && get(g:, 'lightline_bufferline', 0)
+    " https://github.com/mengelbrecht/lightline-bufferline
+    let g:lightline.tabline          = { 'left': [['buffers']], 'right': [['close']] }
+    let g:lightline.component_expand = { 'buffers': 'lightline#bufferline#buffers' }
+    let g:lightline.component_type   = { 'buffers': 'tabsel' }
+
+    let g:lightline#bufferline#unicode_symbols   = get(g:, 'lightline_powerline', 0)
+    let g:lightline#bufferline#filename_modifier = ':t'
+    let g:lightline#bufferline#show_number       = 1
+    let g:lightline#bufferline#shorten_path      = 1
+    let g:lightline#bufferline#unnamed           = '[No Name]'
+
+    " let g:lightline#bufferline#number_map = {
+    "             \ 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴',
+    "             \ 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹'
+    "             \ }
+
+    " let g:lightline#bufferline#number_map = {
+    "             \ 0: '₀', 1: '₁', 2: '₂', 3: '₃', 4: '₄',
+    "             \ 5: '₅', 6: '₆', 7: '₇', 8: '₈', 9: '₉'
+    "             \ }
+endif
 
 let s:filename_modes = {
             \ 'ControlP':             'CtrlP',
