@@ -49,7 +49,7 @@ let g:lightline = {
             \   'inactive': ['tabnum', 'readonly', 'filename', 'modified']
             \ },
             \ 'active': {
-            \   'left':  [['mode', 'paste'], ['fugitive', 'filename']],
+            \   'left':  [['mode', 'paste', 'spell'], ['fugitive', 'filename']],
             \   'right': [['ctrlpdir'], ['fileformat', 'fileencoding', 'spaces', 'filetype']]
             \ },
             \ 'inactive': {
