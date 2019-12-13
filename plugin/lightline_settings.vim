@@ -235,10 +235,21 @@ function! LightlineTabFilename(n) abort
 endfunction
 
 function! LightlineFugitive() abort
-    if LightlineDisplayFileinfo() && LightlineWinWidth() > 100 && exists('*fugitive#head')
+    if LightlineDisplayFileinfo() && LightlineWinWidth() > 100
+        if exists('*fugitive#head')
+            let branch = fugitive#head()
+        elseif exists(':Gina') == 2
+            let branch = gina#component#repo#branch()
+        else
+            let branch = ''
+        endif
+
+        if empty(branch)
+            return ''
+        endif
+
         let mark = g:powerline_symbols.branch
         try
-            let branch = fugitive#head()
             if strlen(branch) > 30
                 let branch = strcharpart(branch, 0, 20) . '...'
             endif
