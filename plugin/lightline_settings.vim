@@ -166,7 +166,7 @@ function! s:IsDisplayableFileInfo() abort
     return 1
 endfunction
 
-function! s:IsDisplaybleLineInfo() abort
+function! s:IsDisplayableLineInfo() abort
     if s:CurrentWinWidth() >= 50 && &filetype =~? 'help\|qf\|godoc\|gedoc'
         return 1
     endif
@@ -360,14 +360,14 @@ function! LightlineInactiveFileName() abort
 endfunction
 
 function! LightlineLineInfo() abort
-    if s:IsDisplaybleLineInfo()
+    if s:IsDisplayableLineInfo()
         return printf('%s%4d:%3d', g:powerline_symbols.linenr, line('.'), col('.'))
     endif
     return ''
 endfunction
 
 function! LightlinePercent() abort
-    if s:IsDisplaybleLineInfo()
+    if s:IsDisplayableLineInfo()
         return printf('%3d%%', line('.') * 100 / line('$'))
     endif
     return ''
