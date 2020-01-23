@@ -378,7 +378,7 @@ function! LightlineFileFormat() abort
         return ''
     endif
     if exists('*WebDevIconsGetFileFormatSymbol')
-        return &fileformat . ' ' . WebDevIconsGetFileFormatSymbol()
+        return &fileformat . ' ' . WebDevIconsGetFileFormatSymbol() . ' '
     else
         return &fileformat !=? 'unix' ? &fileformat : ''
     endif
@@ -399,7 +399,7 @@ function! LightlineFileType() abort
         return ''
     endif
     if exists('*WebDevIconsGetFileTypeSymbol')
-        return &filetype . ' ' . WebDevIconsGetFileTypeSymbol()
+        return &filetype . ' ' . WebDevIconsGetFileTypeSymbol() . ' '
     else
         return &filetype
     endif
