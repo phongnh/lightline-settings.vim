@@ -254,7 +254,7 @@ function! s:BranchShorten(branch, length)
     if strlen(branch) > a:length
         let branch = fnamemodify(branch, ':t')
     endif
-    
+
     if strlen(branch) > a:length
         let branch = strcharpart(branch, 0, 29) . '…'
     endif
@@ -374,7 +374,14 @@ function! LightlinePercent() abort
 endfunction
 
 function! LightlineFileFormat() abort
-    return s:IsDisplayableFileInfo() && &fileformat !=? 'unix' ? &fileformat : ''
+    if !s:IsDisplayableFileInfo()
+        return ''
+    endif
+    if exists('*WebDevIconsGetFileFormatSymbol')
+        return &fileformat . ' ' . WebDevIconsGetFileFormatSymbol()
+    else
+        return &fileformat !=? 'unix' ? &fileformat : ''
+    endif
 endfunction
 
 function! LightlineFileEncoding() abort
@@ -388,7 +395,14 @@ function! LightlineFileEncoding() abort
 endfunction
 
 function! LightlineFileType() abort
-    return s:IsDisplayableFileInfo() ? &filetype : ''
+    if !s:IsDisplayableFileInfo()
+        return ''
+    endif
+    if exists('*WebDevIconsGetFileTypeSymbol')
+        return &filetype . ' ' . WebDevIconsGetFileTypeSymbol()
+    else
+        return &filetype
+    endif
 endfunction
 
 function! LightlineTabsOrSpacesStatus() abort
