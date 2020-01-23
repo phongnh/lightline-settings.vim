@@ -60,19 +60,19 @@ let g:lightline = {
             \   'tablabel':         'LightlineTabLabel',
             \   'mode':             'LightlineModeAndClipboard',
             \   'fugitive':         'LightlineFugitive',
-            \   'filename':         'LightlineFilename',
-            \   'inactivefilename': 'LightlineInactiveFilename',
-            \   'lineinfo':         'LightlineLineinfo',
+            \   'filename':         'LightlineFileName',
+            \   'inactivefilename': 'LightlineInactiveFileName',
+            \   'lineinfo':         'LightlineLineInfo',
             \   'percent':          'LightlinePercent',
-            \   'fileformat':       'LightlineFileformat',
-            \   'fileencoding':     'LightlineFileencoding',
-            \   'filetype':         'LightlineFiletype',
+            \   'fileformat':       'LightlineFileFormat',
+            \   'fileencoding':     'LightlineFileEncoding',
+            \   'filetype':         'LightlineFileType',
             \   'spaces':           'LightlineTabsOrSpacesStatus',
             \   'ctrlpdir':         'LightlineCtrlPDir',
             \ },
             \ 'tab_component_function': {
-            \   'tabnum':   'LightlineTabnum',
-            \   'filename': 'LightlineTabFilename',
+            \   'tabnum':   'LightlineTabNum',
+            \   'filename': 'LightlineFileType',
             \   'readonly': 'LightlineTabReadonly',
             \ },
             \ 'separator':    g:powerline_symbols.separator,
@@ -148,63 +148,63 @@ let s:short_modes = {
             \ 'TERMINAL': 'T',
             \ }
 
-function! LightlineWinWidth() abort
+function! s:CurrentWinWidth() abort
     return winwidth(0)
 endfunction
 
-function! LightlineDisplayFilename() abort
-    if LightlineWinWidth() >= 50 && &filetype =~? 'help\|gedoc'
+function! s:IsDisplayableFileName() abort
+    if s:CurrentWinWidth() >= 50 && &filetype =~? 'help\|gedoc'
         return 1
     endif
-    return LightlineDisplayFileinfo()
+    return s:IsDisplayableFileInfo()
 endfunction
 
-function! LightlineDisplayFileinfo() abort
-    if LightlineWinWidth() < 50 || expand('%:t') =~? '^NrrwRgn' || has_key(s:filename_modes, expand('%:t')) || has_key(s:filetype_modes, &filetype)
+function! s:IsDisplayableFileInfo() abort
+    if s:CurrentWinWidth() < 50 || expand('%:t') =~? '^NrrwRgn' || has_key(s:filename_modes, expand('%:t')) || has_key(s:filetype_modes, &filetype)
         return 0
     endif
     return 1
 endfunction
 
-function! LightlineDisplayLineinfo() abort
-    if LightlineWinWidth() >= 50 && &filetype =~? 'help\|qf\|godoc\|gedoc'
+function! s:IsDisplaybleLineInfo() abort
+    if s:CurrentWinWidth() >= 50 && &filetype =~? 'help\|qf\|godoc\|gedoc'
         return 1
     endif
-    return LightlineDisplayFileinfo()
+    return s:IsDisplayableFileInfo()
 endfunction
 
-function! LightlineModified() abort
+function! s:LightlineModified() abort
     return &filetype =~? 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
 endfunction
 
-function! LightlineReadonly() abort
+function! s:LightlineReadonly() abort
     return &filetype !~? 'help' && &readonly ? g:powerline_symbols.readonly : ''
 endfunction
 
-function! LightlineClipboard() abort
+function! s:LightlineClipboard() abort
     return match(&clipboard, 'unnamed') > -1 ? g:powerline_symbols.clipboard : ''
 endfunction
 
-function! LightlineShortMode(mode) abort
-    if LightlineWinWidth() > 75
+function! s:LightlineShortMode(mode) abort
+    if s:CurrentWinWidth() > 75
         return a:mode
     endif
     return get(s:short_modes, a:mode, a:mode)
 endfunction
 
-function! LightlineMode() abort
+function! s:LightlineMode() abort
     let fname = expand('%:t')
     if fname =~? '^NrrwRgn' && exists('b:nrrw_instn')
         return printf('%s#%d', 'NrrwRgn', b:nrrw_instn)
     endif
-    return get(s:filename_modes, fname, get(s:filetype_modes, &filetype, LightlineShortMode(lightline#mode())))
+    return get(s:filename_modes, fname, get(s:filetype_modes, &filetype, s:LightlineShortMode(lightline#mode())))
 endfunction
 
 function! LightlineModeAndClipboard() abort
-    return LightlineMode() . LightlineClipboard()
+    return s:LightlineMode() . s:LightlineClipboard()
 endfunction
 
-function! LightlineTabnum(n) abort
+function! LightlineTabNum(n) abort
     return printf('[%d]', a:n)
 endfunction
 
@@ -219,7 +219,7 @@ function! LightlineTabReadonly(n) abort
 endfunction
 
 " Copied from https://github.com/itchyny/lightline-powerful
-function! LightlineTabFilename(n) abort
+function! LightlineFileType(n) abort
     let bufnr = tabpagebuflist(a:n)[tabpagewinnr(a:n) - 1]
     let bufname = expand('#' . bufnr . ':t')
     let buffullname = expand('#' . bufnr . ':p')
@@ -234,33 +234,56 @@ function! LightlineTabFilename(n) abort
     return fname =~# '^\[preview' ? 'Preview' : get(s:filename_modes, fname, get(s:filetype_modes, ft, fname))
 endfunction
 
+function! s:GetGitBranch() abort
+    if exists('*fugitive#head')
+        return fugitive#head()
+    elseif exists(':Gina') == 2
+        return gina#component#repo#branch()
+    endif
+
+    return ''
+endfunction
+
+function! s:BranchShorten(branch, length)
+    let branch = a:branch
+
+    if strlen(branch) > a:length
+        let branch = pathshorten(branch)
+    endif
+
+    if strlen(branch) > a:length
+        let branch = fnamemodify(branch, ':t')
+    endif
+    
+    if strlen(branch) > a:length
+        let branch = strcharpart(branch, 0, 29) . '…'
+    endif
+
+    return branch
+endfunction
+
+function! s:FormatBranch(branch) abort
+    if s:CurrentWinWidth() >= 100
+        return s:BranchShorten(a:branch, 50)
+    endif
+
+    return s:BranchShorten(a:branch, 30)
+endfunction
+
 function! LightlineFugitive() abort
-    if LightlineDisplayFileinfo() && LightlineWinWidth() > 100
-        if exists('*fugitive#head')
-            let branch = fugitive#head()
-        elseif exists(':Gina') == 2
-            let branch = gina#component#repo#branch()
-        else
-            let branch = ''
-        endif
+    if s:IsDisplayableFileInfo() && s:CurrentWinWidth() >= 80
+        let branch = s:GetGitBranch()
 
         if empty(branch)
             return ''
         endif
 
-        let mark = g:powerline_symbols.branch
-        try
-            if strlen(branch) > 30
-                let branch = strcharpart(branch, 0, 20) . '...'
-            endif
-            return mark . branch
-        catch
-        endtry
+        return g:powerline_symbols.branch . s:FormatBranch(branch)
     endif
     return ''
 endfunction
 
-function! LightlineAlternateFilename(fname) abort
+function! s:LightlineAlternateFileName(fname) abort
     if a:fname ==# 'ControlP'
         return LightlineCtrlPMark()
     elseif a:fname ==# '__Tagbar__'
@@ -282,9 +305,9 @@ function! LightlineAlternateFilename(fname) abort
     return ''
 endfunction
 
-function! LightlineFilenameWithFlags(fname) abort
-    if LightlineDisplayFilename()
-        let str = (LightlineReadonly() != '' ? LightlineReadonly() . ' ' : '')
+function! LightlineFileNameWithFlags(fname) abort
+    if s:IsDisplayableFileName()
+        let str = (s:LightlineReadonly() != '' ? s:LightlineReadonly() . ' ' : '')
         if strlen(a:fname)
             let path = expand('%:~:.')
             if strlen(path) > 60
@@ -297,28 +320,28 @@ function! LightlineFilenameWithFlags(fname) abort
         else
             let str .= '[No Name]'
         endif
-        let str .= (LightlineModified() != '' ? ' ' . LightlineModified() : '')
+        let str .= (s:LightlineModified() != '' ? ' ' . s:LightlineModified() : '')
         return str
     endif
     return ''
 endfunction
 
-function! LightlineFilename() abort
+function! LightlineFileName() abort
     let fname = expand('%:t')
 
-    let str = LightlineAlternateFilename(fname)
+    let str = s:LightlineAlternateFileName(fname)
 
     if strlen(str)
         return str
     endif
 
-    return LightlineFilenameWithFlags(fname)
+    return LightlineFileNameWithFlags(fname)
 endfunction
 
-function! LightlineInactiveFilename() abort
+function! LightlineInactiveFileName() abort
     let fname = expand('%:t')
 
-    let str = LightlineAlternateFilename(fname)
+    let str = s:LightlineAlternateFileName(fname)
 
     if strlen(str)
         return str
@@ -333,29 +356,29 @@ function! LightlineInactiveFilename() abort
         return str
     endif
 
-    return LightlineFilenameWithFlags(fname)
+    return LightlineFileNameWithFlags(fname)
 endfunction
 
-function! LightlineLineinfo() abort
-    if LightlineDisplayLineinfo()
+function! LightlineLineInfo() abort
+    if s:IsDisplaybleLineInfo()
         return printf('%s%4d:%3d', g:powerline_symbols.linenr, line('.'), col('.'))
     endif
     return ''
 endfunction
 
 function! LightlinePercent() abort
-    if LightlineDisplayLineinfo()
+    if s:IsDisplaybleLineInfo()
         return printf('%3d%%', line('.') * 100 / line('$'))
     endif
     return ''
 endfunction
 
-function! LightlineFileformat() abort
-    return LightlineDisplayFileinfo() && &fileformat !=? 'unix' ? &fileformat : ''
+function! LightlineFileFormat() abort
+    return s:IsDisplayableFileInfo() && &fileformat !=? 'unix' ? &fileformat : ''
 endfunction
 
-function! LightlineFileencoding() abort
-    if LightlineDisplayFileinfo()
+function! LightlineFileEncoding() abort
+    if s:IsDisplayableFileInfo()
         let encoding = strlen(&fenc) ? &fenc : &enc
         if encoding !=? 'utf-8'
             return encoding
@@ -364,12 +387,12 @@ function! LightlineFileencoding() abort
     return ''
 endfunction
 
-function! LightlineFiletype() abort
-    return LightlineDisplayFileinfo() ? &filetype : ''
+function! LightlineFileType() abort
+    return s:IsDisplayableFileInfo() ? &filetype : ''
 endfunction
 
 function! LightlineTabsOrSpacesStatus() abort
-    if LightlineDisplayFileinfo()
+    if s:IsDisplayableFileInfo()
         let shiftwidth = exists('*shiftwidth') ? shiftwidth() : &shiftwidth
         return (&expandtab ? 'Spaces' : 'Tab Size') . ': ' . shiftwidth
     endif
