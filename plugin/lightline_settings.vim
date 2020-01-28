@@ -152,6 +152,12 @@ function! s:CurrentWinWidth() abort
     return winwidth(0)
 endfunction
 
+function! s:IsCustomMode(...) abort
+    let filetype = len(a:000) >= 1 ? a:0 : &filetype
+    let fname = len(a:000) >= 2 ? a:1 : expand('%:t')
+    return (fname =~? '^NrrwRgn' && exists('b:nrrw_instn')) || has_key(s:filetype_modes, filetype) || has_key(s:filename_modes, fname)
+endfunction
+
 function! s:IsDisplayableFileName() abort
     if s:CurrentWinWidth() >= 50 && &filetype =~? 'help\|gedoc'
         return 1
@@ -266,7 +272,7 @@ function! s:FormatBranch(branch) abort
 endfunction
 
 function! LightlineBranch() abort
-    if s:IsDisplayableFileInfo() && s:CurrentWinWidth() >= 80
+    if s:CurrentWinWidth() >= 80 && !s:IsCustomMode()
         let branch = s:GetGitBranch()
 
         if empty(branch)
@@ -275,6 +281,7 @@ function! LightlineBranch() abort
 
         return g:powerline_symbols.branch . s:FormatBranch(branch)
     endif
+
     return ''
 endfunction
 
