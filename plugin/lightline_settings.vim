@@ -72,7 +72,7 @@ let g:lightline = {
             \ },
             \ 'tab_component_function': {
             \   'tabnum':   'LightlineTabNum',
-            \   'filename': 'LightlineFileType',
+            \   'filename': 'LightlineTabFileType',
             \   'readonly': 'LightlineTabReadonly',
             \ },
             \ 'separator':    g:powerline_symbols.separator,
@@ -219,7 +219,7 @@ function! LightlineTabReadonly(n) abort
 endfunction
 
 " Copied from https://github.com/itchyny/lightline-powerful
-function! LightlineFileType(n) abort
+function! LightlineTabFileType(n) abort
     let bufnr = tabpagebuflist(a:n)[tabpagewinnr(a:n) - 1]
     let bufname = expand('#' . bufnr . ':t')
     let buffullname = expand('#' . bufnr . ':p')
