@@ -103,13 +103,10 @@ if findfile('plugin/bufferline.vim', &rtp) != '' && get(g:, 'lightline_bufferlin
 endif
 
 let s:filename_modes = {
-            \ 'ControlP':             'CtrlP',
             \ '__Tagbar__':           'Tagbar',
             \ '__Gundo__':            'Gundo',
             \ '__Gundo_Preview__':    'Gundo Preview',
             \ '[BufExplorer]':        'BufExplorer',
-            \ 'NERD_tree':            'NERDTree',
-            \ 'NERD_tree_1':          'NERDTree',
             \ '[Command Line]':       'Command Line',
             \ '[Plugins]':            'Plugins',
             \ '__committia_status__': 'Committia Status',
@@ -117,22 +114,25 @@ let s:filename_modes = {
             \ }
 
 let s:filetype_modes = {
-            \ 'netrw':         'NetrwTree',
-            \ 'nerdtree':      'NERDTree',
-            \ 'startify':      'Startify',
-            \ 'vim-plug':      'Plug',
-            \ 'unite':         'Unite',
-            \ 'vimfiler':      'VimFiler',
-            \ 'vimshell':      'VimShell',
-            \ 'help':          'Help',
-            \ 'qf':            'Quickfix',
-            \ 'godoc':         'GoDoc',
-            \ 'gedoc':         'GeDoc',
-            \ 'gitcommit':     'Commit Message',
-            \ 'fugitiveblame': 'FugitiveBlame',
-            \ 'agit':          'Agit',
-            \ 'agit_diff':     'Agit',
-            \ 'agit_stat':     'Agit',
+            \ 'ctrlp':             'CtrlP',
+            \ 'leaderf':           'LeaderF',
+            \ 'netrw':             'NetrwTree',
+            \ 'nerdtree':          'NERDTree',
+            \ 'startify':          'Startify',
+            \ 'vim-plug':          'Plug',
+            \ 'unite':             'Unite',
+            \ 'vimfiler':          'VimFiler',
+            \ 'vimshell':          'VimShell',
+            \ 'help':              'HELP',
+            \ 'qf':                '%q',
+            \ 'godoc':             'GoDoc',
+            \ 'gedoc':             'GeDoc',
+            \ 'gitcommit':         'Commit Message',
+            \ 'fugitiveblame':     'FugitiveBlame',
+            \ 'gitmessengerpopup': 'Git Messenger',
+            \ 'agit':              'Agit',
+            \ 'agit_diff':         'Agit Diff',
+            \ 'agit_stat':         'Agit Stat',
             \ }
 
 let s:short_modes = {
