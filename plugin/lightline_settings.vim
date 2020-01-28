@@ -416,7 +416,7 @@ function! LightlineTabsOrSpacesStatus() abort
 endfunction
 
 function! LightlineCtrlPMark() abort
-    if expand('%:t') =~ 'ControlP'
+    if &filetype ==? 'ctrlp' || expand('%:t') =~ 'ControlP'
         call lightline#link('iR'[g:lightline.ctrlp_regex])
 
         return lightline#concatenate([
@@ -429,7 +429,7 @@ function! LightlineCtrlPMark() abort
 endfunction
 
 function! LightlineCtrlPDir() abort
-    if expand('%:t') =~ 'ControlP'
+    if &filetype ==? 'ctrlp' || expand('%:t') =~ 'ControlP'
         return lightline#concatenate([
                     \ g:lightline.ctrlp_focus,
                     \ g:lightline.ctrlp_byfname . ' ' . g:lightline.ctrlp_dir,
