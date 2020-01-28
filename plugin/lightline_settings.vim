@@ -160,7 +160,7 @@ function! s:IsDisplayableFileName() abort
 endfunction
 
 function! s:IsDisplayableFileInfo() abort
-    if s:CurrentWinWidth() < 50 || expand('%:t') =~? '^NrrwRgn' || has_key(s:filename_modes, expand('%:t')) || has_key(s:filetype_modes, &filetype)
+    if s:CurrentWinWidth() < 50 || expand('%:t') =~? '^NrrwRgn' || has_key(s:filetype_modes, &filetype) || has_key(s:filename_modes, expand('%:t'))
         return 0
     endif
     return 1
@@ -197,7 +197,7 @@ function! s:LightlineMode() abort
     if fname =~? '^NrrwRgn' && exists('b:nrrw_instn')
         return printf('%s#%d', 'NrrwRgn', b:nrrw_instn)
     endif
-    return get(s:filename_modes, fname, get(s:filetype_modes, &filetype, s:LightlineShortMode(lightline#mode())))
+    return get(s:filetype_modes, &filetype, get(s:filename_modes, fname, s:LightlineShortMode(lightline#mode())))
 endfunction
 
 function! LightlineModeAndClipboard() abort
@@ -231,7 +231,7 @@ function! LightlineFileType(n) abort
     else
         let fname = bufname
     endif
-    return fname =~# '^\[preview' ? 'Preview' : get(s:filename_modes, fname, get(s:filetype_modes, ft, fname))
+    return fname =~# '^\[preview' ? 'Preview' : get(s:filetype_modes, ft, get(s:filename_modes, fname, fname))
 endfunction
 
 function! s:GetGitBranch() abort
@@ -349,7 +349,7 @@ function! LightlineInactiveFileName() abort
         return str
     endif
 
-    let str = get(s:filename_modes, fname, get(s:filetype_modes, &filetype, ''))
+    let str = get(s:filetype_modes, &filetype, get(s:filename_modes, fname, ''))
     if strlen(str)
         if &filetype ==? 'help'
             let str .= ' ' .  expand('%:~:.')
