@@ -235,7 +235,9 @@ function! LightlineFileType(n) abort
 endfunction
 
 function! s:GetGitBranch() abort
-    if exists('*fugitive#head')
+    if exists('*FugitiveHead')
+        return FugitiveHead()
+    elseif exists('*fugitive#head')
         return fugitive#head()
     elseif exists(':Gina') == 2
         return gina#component#repo#branch()
