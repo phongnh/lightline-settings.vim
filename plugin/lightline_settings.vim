@@ -19,6 +19,7 @@ if get(g:, 'lightline_powerline', 0)
     let g:powerline_symbols.branch       = "\ue0a0 "
     let g:powerline_symbols.readonly     = "\ue0a2"
     let g:powerline_symbols.clipboard    = " ©"
+    let g:powerline_symbols.ellipsis     = '…'
 else
     let g:powerline_symbols.separator    = { 'left': '', 'right': '' }
     let g:powerline_symbols.subseparator = { 'left': '|', 'right': '|' }
@@ -26,6 +27,7 @@ else
     let g:powerline_symbols.branch       = ''
     let g:powerline_symbols.readonly     = 'RO'
     let g:powerline_symbols.clipboard    = ' @'
+    let g:powerline_symbols.ellipsis     = '…'
 endif
 
 if get(g:, 'lightline_set_noshowmode', 1)
@@ -258,7 +260,7 @@ function! s:BranchShorten(branch, length)
     endif
 
     if strlen(branch) > a:length
-        let branch = strcharpart(branch, 0, 29) . '…'
+        let branch = strcharpart(branch, 0, 29) . s:powerline_symbols.ellipsis
     endif
 
     return branch
