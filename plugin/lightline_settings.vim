@@ -51,7 +51,7 @@ let g:lightline = {
             \   'inactive': ['tabnum', 'readonly', 'filename', 'modified']
             \ },
             \ 'active': {
-            \   'left':  [['mode', 'paste', 'spell'], ['fugitive', 'filename']],
+            \   'left':  [['mode', 'paste', 'spell'], ['branch', 'filename']],
             \   'right': [['ctrlpdir'], ['fileformat', 'fileencoding', 'spaces', 'filetype']]
             \ },
             \ 'inactive': {
@@ -61,7 +61,7 @@ let g:lightline = {
             \ 'component_function': {
             \   'tablabel':         'LightlineTabLabel',
             \   'mode':             'LightlineModeAndClipboard',
-            \   'fugitive':         'LightlineFugitive',
+            \   'branch':           'LightlineBranch',
             \   'filename':         'LightlineFileName',
             \   'inactivefilename': 'LightlineInactiveFileName',
             \   'fileformat':       'LightlineFileFormat',
@@ -265,7 +265,7 @@ function! s:FormatBranch(branch) abort
     return s:BranchShorten(a:branch, 30)
 endfunction
 
-function! LightlineFugitive() abort
+function! LightlineBranch() abort
     if s:IsDisplayableFileInfo() && s:CurrentWinWidth() >= 80
         let branch = s:GetGitBranch()
 
