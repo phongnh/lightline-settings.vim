@@ -52,7 +52,7 @@ let g:lightline = {
             \ },
             \ 'active': {
             \   'left':  [['mode', 'paste', 'spell'], ['branch', 'filename']],
-            \   'right': [['ctrlp'], ['filesize', 'spaces', 'filetype', 'fileencoding', 'fileformat']]
+            \   'right': [['filesize', 'spaces', 'filetype', 'fileencoding', 'fileformat']]
             \ },
             \ 'inactive': {
             \   'left':  [['inactivefilename']],
@@ -63,7 +63,6 @@ let g:lightline = {
             \   'spell':            'LightlineSpell',
             \   'branch':           'LightlineBranch',
             \   'filename':         'LightlineFileName',
-            \   'ctrlp':            'LightlineCtrlP',
             \   'filesize':         'LightlineFileSize',
             \   'spaces':           'LightlineTabsOrSpacesStatus',
             \   'fileencoding':     'LightlineFileEncoding',
@@ -105,10 +104,12 @@ if findfile('plugin/bufferline.vim', &rtp) != '' && get(g:, 'lightline_bufferlin
 endif
 
 if findfile('plugin/webdevicons.vim', &rtp) != ''
-    let g:lightline.active.right = [['ctrlp'], ['filesize', 'spaces', 'fileinfo']]
+    let g:lightline.active.right = [['filesize', 'spaces', 'fileinfo']]
 endif
 
 let s:filename_modes = {
+            \ '__CtrlSF__':           'CtrlSF',
+            \ '__CtrlSFPreview__':    'Preview',
             \ '__Tagbar__':           'Tagbar',
             \ '__Gundo__':            'Gundo',
             \ '__Gundo_Preview__':    'Gundo Preview',
@@ -121,6 +122,7 @@ let s:filename_modes = {
 
 let s:filetype_modes = {
             \ 'ctrlp':             'CtrlP',
+            \ 'ctrlsf':            'CtrlSF',
             \ 'leaderf':           'LeaderF',
             \ 'netrw':             'NetrwTree',
             \ 'nerdtree':          'NERDTree',
@@ -182,9 +184,9 @@ function! s:ShortenFileName(filename) abort
 endfunction
 
 function! s:IsCustomMode(...) abort
-    let filetype = len(a:000) >= 1 ? a:0 : &filetype
+    let ft = len(a:000) >= 1 ? a:0 : &filetype
     let fname = len(a:000) >= 2 ? a:1 : expand('%:t')
-    return (fname =~? '^NrrwRgn' && exists('b:nrrw_instn')) || has_key(s:filetype_modes, filetype) || has_key(s:filename_modes, fname)
+    return (fname =~? '^NrrwRgn' && exists('b:nrrw_instn')) || has_key(s:filetype_modes, ft) || has_key(s:filename_modes, fname)
 endfunction
 
 function! s:LightlineShortMode(mode) abort
@@ -298,6 +300,26 @@ function! s:LightlineCtrlPMark() abort
                 \ ], 0)
 endfunction
 
+function! s:LightlineCtrlSF(fname) abort
+    call lightline#link()
+
+    if a:fname == '__CtrlSF__'
+        return lightline#concatenate([
+                    \ substitute(ctrlsf#utils#SectionB(), 'Pattern: ', '', ''),
+                    \ ctrlsf#utils#SectionC(),
+                    \ ctrlsf#utils#SectionX(),
+                    \ ], 0)
+    endif
+
+    if a:fname == '__CtrlSFPreview__'
+        return lightline#concatenate([
+                    \ ctrlsf#utils#PreviewSectionC(),
+                    \ ], 0)
+    endif
+
+    return ''
+endfunction
+
 function! s:LightlineTagbarMark() abort
     call lightline#link()
 
@@ -318,6 +340,8 @@ endfunction
 function! s:LightlineAlternateFileName(fname) abort
     if &filetype ==# 'ctrlp' || a:fname ==# 'ControlP'
         return s:LightlineCtrlPMark()
+    elseif &filetype ==# 'ctrlsf' || a:fname ==# '__CtrlSFPreview__' || a:fname ==# '__CtrlSF__'
+        return s:LightlineCtrlSF(a:fname)
     elseif &filetype ==# 'tagbar' || a:fname =~? '^__Tagbar__'
         return s:LightlineTagbarMark()
     elseif &filetype ==# 'qf'
@@ -392,17 +416,6 @@ function! LightlineFileName() abort
     endif
 
     return s:GetFileNameWithFlags(fname)
-endfunction
-
-function! LightlineCtrlP() abort
-    if &filetype ==# 'ctrlp'
-        return lightline#concatenate([
-                    \ g:lightline.ctrlp_focus,
-                    \ g:lightline.ctrlp_byfname,
-                    \ g:lightline.ctrlp_dir,
-                    \ ], 1)
-    endif
-    return ''
 endfunction
 
 " Copied from https://github.com/ahmedelgabri/dotfiles/blob/master/files/vim/.vim/autoload/statusline.vim
