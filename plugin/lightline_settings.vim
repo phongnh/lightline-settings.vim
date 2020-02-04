@@ -585,9 +585,9 @@ if exists('g:ZoomWin_funcref')
 endif
 
 function! ZoomWinStatusLine(zoomstate) abort
-    for f in s:ZoomWin_funcref
-        if type(f) == 2
-            call f(a:zoomstate)
+    for F in s:ZoomWin_funcref
+        if type(F) == 2 && F != function('ZoomWinStatusLine')
+            call F(a:zoomstate)
         endif
     endfor
 endfunction
