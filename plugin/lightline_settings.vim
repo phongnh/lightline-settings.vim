@@ -157,15 +157,13 @@ let s:short_modes = {
             \ 'TERMINAL': 'T',
             \ }
 
-if exists('*trim')
-    function! s:strip(str) abort
+function! s:Strip(str) abort
+    if exists('*trim')
         return trim(a:str)
-    endfunction
-else
-    function! s:strip(str) abort
+    else
         return substitute(a:str, '^\s*\(.\{-}\)\s*$', '\1', '')
-    endfunction
-endif
+    endif
+endfunction
 
 function! s:CurrentWinWidth() abort
     return winwidth(0)
@@ -488,7 +486,7 @@ function! LightlineInactiveFileName() abort
     if s:IsCustomMode()
         let l:s = s:LightlineCustomMode()
         let l:s .= ' ' . s:LightlineAlternateFileName(fname)
-        return s:strip(l:s)
+        return s:Strip(l:s)
     endif
 
     return s:GetFileNameWithFlags(fname)
