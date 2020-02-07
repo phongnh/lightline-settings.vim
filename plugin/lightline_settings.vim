@@ -128,10 +128,7 @@ let s:filetype_modes = {
             \ 'nerdtree':          'NERDTree',
             \ 'startify':          'Startify',
             \ 'tagbar':            'TagBar',
-            \ 'vim-plug':          'Plug',
-            \ 'unite':             'Unite',
-            \ 'vimfiler':          'VimFiler',
-            \ 'vimshell':          'VimShell',
+            \ 'vim-plug':          'Plugins',
             \ 'help':              'HELP',
             \ 'qf':                'QuickFix',
             \ 'godoc':             'GoDoc',
@@ -346,12 +343,6 @@ function! s:LightlineAlternateFileName(fname) abort
         return get(w:, 'quickfix_title', a:fname)
     elseif &filetype ==# 'help'
         return expand('%:~:.')
-    elseif &filetype ==# 'unite'
-        return unite#get_status_string()
-    elseif &filetype ==# 'vimfiler'
-        return vimfiler#get_status_string()
-    elseif &filetype ==# 'vimshell'
-        return vimshell#get_status_string()
     elseif a:fname =~? '^NrrwRgn'
         if get(b:, 'orig_buf', 0)
             return bufname(b:orig_buf)
