@@ -452,13 +452,16 @@ function! LightlineFileSizeStatus() abort
     return s:FileSize()
 endfunction
 
+function! s:IndentationStatus(...) abort
+    let shiftwidth = exists('*shiftwidth') ? shiftwidth() : &shiftwidth
+    return printf('%s: %d', (&expandtab ? 'Spaces' : 'Tab Size'), shiftwidth)
+endfunction
+
 function! LightlineIndentationStatus() abort
     if s:IsSmallWindow() || s:IsCustomMode()
         return ''
     endif
-
-    let shiftwidth = exists('*shiftwidth') ? shiftwidth() : &shiftwidth
-    return (&expandtab ? 'Spaces' : 'Tab Size') . ': ' . shiftwidth
+    return s:IndentationStatus()
 endfunction
 
 function! s:FileEncodingStatus(...) abort
