@@ -19,23 +19,25 @@ let s:normal_window_width = 100
 
 " Symbols
 if get(g:, 'lightline_powerline', 0)
-    let g:powerline_symbols = {
+    let s:symbols = {
                 \ 'separator':    { 'left': "\ue0b0", 'right': "\ue0b2" },
                 \ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" },
                 \ 'linenr':       "\ue0a1",
                 \ 'branch':       "\ue0a0",
                 \ 'readonly':     "\ue0a2",
-                \ 'clipboard':    "©",
+                \ 'clipboard':    'ⓒ ',
+                \ 'paste':        'Ⓟ ',
                 \ 'ellipsis':     '…',
                 \ }
 else
-    let g:powerline_symbols = {
-                \ 'separator':    { 'left': '', 'right': '' },
+    let s:symbols = {
+                \ 'separator':    { 'left': '',  'right': ''  },
                 \ 'subseparator': { 'left': '|', 'right': '|' },
                 \ 'linenr':       '☰',
                 \ 'branch':       '⎇',
                 \ 'readonly':     '',
-                \ 'clipboard':    '@',
+                \ 'clipboard':    'ⓒ  ',
+                \ 'paste':        'Ⓟ  ',
                 \ 'ellipsis':     '…',
                 \ }
 endif
@@ -85,8 +87,8 @@ let g:lightline = {
             \   'filename': 'LightlineTabFileType',
             \   'readonly': 'LightlineTabReadonly',
             \ },
-            \ 'separator':    g:powerline_symbols.separator,
-            \ 'subseparator': g:powerline_symbols.subseparator,
+            \ 'separator':    s:symbols.separator,
+            \ 'subseparator': s:symbols.subseparator,
             \ }
 
 if findfile('plugin/bufferline.vim', &rtp) != '' && get(g:, 'lightline_bufferline', 0)
@@ -238,10 +240,7 @@ function! s:ModifiedStatus() abort
 endfunction
 
 function! s:ReadonlyStatus() abort
-    if &readonly
-        return g:powerline_symbols.readonly . ' '
-    endif
-    return ''
+    return &readonly ? s:symbols.readonly . ' ' : ''
 endfunction
 
 function! s:GetFileNameWithFlags() abort
@@ -341,19 +340,15 @@ function! LightlineModeStatus() abort
     if strlen(l:mode)
         return l:mode
     endif
-
     return s:ShortMode(lightline#mode())
 endfunction
 
 function! s:ClipboardStatus() abort
-    return match(&clipboard, 'unnamed') > -1 ? g:powerline_symbols.clipboard : ''
+    return match(&clipboard, 'unnamed') > -1 ? s:symbols.clipboard : ''
 endfunction
 
 function! s:PasteStatus() abort
-    if &paste
-        return 'PASTE'
-    endif
-    return ''
+    return &paste ? s:symbols.paste : ''
 endfunction
 
 function! s:SpellStatus() abort
@@ -381,13 +376,13 @@ function! LightlineGitBranchStatus() abort
             return ''
         endif
 
-        return g:powerline_symbols.branch . ' ' . s:FormatBranch(branch)
+        return s:symbols.branch . ' ' . s:FormatBranch(branch)
     endif
 
     return ''
 endfunction
 
-function! s:LightlineCtrlPMark() abort
+function! s:CtrlPMark() abort
     call lightline#link('iR'[g:lightline.ctrlp_regex])
 
     return lightline#concatenate([
@@ -397,7 +392,7 @@ function! s:LightlineCtrlPMark() abort
                 \ ], 0)
 endfunction
 
-function! s:LightlineCtrlSF(fname) abort
+function! s:CtrlSFMark(fname) abort
     call lightline#link()
 
     if a:fname == '__CtrlSF__'
@@ -417,7 +412,7 @@ function! s:LightlineCtrlSF(fname) abort
     return ''
 endfunction
 
-function! s:LightlineTagbarMark() abort
+function! s:TagbarMark() abort
     call lightline#link()
 
     if empty(g:lightline.tagbar_flags)
@@ -434,25 +429,33 @@ function! s:LightlineTagbarMark() abort
     endif
 endfunction
 
+function! s:NrrwRgnMark() abort
+    let dict = exists('*nrrwrgn#NrrwRgnStatus()') ?  nrrwrgn#NrrwRgnStatus() : {}
+
+    if !empty(dict)
+        return fnamemodify(dict.fullname, ':~:.')
+    elseif get(b:, 'orig_buf', 0)
+        return bufname(b:orig_buf)
+    endif
+
+    return ''
+endfunction
+
 function! LightlinePluginModeStatus() abort
     let fname = expand('%:t')
 
     if &filetype ==# 'ctrlp'
-        return s:LightlineCtrlPMark()
+        return s:CtrlPMark()
     elseif &filetype ==# 'ctrlsf' || fname ==# '__CtrlSFPreview__' || fname ==# '__CtrlSF__'
-        return s:LightlineCtrlSF(fname)
+        return s:CtrlSFMark(fname)
     elseif &filetype ==# 'tagbar' || fname =~? '^__Tagbar__'
-        return s:LightlineTagbarMark()
+        return s:TagbarMark()
     elseif &filetype ==# 'qf'
-        return get(w:, 'quickfix_title', fname)
+        return s:Strip(get(w:, 'quickfix_title', ''))
     elseif &filetype ==# 'help'
         return expand('%:~:.')
     elseif fname =~? '^NrrwRgn'
-        if get(b:, 'orig_buf', 0)
-            return bufname(b:orig_buf)
-        else
-            return substitute(bufname('%'), '^Nrrwrgn_\zs.*\ze_\d\+$', submatch(0), ''))
-        endif
+        return s:NrrwRgnMark()
     endif
 
     return ''
@@ -594,7 +597,7 @@ endfunction
 " Copied from https://github.com/itchyny/lightline-powerful
 function! LightlineTabReadonly(n) abort
     let winnr = tabpagewinnr(a:n)
-    return gettabwinvar(a:n, winnr, '&readonly') ? g:powerline_symbols.readonly : ''
+    return gettabwinvar(a:n, winnr, '&readonly') ? s:symbols.readonly : ''
 endfunction
 
 " CtrlP Integration
