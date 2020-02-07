@@ -301,6 +301,51 @@ function! s:FormatBranch(branch) abort
     return s:ShortenBranch(a:branch, 30)
 endfunction
 
+function! s:ClipboardStatus() abort
+    return match(&clipboard, 'unnamed') > -1 ? s:symbols.clipboard : ''
+endfunction
+
+function! s:PasteStatus() abort
+    return &paste ? s:symbols.paste : ''
+endfunction
+
+function! s:SpellStatus() abort
+    return &spell ? toupper(substitute(&spelllang, ',', '/', 'g')) : ''
+endfunction
+
+function! s:IndentationStatus(...) abort
+    let shiftwidth = exists('*shiftwidth') ? shiftwidth() : &shiftwidth
+    return printf('%s: %d', (&expandtab ? 'Spaces' : 'Tab Size'), shiftwidth)
+endfunction
+
+function! s:FileEncodingStatus(...) abort
+    let encoding = strlen(&fenc) ? &fenc : &enc
+    " Show encoding only if it is not utf-8
+    if empty(encoding) || encoding ==# 'utf-8'
+        return ''
+    endif
+    return printf('[%s]', encoding)
+endfunction
+
+function! s:FileEncodingAndFormatStatus(...) abort
+    let encoding = strlen(&fenc) ? &fenc : &enc
+    let format = &fileformat
+
+    if strlen(encoding) && strlen(format)
+        let stl = printf('%s[%s]', encoding, format)
+    elseif strlen(encoding)
+        let stl = encoding
+    else
+        let stl = printf('[%s]', format)
+    endif
+
+    " Show format only if it is not utf-8[unix]
+    if stl ==# 'utf-8[unix]'
+        return ''
+    endif
+
+    return stl
+endfunction
 function! s:IsCustomMode(...) abort
     return has_key(s:filetype_modes, &filetype) ||
                 \ has_key(s:filename_modes, expand('%:t')) ||
@@ -343,19 +388,69 @@ function! LightlineModeStatus() abort
     return s:ShortMode(lightline#mode())
 endfunction
 
-function! s:ClipboardStatus() abort
-    return match(&clipboard, 'unnamed') > -1 ? s:symbols.clipboard : ''
-endfunction
-
-function! s:PasteStatus() abort
-    return &paste ? s:symbols.paste : ''
-endfunction
-
-function! s:SpellStatus() abort
-    if &spell
-        return toupper(substitute(&spelllang, ',', '/', 'g'))
+function! LightlineGitBranchStatus() abort
+    if s:CurrentWinWidth() < s:small_window_width || s:IsCustomMode()
+        return
     endif
-    return ''
+
+    let branch = s:GetGitBranch()
+
+    if empty(branch)
+        return ''
+    endif
+
+    return s:symbols.branch . ' ' . s:FormatBranch(branch)
+endfunction
+
+function! LightlineFileNameStatus() abort
+    if s:IsCustomMode()
+        return ''
+    endif
+    return s:GetFileNameWithFlags()
+endfunction
+
+function! LightlineFileInfoStatus() abort
+    if s:IsCustomMode()
+        return ''
+    endif
+
+    let ft = s:GetBufferType('%')
+
+    if s:CurrentWinWidth() < s:xsmall_window_width
+        return ft
+    endif
+
+    if s:has_devicons
+        let parts = s:RemoveEmptyElement([
+                    \ s:FileEncodingStatus(),
+                    \ WebDevIconsGetFileFormatSymbol() . ' ',
+                    \ ft,
+                    \ WebDevIconsGetFileTypeSymbol(bufname('%')) . ' ',
+                    \ ])
+    else
+        let parts = s:RemoveEmptyElement([
+                    \ s:FileEncodingAndFormatStatus(),
+                    \ ft,
+                    \ ])
+    endif
+
+    let stl = join(parts, ' ')
+
+    if s:CurrentWinWidth() < s:small_window_width
+        return stl
+    endif
+
+    return lightline#concatenate([
+                \ s:FileSize(),
+                \ stl,
+                \ ], 1)
+endfunction
+
+function! LightlineIndentationStatus() abort
+    if s:CurrentWinWidth() < s:xsmall_window_width || s:IsCustomMode()
+        return ''
+    endif
+    return s:IndentationStatus()
 endfunction
 
 function! LightlineExtraStatus() abort
@@ -370,20 +465,6 @@ function! LightlineExtraStatus() abort
                 \   s:SpellStatus(),
                 \ ]),
                 \ 1)
-endfunction
-
-function! LightlineGitBranchStatus() abort
-    if s:CurrentWinWidth() < s:small_window_width || s:IsCustomMode()
-        return ''
-    endif
-
-    let branch = s:GetGitBranch()
-
-    if empty(branch)
-        return ''
-    endif
-
-    return s:symbols.branch . ' ' . s:FormatBranch(branch)
 endfunction
 
 function! s:CtrlPMark() abort
@@ -463,91 +544,6 @@ function! LightlinePluginModeStatus() abort
     endif
 
     return ''
-endfunction
-
-function! LightlineFileNameStatus() abort
-    if s:IsCustomMode()
-        return ''
-    endif
-    return s:GetFileNameWithFlags()
-endfunction
-
-function! s:IndentationStatus(...) abort
-    let shiftwidth = exists('*shiftwidth') ? shiftwidth() : &shiftwidth
-    return printf('%s: %d', (&expandtab ? 'Spaces' : 'Tab Size'), shiftwidth)
-endfunction
-
-function! LightlineIndentationStatus() abort
-    if s:CurrentWinWidth() < s:xsmall_window_width || s:IsCustomMode()
-        return ''
-    endif
-    return s:IndentationStatus()
-endfunction
-
-function! s:FileEncodingStatus(...) abort
-    let encoding = strlen(&fenc) ? &fenc : &enc
-    " Show encoding only if it is not utf-8
-    if empty(encoding) || encoding ==# 'utf-8'
-        return ''
-    endif
-    return printf('[%s]', encoding)
-endfunction
-
-function! s:FileEncodingAndFormatStatus(...) abort
-    let encoding = strlen(&fenc) ? &fenc : &enc
-    let format = &fileformat
-
-    if strlen(encoding) && strlen(format)
-        let stl = printf('%s[%s]', encoding, format)
-    elseif strlen(encoding)
-        let stl = encoding
-    else
-        let stl = printf('[%s]', format)
-    endif
-
-    " Show format only if it is not utf-8[unix]
-    if stl ==# 'utf-8[unix]'
-        return ''
-    endif
-
-    return stl
-endfunction
-
-function! LightlineFileInfoStatus() abort
-    if s:IsCustomMode()
-        return ''
-    endif
-
-    let ft = s:GetBufferType('%')
-
-    if s:CurrentWinWidth() < s:xsmall_window_width
-        return ft
-    endif
-
-    if s:has_devicons
-        let parts = s:RemoveEmptyElement([
-                    \ s:FileEncodingStatus(),
-                    \ WebDevIconsGetFileFormatSymbol() . ' ',
-                    \ ft,
-                    \ WebDevIconsGetFileTypeSymbol(bufname('%')) . ' ',
-                    \ ])
-    else
-        let parts = s:RemoveEmptyElement([
-                    \ s:FileEncodingAndFormatStatus(),
-                    \ ft,
-                    \ ])
-    endif
-
-    let stl = join(parts, ' ')
-
-    if s:CurrentWinWidth() < s:small_window_width
-        return stl
-    endif
-
-    return lightline#concatenate([
-                \ s:FileSize(),
-                \ stl,
-                \ ], 1)
 endfunction
 
 function! LightlinePluginStatus() abort
