@@ -181,6 +181,14 @@ function! s:RemoveEmptyElement(list) abort
     return filter(copy(a:list), '!empty(v:val)')
 endfunction
 
+function! s:GetCurrentDir() abort
+    let dir = fnamemodify(getcwd(), ':~:.')
+    if empty(dir)
+        let dir = getcwd()
+    endif
+    return dir
+endfunction
+
 function! s:GetBufferType(bufnum) abort
     let ft = getbufvar(a:bufnum, '&filetype')
 
@@ -574,11 +582,11 @@ endfunction
 
 " CtrlP Integration
 let g:ctrlp_status_func = {
-            \ 'main': 'CtrlPStatusFunc_1',
-            \ 'prog': 'CtrlPStatusFunc_2',
+            \ 'main': 'CtrlPMainStatusLine',
+            \ 'prog': 'CtrlPProgressStatusLine',
             \ }
 
-function! CtrlPStatusFunc_1(focus, byfname, regex, prev, item, next, marked) abort
+function! CtrlPMainStatusLine(focus, byfname, regex, prev, item, next, marked) abort
     let g:lightline.ctrlp_focus   = a:focus
     let g:lightline.ctrlp_byfname = a:byfname
     let g:lightline.ctrlp_regex   = a:regex
@@ -586,14 +594,11 @@ function! CtrlPStatusFunc_1(focus, byfname, regex, prev, item, next, marked) abo
     let g:lightline.ctrlp_item    = a:item
     let g:lightline.ctrlp_next    = a:next
     let g:lightline.ctrlp_marked  = a:marked
-    let g:lightline.ctrlp_dir     = fnamemodify(getcwd(), ':~:.')
-    if empty(g:lightline.ctrlp_dir)
-        let g:lightline.ctrlp_dir = getcwd()
-    endif
+    let g:lightline.ctrlp_dir     = s:GetCurrentDir()
     return lightline#statusline(0)
 endfunction
 
-function! CtrlPStatusFunc_2(str) abort
+function! CtrlPProgressStatusLine(len) abort
     return lightline#statusline(0)
 endfunction
 
