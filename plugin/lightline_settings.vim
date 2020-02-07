@@ -359,6 +359,10 @@ function! s:SpellStatus() abort
 endfunction
 
 function! LightlineExtraStatus() abort
+    if s:CurrentWinWidth() < s:small_window_width || s:IsCustomMode()
+        return ''
+    endif
+
     return lightline#concatenate(
                 \ s:RemoveEmptyElement([
                 \   s:ClipboardStatus(),
@@ -369,17 +373,17 @@ function! LightlineExtraStatus() abort
 endfunction
 
 function! LightlineGitBranchStatus() abort
-    if s:CurrentWinWidth() >= s:small_window_width && !s:IsCustomMode()
-        let branch = s:GetGitBranch()
-
-        if empty(branch)
-            return ''
-        endif
-
-        return s:symbols.branch . ' ' . s:FormatBranch(branch)
+    if s:CurrentWinWidth() < s:small_window_width || s:IsCustomMode()
+        return ''
     endif
 
-    return ''
+    let branch = s:GetGitBranch()
+
+    if empty(branch)
+        return ''
+    endif
+
+    return s:symbols.branch . ' ' . s:FormatBranch(branch)
 endfunction
 
 function! s:CtrlPMark() abort
@@ -516,6 +520,10 @@ function! LightlineFileInfoStatus() abort
 
     let ft = s:GetBufferType('%')
 
+    if s:CurrentWinWidth() < s:xsmall_window_width
+        return ft
+    endif
+
     if s:has_devicons
         let parts = s:RemoveEmptyElement([
                     \ s:FileEncodingStatus(),
@@ -530,9 +538,15 @@ function! LightlineFileInfoStatus() abort
                     \ ])
     endif
 
+    let stl = join(parts, ' ')
+
+    if s:CurrentWinWidth() < s:small_window_width
+        return stl
+    endif
+
     return lightline#concatenate([
                 \ s:FileSize(),
-                \ join(parts, ' '),
+                \ stl,
                 \ ], 1)
 endfunction
 
