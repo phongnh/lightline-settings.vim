@@ -52,7 +52,7 @@ let g:lightline = {
             \ },
             \ 'active': {
             \   'left':  [['mode', 'paste', 'spell'], ['branch', 'filename']],
-            \   'right': [['filesize', 'spaces', 'filetype', 'fileencoding', 'fileformat']]
+            \   'right': [['spaces', 'filesize', 'fileinfo']]
             \ },
             \ 'inactive': {
             \   'left':  [['inactivefilename']],
@@ -60,9 +60,9 @@ let g:lightline = {
             \ },
             \ 'component_function': {
             \   'mode':             'LightlineMode',
-            \   'spell':            'LightlineSpell',
-            \   'branch':           'LightlineBranch',
-            \   'filename':         'LightlineFileName',
+            \   'spell':            'LightlineSpellStatus',
+            \   'branch':           'LightlineGitBranchStatus',
+            \   'filename':         'LightlineFileNameStatus',
             \   'filesize':         'LightlineFileSizeStatus',
             \   'spaces':           'LightlineIndentationStatus',
             \   'fileencoding':     'LightlineFileEncoding',
@@ -226,7 +226,7 @@ function! LightlineMode() abort
     return l:s . s:LightlineClipboard()
 endfunction
 
-function! LightlineSpell() abort
+function! LightlineSpellStatus() abort
     if &spell
         return toupper(substitute(&spelllang, ',', '/', 'g'))
     endif
@@ -245,7 +245,7 @@ function! s:GetGitBranch() abort
     return ''
 endfunction
 
-function! s:BranchShorten(branch, length)
+function! s:ShortenBranch(branch, length)
     let branch = a:branch
 
     if strlen(branch) > a:length
@@ -265,13 +265,13 @@ endfunction
 
 function! s:FormatBranch(branch) abort
     if s:CurrentWinWidth() >= 100
-        return s:BranchShorten(a:branch, 50)
+        return s:ShortenBranch(a:branch, 50)
     endif
 
-    return s:BranchShorten(a:branch, 30)
+    return s:ShortenBranch(a:branch, 30)
 endfunction
 
-function! LightlineBranch() abort
+function! LightlineGitBranchStatus() abort
     if s:CurrentWinWidth() >= 80 && !s:IsCustomMode()
         let branch = s:GetGitBranch()
 
@@ -397,7 +397,7 @@ function! s:GetFileNameWithFlags(fname) abort
     return s:LightlineReadonly() . s:GetFileName(a:fname) . s:LightlineModified()
 endfunction
 
-function! LightlineFileName() abort
+function! LightlineFileNameStatus() abort
     let fname = expand('%:t')
 
     if s:IsCustomMode()
