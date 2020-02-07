@@ -11,24 +11,33 @@ let g:loaded_vim_lightline_settings = 1
 let s:save_cpo = &cpo
 set cpo&vim
 
-let g:powerline_symbols = {}
 
+" Window width
+let s:xsmall_window_width = 60
+let s:small_window_width  = 80
+let s:normal_window_width = 100
+
+" Symbols
 if get(g:, 'lightline_powerline', 0)
-    let g:powerline_symbols.separator    = { 'left': "\ue0b0", 'right': "\ue0b2" }
-    let g:powerline_symbols.subseparator = { 'left': "\ue0b1", 'right': "\ue0b3" }
-    let g:powerline_symbols.linenr       = "\ue0a1"
-    let g:powerline_symbols.branch       = "\ue0a0"
-    let g:powerline_symbols.readonly     = "\ue0a2"
-    let g:powerline_symbols.clipboard    = "©"
-    let g:powerline_symbols.ellipsis     = '…'
+    let g:powerline_symbols = {
+                \ 'separator':    { 'left': "\ue0b0", 'right': "\ue0b2" },
+                \ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" },
+                \ 'linenr':       "\ue0a1",
+                \ 'branch':       "\ue0a0",
+                \ 'readonly':     "\ue0a2",
+                \ 'clipboard':    "©",
+                \ 'ellipsis':     '…',
+                \ }
 else
-    let g:powerline_symbols.separator    = { 'left': '', 'right': '' }
-    let g:powerline_symbols.subseparator = { 'left': '|', 'right': '|' }
-    let g:powerline_symbols.linenr       = '☰'
-    let g:powerline_symbols.branch       = '⎇'
-    let g:powerline_symbols.readonly     = ''
-    let g:powerline_symbols.clipboard    = '@'
-    let g:powerline_symbols.ellipsis     = '…'
+    let g:powerline_symbols = {
+                \ 'separator':    { 'left': '', 'right': '' },
+                \ 'subseparator': { 'left': '|', 'right': '|' },
+                \ 'linenr':       '☰',
+                \ 'branch':       '⎇',
+                \ 'readonly':     '',
+                \ 'clipboard':    '@',
+                \ 'ellipsis':     '…',
+                \ }
 endif
 
 if get(g:, 'lightline_set_noshowmode', 1)
@@ -56,7 +65,7 @@ let g:lightline = {
             \   'right': [['spaces', 'fileinfo', 'plugin'], ['extra']]
             \ },
             \ 'inactive': {
-            \   'left':  [['inactivefilename']],
+            \   'left':  [['inactive']],
             \   'right': []
             \ },
             \ 'component_function': {
@@ -68,7 +77,7 @@ let g:lightline = {
             \   'fileinfo':         'LightlineFileInfoStatus',
             \   'plugin':           'LightlinePluginStatus',
             \   'extra':            'LightlineExtraStatus',
-            \   'inactivefilename': 'LightlineInactiveFileName',
+            \   'inactive':         'LightlineInactiveStatus',
             \   'tablabel':         'LightlineTabLabel',
             \ },
             \ 'tab_component_function': {
@@ -165,10 +174,6 @@ function! s:CurrentWinWidth() abort
     return winwidth(0)
 endfunction
 
-function! s:IsSmallWindow() abort
-    return winwidth(0) < 60
-endfunction
-
 function! s:ShortenFileName(filename) abort
     if exists('*pathshorten')
         return pathshorten(a:filename)
@@ -199,48 +204,145 @@ function! s:GetBufferType(bufnum) abort
     return ft
 endfunction
 
-function! s:IsCustomMode(...) abort
-    let ft = len(a:000) >= 1 ? a:0 : &filetype
-    let fname = len(a:000) >= 2 ? a:1 : expand('%:t')
-    return (fname =~? '^NrrwRgn' && exists('b:nrrw_instn')) || has_key(s:filetype_modes, ft) || has_key(s:filename_modes, fname)
-endfunction
+function! s:GetFileName(fname) abort
+    if strlen(a:fname)
+        if s:CurrentWinWidth() < s:xsmall_window_width
+            return a:fname
+        endif
 
-function! s:LightlineShortMode(mode) abort
-    if s:IsSmallWindow()
-        return get(s:short_modes, a:mode, a:mode)
+        let l:path = expand('%:~:.')
+
+        if strlen(l:path) > 50
+            let l:path = s:ShortenFileName(l:path)
+        endif
+
+        if strlen(l:path) > 50
+            let l:path = a:fname
+        endif
+
+        return l:path
     endif
-    return a:mode
+
+    return '[No Name]'
 endfunction
 
-function! s:LightlineCustomMode() abort
+function! s:ModifiedStatus() abort
+    if &filetype !=? 'help' && &modified
+        if &modifiable
+            return ' +'
+        else
+            return '[-] +'
+        endif
+    endif
+    return ''
+endfunction
+
+function! s:ReadonlyStatus() abort
+    if &readonly
+        return g:powerline_symbols.readonly . ' '
+    endif
+    return ''
+endfunction
+
+function! s:GetFileNameWithFlags() abort
+    return s:ReadonlyStatus() . s:GetFileName(expand('%t')) . s:ModifiedStatus()
+endfunction
+
+" Copied from https://github.com/ahmedelgabri/dotfiles/blob/master/files/vim/.vim/autoload/statusline.vim
+function! s:FileSize() abort
+    let l:size = getfsize(expand('%'))
+    if l:size == 0 || l:size == -1 || l:size == -2
+        return ''
+    endif
+    if l:size < 1024
+        return l:size . ' bytes'
+    elseif l:size < 1024 * 1024
+        return printf('%.1f', l:size / 1024.0) . 'k'
+    elseif l:size < 1024 * 1024 * 1024
+        return printf('%.1f', l:size / 1024.0 / 1024.0) . 'm'
+    else
+        return printf('%.1f', l:size / 1024.0 / 1024.0 / 1024.0) . 'g'
+    endif
+endfunction
+
+function! s:GetGitBranch() abort
+    if exists('*FugitiveHead')
+        return FugitiveHead()
+    elseif exists('*fugitive#head')
+        return fugitive#head()
+    elseif exists(':Gina') == 2
+        return gina#component#repo#branch()
+    endif
+    return ''
+endfunction
+
+function! s:ShortenBranch(branch, length)
+    let branch = a:branch
+
+    if strlen(branch) > a:length
+        let branch = s:ShortenFileName(branch)
+    endif
+
+    if strlen(branch) > a:length
+        let branch = fnamemodify(branch, ':t')
+    endif
+
+    if strlen(branch) > a:length
+        let branch = strcharpart(branch, 0, 29) . s:powerline_symbols.ellipsis
+    endif
+
+    return branch
+endfunction
+
+function! s:FormatBranch(branch) abort
+    if s:CurrentWinWidth() >= s:normal_window_width
+        return s:ShortenBranch(a:branch, 50)
+    endif
+
+    return s:ShortenBranch(a:branch, 30)
+endfunction
+
+function! s:IsCustomMode(...) abort
+    return has_key(s:filetype_modes, &filetype) ||
+                \ has_key(s:filename_modes, expand('%:t')) ||
+                \ (expand('%:t') =~? '^NrrwRgn' && exists('b:nrrw_instn'))
+endfunction
+
+function! s:CustomMode() abort
     if has_key(s:filetype_modes, &filetype)
         if &filetype ==# 'qf' && getwininfo(win_getid())[0]['loclist']
             return 'LocationList'
         endif
 
-        return get(s:filetype_modes, &filetype)
+        return s:filetype_modes[&filetype]
     endif
 
     let fname = expand('%:t')
-    if fname =~? '^NrrwRgn' && exists('b:nrrw_instn')
-        return printf('%s#%d', 'NrrwRgn', b:nrrw_instn)
+    if has_key(s:filename_modes, fname)
+        return s:filename_modes[fname]
     endif
 
-    if has_key(s:filename_modes, fname)
-        return get(s:filename_modes, fname)
+    if fname =~? '^NrrwRgn' && exists('b:nrrw_instn')
+        return printf('%s#%d', 'NrrwRgn', b:nrrw_instn)
     endif
 
     return ''
 endfunction
 
-function! LightlineModeStatus() abort
-    let l:s = s:LightlineCustomMode()
+function! s:ShortMode(mode) abort
+    if s:CurrentWinWidth() < s:xsmall_window_width
+        return get(s:short_modes, a:mode, a:mode)
+    endif
+    return a:mode
+endfunction
 
-    if empty(l:s)
-        let l:s = s:LightlineShortMode(lightline#mode())
+function! LightlineModeStatus() abort
+    let l:mode = s:CustomMode()
+    if strlen(l:mode)
+        return l:mode
     endif
 
-    return l:s
+    return s:ShortMode(lightline#mode())
 endfunction
 
 function! s:ClipboardStatus() abort
@@ -271,46 +373,8 @@ function! LightlineExtraStatus() abort
                 \ 1)
 endfunction
 
-function! s:GetGitBranch() abort
-    if exists('*FugitiveHead')
-        return FugitiveHead()
-    elseif exists('*fugitive#head')
-        return fugitive#head()
-    elseif exists(':Gina') == 2
-        return gina#component#repo#branch()
-    endif
-
-    return ''
-endfunction
-
-function! s:ShortenBranch(branch, length)
-    let branch = a:branch
-
-    if strlen(branch) > a:length
-        let branch = s:ShortenFileName(branch)
-    endif
-
-    if strlen(branch) > a:length
-        let branch = fnamemodify(branch, ':t')
-    endif
-
-    if strlen(branch) > a:length
-        let branch = strcharpart(branch, 0, 29) . s:powerline_symbols.ellipsis
-    endif
-
-    return branch
-endfunction
-
-function! s:FormatBranch(branch) abort
-    if s:CurrentWinWidth() >= 100
-        return s:ShortenBranch(a:branch, 50)
-    endif
-
-    return s:ShortenBranch(a:branch, 30)
-endfunction
-
 function! LightlineGitBranchStatus() abort
-    if s:CurrentWinWidth() >= 80 && !s:IsCustomMode()
+    if s:CurrentWinWidth() >= s:small_window_width && !s:IsCustomMode()
         let branch = s:GetGitBranch()
 
         if empty(branch)
@@ -364,8 +428,8 @@ function! s:LightlineTagbarMark() abort
     else
         return lightline#concatenate([
                     \ g:lightline.tagbar_sort,
-                    \ join(g:lightline.tagbar_flags, ''),
                     \ g:lightline.tagbar_fname,
+                    \ join(g:lightline.tagbar_flags, ''),
                     \ ], 0)
     endif
 endfunction
@@ -394,72 +458,11 @@ function! LightlinePluginModeStatus() abort
     return ''
 endfunction
 
-function! s:LightlineModified() abort
-    if &filetype !=? 'help' && &modified
-        if &modifiable
-            return ' +'
-        else
-            return '[-] +'
-        endif
-    endif
-    return ''
-endfunction
-
-function! s:LightlineReadonly() abort
-    if &readonly
-        return g:powerline_symbols.readonly . ' '
-    endif
-    return ''
-endfunction
-
-function! s:GetFileName(fname) abort
-    if strlen(a:fname)
-        if s:IsSmallWindow()
-            return a:fname
-        endif
-
-        let l:path = expand('%:~:.')
-
-        if strlen(l:path) > 50
-            let l:path = s:ShortenFileName(l:path)
-        endif
-
-        if strlen(l:path) > 50
-            let l:path = a:fname
-        endif
-
-        return l:path
-    endif
-
-    return '[No Name]'
-endfunction
-
-function! s:GetFileNameWithFlags(fname) abort
-    return s:LightlineReadonly() . s:GetFileName(a:fname) . s:LightlineModified()
-endfunction
-
 function! LightlineFileNameStatus() abort
     if s:IsCustomMode()
         return ''
     endif
-    return s:GetFileNameWithFlags(expand('%:t'))
-endfunction
-
-" Copied from https://github.com/ahmedelgabri/dotfiles/blob/master/files/vim/.vim/autoload/statusline.vim
-function! s:FileSize() abort
-    let l:size = getfsize(expand('%'))
-    if l:size == 0 || l:size == -1 || l:size == -2
-        return ''
-    endif
-    if l:size < 1024
-        return l:size . ' bytes'
-    elseif l:size < 1024 * 1024
-        return printf('%.1f', l:size / 1024.0) . 'k'
-    elseif l:size < 1024 * 1024 * 1024
-        return printf('%.1f', l:size / 1024.0 / 1024.0) . 'm'
-    else
-        return printf('%.1f', l:size / 1024.0 / 1024.0 / 1024.0) . 'g'
-    endif
+    return s:GetFileNameWithFlags()
 endfunction
 
 function! s:IndentationStatus(...) abort
@@ -468,7 +471,7 @@ function! s:IndentationStatus(...) abort
 endfunction
 
 function! LightlineIndentationStatus() abort
-    if s:IsSmallWindow() || s:IsCustomMode()
+    if s:CurrentWinWidth() < s:xsmall_window_width || s:IsCustomMode()
         return ''
     endif
     return s:IndentationStatus()
@@ -541,15 +544,14 @@ function! LightlinePluginStatus() abort
     return ''
 endfunction
 
-function! LightlineInactiveFileName() abort
-    let fname = expand('%:t')
+function! LightlineInactiveStatus() abort
+    let l:mode = s:Strip(s:CustomMode())
 
-    if s:IsCustomMode()
-        let l:s = s:LightlineCustomMode()
-        return s:Strip(l:s)
+    if strlen(l:mode)
+        return l:mode
     endif
 
-    return s:GetFileNameWithFlags(fname)
+    return s:GetFileNameWithFlags()
 endfunction
 
 function! LightlineTabLabel() abort
@@ -637,6 +639,7 @@ if exists('g:ZoomWin_funcref')
         let s:ZoomWin_funcref = g:ZoomWin_funcref
     endif
 endif
+let s:ZoomWin_funcref = uniq(copy(s:ZoomWin_funcref))
 
 function! ZoomWinStatusLine(zoomstate) abort
     for F in s:ZoomWin_funcref
