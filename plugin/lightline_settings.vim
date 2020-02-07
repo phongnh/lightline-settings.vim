@@ -422,10 +422,6 @@ endfunction
 
 " Copied from https://github.com/ahmedelgabri/dotfiles/blob/master/files/vim/.vim/autoload/statusline.vim
 function! s:FileSize() abort
-    if s:CurrentWinWidth() < 80 || s:IsCustomMode()
-        return ''
-    endif
-
     let l:size = getfsize(expand('%'))
     if l:size == 0 || l:size == -1 || l:size == -2
         return ''
@@ -455,18 +451,6 @@ function! LightlineIndentationStatus() abort
 
     let shiftwidth = exists('*shiftwidth') ? shiftwidth() : &shiftwidth
     return (&expandtab ? 'Spaces' : 'Tab Size') . ': ' . shiftwidth
-endfunction
-
-function! LightlineFileEncoding() abort
-    let encoding = strlen(&fenc) ? &fenc : &enc
-    if encoding !=? 'utf-8'
-        return encoding
-    endif
-    return ''
-endfunction
-
-function! LightlineFileFormat() abort
-    return &fileformat !=? 'unix' ? &fileformat : ''
 endfunction
 
 function! s:FileEncodingStatus(...) abort
