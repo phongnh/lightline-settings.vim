@@ -63,8 +63,8 @@ let g:lightline = {
             \   'spell':            'LightlineSpell',
             \   'branch':           'LightlineBranch',
             \   'filename':         'LightlineFileName',
-            \   'filesize':         'LightlineFileSize',
-            \   'spaces':           'LightlineTabsOrSpacesStatus',
+            \   'filesize':         'LightlineFileSizeStatus',
+            \   'spaces':           'LightlineIndentationStatus',
             \   'fileencoding':     'LightlineFileEncoding',
             \   'fileformat':       'LightlineFileFormat',
             \   'fileinfo':         'LightlineFileInfo',
@@ -408,7 +408,7 @@ function! LightlineFileName() abort
 endfunction
 
 " Copied from https://github.com/ahmedelgabri/dotfiles/blob/master/files/vim/.vim/autoload/statusline.vim
-function! LightlineFileSize() abort
+function! s:FileSize() abort
     if s:CurrentWinWidth() < 80 || s:IsCustomMode()
         return ''
     endif
@@ -428,7 +428,14 @@ function! LightlineFileSize() abort
     endif
 endfunction
 
-function! LightlineTabsOrSpacesStatus() abort
+function! LightlineFileSizeStatus() abort
+    if s:CurrentWinWidth() < 80 || s:IsCustomMode()
+        return ''
+    endif
+    return s:FileSize()
+endfunction
+
+function! LightlineIndentationStatus() abort
     if s:IsSmallWindow() || s:IsCustomMode()
         return ''
     endif
