@@ -648,10 +648,5 @@ endfunction
 
 let g:ZoomWin_funcref= function('ZoomWinStatusLine')
 
-" Disable unite, vimfiler and vimshell status
-let g:unite_force_overwrite_statusline    = 0
-let g:vimfiler_force_overwrite_statusline = 0
-let g:vimshell_force_overwrite_statusline = 0
-
 let &cpo = s:save_cpo
 unlet s:save_cpo
