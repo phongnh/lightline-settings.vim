@@ -51,8 +51,8 @@ let g:lightline = {
             \   'inactive': ['tabnum', 'readonly', 'filename', 'modified']
             \ },
             \ 'active': {
-            \   'left':  [['mode', 'paste', 'spell'], ['branch', 'filename']],
-            \   'right': [['spaces', 'filesize', 'fileinfo']]
+            \   'left':  [['mode'], ['branch', 'filename']],
+            \   'right': [['spaces', 'filesize', 'fileinfo'], ['clipboard', 'paste', 'spell']]
             \ },
             \ 'inactive': {
             \   'left':  [['inactivefilename']],
@@ -60,12 +60,13 @@ let g:lightline = {
             \ },
             \ 'component_function': {
             \   'mode':             'LightlineMode',
-            \   'spell':            'LightlineSpellStatus',
             \   'branch':           'LightlineGitBranchStatus',
             \   'filename':         'LightlineFileNameStatus',
             \   'filesize':         'LightlineFileSizeStatus',
             \   'spaces':           'LightlineIndentationStatus',
             \   'fileinfo':         'LightlineFileInfoStatus',
+            \   'spell':            'LightlineSpellStatus',
+            \   'clipboard':        'LightlineClipboardStatus',
             \   'inactivefilename': 'LightlineInactiveFileName',
             \   'tablabel':         'LightlineTabLabel',
             \ },
@@ -223,10 +224,6 @@ function! s:LightlineCustomMode() abort
     return ''
 endfunction
 
-function! s:LightlineClipboard() abort
-    return match(&clipboard, 'unnamed') > -1 ? ' ' . g:powerline_symbols.clipboard : ''
-endfunction
-
 function! LightlineMode() abort
     let l:s = s:LightlineCustomMode()
 
@@ -234,7 +231,11 @@ function! LightlineMode() abort
         let l:s = s:LightlineShortMode(lightline#mode())
     endif
 
-    return l:s . s:LightlineClipboard()
+    return l:s
+endfunction
+
+function! LightlineClipboardStatus() abort
+    return match(&clipboard, 'unnamed') > -1 ? g:powerline_symbols.clipboard : ''
 endfunction
 
 function! LightlineSpellStatus() abort
