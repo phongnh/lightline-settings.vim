@@ -65,9 +65,7 @@ let g:lightline = {
             \   'filename':         'LightlineFileNameStatus',
             \   'filesize':         'LightlineFileSizeStatus',
             \   'spaces':           'LightlineIndentationStatus',
-            \   'fileencoding':     'LightlineFileEncoding',
-            \   'fileformat':       'LightlineFileFormat',
-            \   'fileinfo':         'LightlineFileInfo',
+            \   'fileinfo':         'LightlineFileInfoStatus',
             \   'inactivefilename': 'LightlineInactiveFileName',
             \   'tablabel':         'LightlineTabLabel',
             \ },
@@ -103,9 +101,8 @@ if findfile('plugin/bufferline.vim', &rtp) != '' && get(g:, 'lightline_bufferlin
     "             \ }
 endif
 
-if findfile('plugin/webdevicons.vim', &rtp) != ''
-    let g:lightline.active.right = [['filesize', 'spaces', 'fileinfo']]
-endif
+" Detect DevIcons
+let s:has_devicons = (findfile('plugin/webdevicons.vim', &rtp) != '')
 
 let s:filename_modes = {
             \ '__CtrlSF__':           'CtrlSF',
@@ -176,6 +173,20 @@ function! s:ShortenFileName(filename) abort
     else
         return substitute(a:filename, '\v\w\zs.{-}\ze(\\|/)', '', 'g')
     endif
+endfunction
+
+function! s:RemoveEmptyElement(list) abort
+    return filter(copy(a:list), '!empty(v:val)')
+endfunction
+
+function! s:GetBufferType(bufnum) abort
+    let ft = getbufvar(a:bufnum, '&filetype')
+
+    if empty(ft)
+        let ft = getbufvar(a:bufnum, '&buftype')
+    endif
+
+    return ft
 endfunction
 
 function! s:IsCustomMode(...) abort
@@ -456,26 +467,57 @@ function! LightlineFileFormat() abort
     return &fileformat !=? 'unix' ? &fileformat : ''
 endfunction
 
-function! LightlineFileInfo() abort
+function! s:FileEncodingStatus(...) abort
+    let encoding = strlen(&fenc) ? &fenc : &enc
+    " Show encoding only if it is not utf-8
+    if empty(encoding) || encoding ==# 'utf-8'
+        return ''
+    endif
+    return printf('[%s]', encoding)
+endfunction
+
+function! s:FileEncodingAndFormatStatus(...) abort
+    let encoding = strlen(&fenc) ? &fenc : &enc
+    let format = &fileformat
+
+    if strlen(encoding) && strlen(format)
+        let stl = printf('%s[%s]', encoding, format)
+    elseif strlen(encoding)
+        let stl = encoding
+    else
+        let stl = printf('[%s]', format)
+    endif
+
+    " Show format only if it is not utf-8[unix]
+    if stl ==# 'utf-8[unix]'
+        return ''
+    endif
+
+    return stl
+endfunction
+
+function! LightlineFileInfoStatus() abort
     if s:IsCustomMode()
         return ''
     endif
 
-    let result = []
+    let ft = s:GetBufferType('%')
 
-    " file type
-    call add(result, &filetype . WebDevIconsGetFileTypeSymbol() . ' ')
-
-    " file encoding
-    let encoding = LightlineFileEncoding()
-    if strlen(encoding)
-        call add(ary, encoding)
+    if s:has_devicons && 0
+        let parts = s:RemoveEmptyElement([
+                    \ s:FileEncodingStatus(),
+                    \ WebDevIconsGetFileFormatSymbol() . ' ',
+                    \ ft,
+                    \ WebDevIconsGetFileTypeSymbol(bufname('%')) . ' ',
+                    \ ])
+    else
+        let parts = s:RemoveEmptyElement([
+                    \ s:FileEncodingAndFormatStatus(),
+                    \ ft,
+                    \ ])
     endif
 
-    " file format
-    call add(result, WebDevIconsGetFileFormatSymbol() . ' ')
-
-    return join(result)
+    return join(parts, ' ')
 endfunction
 
 function! LightlineInactiveFileName() abort
