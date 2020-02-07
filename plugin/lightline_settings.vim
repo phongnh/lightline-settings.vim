@@ -505,7 +505,7 @@ function! LightlineFileInfoStatus() abort
 
     let ft = s:GetBufferType('%')
 
-    if s:has_devicons && 0
+    if s:has_devicons
         let parts = s:RemoveEmptyElement([
                     \ s:FileEncodingStatus(),
                     \ WebDevIconsGetFileFormatSymbol() . ' ',
