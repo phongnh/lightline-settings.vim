@@ -551,8 +551,8 @@ endfunction
 " Copied from https://github.com/itchyny/lightline-powerful
 let s:buffer_count_by_basename = {}
 augroup lightline_settings
-  autocmd!
-  autocmd BufEnter,WinEnter,WinLeave * call s:update_bufnrs()
+    autocmd!
+    autocmd BufEnter,WinEnter,WinLeave * call s:update_bufnrs()
 augroup END
 
 function! s:update_bufnrs() abort
