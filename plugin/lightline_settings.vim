@@ -5,6 +5,7 @@
 if exists('g:loaded_vim_lightline_settings') || v:version < 700
     finish
 endif
+
 let g:loaded_vim_lightline_settings = 1
 
 let s:save_cpo = &cpo
@@ -51,23 +52,22 @@ let g:lightline = {
             \   'inactive': ['tabnum', 'readonly', 'filename', 'modified']
             \ },
             \ 'active': {
-            \   'left':  [['mode'], ['branch', 'filename']],
-            \   'right': [['spaces', 'filesize', 'fileinfo', 'plugin'], ['clipboard', 'paste', 'spell']]
+            \   'left':  [['mode'], ['plugin_mode', 'branch', 'filename']],
+            \   'right': [['spaces', 'fileinfo', 'plugin'], ['extra']]
             \ },
             \ 'inactive': {
             \   'left':  [['inactivefilename']],
             \   'right': []
             \ },
             \ 'component_function': {
-            \   'mode':             'LightlineMode',
+            \   'mode':             'LightlineModeStatus',
+            \   'plugin_mode':      'LightlinePluginModeStatus',
             \   'branch':           'LightlineGitBranchStatus',
             \   'filename':         'LightlineFileNameStatus',
-            \   'filesize':         'LightlineFileSizeStatus',
-            \   'plugin':           'LightlinePluginStatus',
             \   'spaces':           'LightlineIndentationStatus',
             \   'fileinfo':         'LightlineFileInfoStatus',
-            \   'spell':            'LightlineSpellStatus',
-            \   'clipboard':        'LightlineClipboardStatus',
+            \   'plugin':           'LightlinePluginStatus',
+            \   'extra':            'LightlineExtraStatus',
             \   'inactivefilename': 'LightlineInactiveFileName',
             \   'tablabel':         'LightlineTabLabel',
             \ },
@@ -233,7 +233,7 @@ function! s:LightlineCustomMode() abort
     return ''
 endfunction
 
-function! LightlineMode() abort
+function! LightlineModeStatus() abort
     let l:s = s:LightlineCustomMode()
 
     if empty(l:s)
@@ -243,15 +243,32 @@ function! LightlineMode() abort
     return l:s
 endfunction
 
-function! LightlineClipboardStatus() abort
+function! s:ClipboardStatus() abort
     return match(&clipboard, 'unnamed') > -1 ? g:powerline_symbols.clipboard : ''
 endfunction
 
-function! LightlineSpellStatus() abort
+function! s:PasteStatus() abort
+    if &paste
+        return 'PASTE'
+    endif
+    return ''
+endfunction
+
+function! s:SpellStatus() abort
     if &spell
         return toupper(substitute(&spelllang, ',', '/', 'g'))
     endif
     return ''
+endfunction
+
+function! LightlineExtraStatus() abort
+    return lightline#concatenate(
+                \ s:RemoveEmptyElement([
+                \   s:ClipboardStatus(),
+                \   s:PasteStatus(),
+                \   s:SpellStatus(),
+                \ ]),
+                \ 1)
 endfunction
 
 function! s:GetGitBranch() abort
@@ -353,24 +370,27 @@ function! s:LightlineTagbarMark() abort
     endif
 endfunction
 
-function! s:LightlineAlternateFileName(fname) abort
-    if &filetype ==# 'ctrlp' || a:fname ==# 'ControlP'
+function! LightlinePluginModeStatus() abort
+    let fname = expand('%:t')
+
+    if &filetype ==# 'ctrlp'
         return s:LightlineCtrlPMark()
-    elseif &filetype ==# 'ctrlsf' || a:fname ==# '__CtrlSFPreview__' || a:fname ==# '__CtrlSF__'
-        return s:LightlineCtrlSF(a:fname)
-    elseif &filetype ==# 'tagbar' || a:fname =~? '^__Tagbar__'
+    elseif &filetype ==# 'ctrlsf' || fname ==# '__CtrlSFPreview__' || fname ==# '__CtrlSF__'
+        return s:LightlineCtrlSF(fname)
+    elseif &filetype ==# 'tagbar' || fname =~? '^__Tagbar__'
         return s:LightlineTagbarMark()
     elseif &filetype ==# 'qf'
-        return get(w:, 'quickfix_title', a:fname)
+        return get(w:, 'quickfix_title', fname)
     elseif &filetype ==# 'help'
         return expand('%:~:.')
-    elseif a:fname =~? '^NrrwRgn'
+    elseif fname =~? '^NrrwRgn'
         if get(b:, 'orig_buf', 0)
             return bufname(b:orig_buf)
         else
             return substitute(bufname('%'), '^Nrrwrgn_\zs.*\ze_\d\+$', submatch(0), ''))
         endif
     endif
+
     return ''
 endfunction
 
@@ -419,13 +439,10 @@ function! s:GetFileNameWithFlags(fname) abort
 endfunction
 
 function! LightlineFileNameStatus() abort
-    let fname = expand('%:t')
-
     if s:IsCustomMode()
-        return s:LightlineAlternateFileName(fname)
+        return ''
     endif
-
-    return s:GetFileNameWithFlags(fname)
+    return s:GetFileNameWithFlags(expand('%:t'))
 endfunction
 
 " Copied from https://github.com/ahmedelgabri/dotfiles/blob/master/files/vim/.vim/autoload/statusline.vim
@@ -443,13 +460,6 @@ function! s:FileSize() abort
     else
         return printf('%.1f', l:size / 1024.0 / 1024.0 / 1024.0) . 'g'
     endif
-endfunction
-
-function! LightlineFileSizeStatus() abort
-    if s:CurrentWinWidth() < 80 || s:IsCustomMode()
-        return ''
-    endif
-    return s:FileSize()
 endfunction
 
 function! s:IndentationStatus(...) abort
@@ -514,7 +524,10 @@ function! LightlineFileInfoStatus() abort
                     \ ])
     endif
 
-    return join(parts, ' ')
+    return lightline#concatenate([
+                \ s:FileSize(),
+                \ join(parts, ' '),
+                \ ], 1)
 endfunction
 
 function! LightlinePluginStatus() abort
@@ -533,7 +546,6 @@ function! LightlineInactiveFileName() abort
 
     if s:IsCustomMode()
         let l:s = s:LightlineCustomMode()
-        let l:s .= ' ' . s:LightlineAlternateFileName(fname)
         return s:Strip(l:s)
     endif
 
