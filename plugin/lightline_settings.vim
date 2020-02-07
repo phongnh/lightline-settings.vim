@@ -52,7 +52,7 @@ let g:lightline = {
             \ },
             \ 'active': {
             \   'left':  [['mode'], ['branch', 'filename']],
-            \   'right': [['spaces', 'filesize', 'fileinfo'], ['clipboard', 'paste', 'spell']]
+            \   'right': [['spaces', 'filesize', 'fileinfo', 'plugin'], ['clipboard', 'paste', 'spell']]
             \ },
             \ 'inactive': {
             \   'left':  [['inactivefilename']],
@@ -63,6 +63,7 @@ let g:lightline = {
             \   'branch':           'LightlineGitBranchStatus',
             \   'filename':         'LightlineFileNameStatus',
             \   'filesize':         'LightlineFileSizeStatus',
+            \   'plugin':           'LightlinePluginStatus',
             \   'spaces':           'LightlineIndentationStatus',
             \   'fileinfo':         'LightlineFileInfoStatus',
             \   'spell':            'LightlineSpellStatus',
@@ -521,6 +522,17 @@ function! LightlineFileInfoStatus() abort
     return join(parts, ' ')
 endfunction
 
+function! LightlinePluginStatus() abort
+    if &filetype ==# 'ctrlp'
+        return lightline#concatenate([
+                    \ g:lightline.ctrlp_focus,
+                    \ g:lightline.ctrlp_byfname,
+                    \ g:lightline.ctrlp_dir,
+                    \ ], 1)
+    endif
+    return ''
+endfunction
+
 function! LightlineInactiveFileName() abort
     let fname = expand('%:t')
 
@@ -575,7 +587,6 @@ function! LightlineTabReadonly(n) abort
     let winnr = tabpagewinnr(a:n)
     return gettabwinvar(a:n, winnr, '&readonly') ? g:powerline_symbols.readonly : ''
 endfunction
-
 
 " CtrlP Integration
 let g:ctrlp_status_func = {
