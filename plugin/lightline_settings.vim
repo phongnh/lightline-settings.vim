@@ -11,7 +11,6 @@ let g:loaded_vim_lightline_settings = 1
 let s:save_cpo = &cpo
 set cpo&vim
 
-
 " Window width
 let s:xsmall_window_width = 60
 let s:small_window_width  = 80
@@ -42,7 +41,7 @@ else
                 \ }
 endif
 
-if get(g:, 'lightline_set_noshowmode', 1)
+if get(g:, 'lightline_noshowmode', 1)
     set noshowmode
 endif
 
@@ -117,6 +116,7 @@ endif
 " Detect DevIcons
 let s:has_devicons = (findfile('plugin/webdevicons.vim', &rtp) != '')
 
+" Alternate status dictionaries
 let s:filename_modes = {
             \ '__CtrlSF__':           'CtrlSF',
             \ '__CtrlSFPreview__':    'Preview',
