@@ -820,6 +820,9 @@ function! ZoomWinStatusLine(zoomstate) abort
             call F(a:zoomstate)
         endif
     endfor
+    if exists('*lightline#update')
+        call lightline#update()
+    endif
 endfunction
 
 let g:ZoomWin_funcref= function('ZoomWinStatusLine')
