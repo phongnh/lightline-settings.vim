@@ -12,6 +12,9 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 " Settings
+let g:lightline_powerline             = get(g:, 'lightline_powerline', 0)
+let g:lightline_theme                 = get(g:, 'lightline_theme', 'solarized')
+let g:lightline_noshowmode            = get(g:, 'lightline_noshowmode', 1)
 let g:lightline_show_tab_close_button = get(g:, 'lightline_show_tab_close_button', 0)
 let g:lightline_show_git_branch       = get(g:, 'lightline_show_git_branch', 1)
 let g:lightline_show_file_size        = get(g:, 'lightline_show_file_size', 1)
@@ -26,7 +29,7 @@ let s:small_window_width  = 80
 let s:normal_window_width = 100
 
 " Symbols
-if get(g:, 'lightline_powerline', 0)
+if g:lightline_powerline
     let s:symbols = {
                 \ 'separator':    { 'left': "\ue0b0", 'right': "\ue0b2" },
                 \ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" },
@@ -50,11 +53,12 @@ else
                 \ }
 endif
 
-if get(g:, 'lightline_noshowmode', 1)
-    set noshowmode
+if g:lightline_noshowmode
+    augroup VimLightlightSettings
+        autocmd!
+        autocmd VimEnter * setglobal noshowmode
+    augroup END
 endif
-
-let g:lightline_theme = get(g:, 'lightline_theme', 'powerline')
 
 let g:lightline = {
             \ 'colorscheme': g:lightline_theme,
