@@ -11,6 +11,15 @@ let g:loaded_vim_lightline_settings = 1
 let s:save_cpo = &cpo
 set cpo&vim
 
+" Settings
+let g:lightline_show_tab_close_button = get(g:, 'lightline_show_tab_close_button', 0)
+let g:lightline_show_git_branch       = get(g:, 'lightline_show_git_branch', 1)
+let g:lightline_show_file_size        = get(g:, 'lightline_show_file_size', 1)
+let g:lightline_show_devicons         = get(g:, 'lightline_show_devicons', 1)
+
+" Disable NERDTree statusline
+let g:NERDTreeStatusline = -1
+
 " Window width
 let s:xsmall_window_width = 60
 let s:small_window_width  = 80
@@ -24,8 +33,8 @@ if get(g:, 'lightline_powerline', 0)
                 \ 'linenr':       "\ue0a1",
                 \ 'branch':       "\ue0a0",
                 \ 'readonly':     "\ue0a2",
-                \ 'clipboard':    'ⓒ ',
-                \ 'paste':        'Ⓟ ',
+                \ 'clipboard':    'ⓒ  ',
+                \ 'paste':        'Ⓟ  ',
                 \ 'ellipsis':     '…',
                 \ }
 else
@@ -62,24 +71,24 @@ let g:lightline = {
             \   'inactive': ['tabnum', 'readonly', 'filename', 'modified']
             \ },
             \ 'active': {
-            \   'left':  [['mode'], ['plugin_mode', 'branch', 'filename']],
-            \   'right': [['spaces', 'fileinfo', 'plugin'], ['extra']]
+            \   'left':  [['mode'], ['plugin', 'branch', 'filename']],
+            \   'right': [['spaces', 'fileinfo', 'plugin_extra'], ['buffer']]
             \ },
             \ 'inactive': {
             \   'left':  [['inactive']],
             \   'right': []
             \ },
             \ 'component_function': {
-            \   'mode':             'LightlineModeStatus',
-            \   'plugin_mode':      'LightlinePluginModeStatus',
-            \   'branch':           'LightlineGitBranchStatus',
-            \   'filename':         'LightlineFileNameStatus',
-            \   'spaces':           'LightlineIndentationStatus',
-            \   'fileinfo':         'LightlineFileInfoStatus',
-            \   'plugin':           'LightlinePluginStatus',
-            \   'extra':            'LightlineExtraStatus',
-            \   'inactive':         'LightlineInactiveStatus',
-            \   'tablabel':         'LightlineTabLabel',
+            \   'mode':         'LightlineModeStatus',
+            \   'plugin':       'LightlinePluginStatus',
+            \   'branch':       'LightlineGitBranchStatus',
+            \   'filename':     'LightlineFileNameStatus',
+            \   'spaces':       'LightlineIndentationStatus',
+            \   'fileinfo':     'LightlineFileInfoStatus',
+            \   'plugin_extra': 'LightlinePluginExtraStatus',
+            \   'buffer':       'LightlineBufferStatus',
+            \   'inactive':     'LightlineInactiveStatus',
+            \   'tablabel':     'LightlineTabLabel',
             \ },
             \ 'tab_component_function': {
             \   'tabnum':   'LightlineTabNum',
@@ -115,6 +124,7 @@ endif
 
 " Detect DevIcons
 let s:has_devicons = (findfile('plugin/webdevicons.vim', &rtp) != '')
+" let s:has_devicons = exists('*WebDevIconsGetFileTypeSymbol') && exists('*WebDevIconsGetFileFormatSymbol')
 
 " Alternate status dictionaries
 let s:filename_modes = {
@@ -132,15 +142,13 @@ let s:filename_modes = {
 
 let s:filetype_modes = {
             \ 'ctrlp':             'CtrlP',
-            \ 'ctrlsf':            'CtrlSF',
-            \ 'leaderf':           'LeaderF',
             \ 'netrw':             'NetrwTree',
             \ 'nerdtree':          'NERDTree',
             \ 'startify':          'Startify',
-            \ 'tagbar':            'TagBar',
+            \ 'tagbar':            'Tagbar',
             \ 'vim-plug':          'Plugins',
             \ 'help':              'HELP',
-            \ 'qf':                'QuickFix',
+            \ 'qf':                'Quickfix',
             \ 'godoc':             'GoDoc',
             \ 'gedoc':             'GeDoc',
             \ 'gitcommit':         'Commit Message',
@@ -176,7 +184,7 @@ function! s:CurrentWinWidth() abort
     return winwidth(0)
 endfunction
 
-function! s:ShortenFileName(filename) abort
+function! s:ShortenPath(filename) abort
     if exists('*pathshorten')
         return pathshorten(a:filename)
     else
@@ -196,17 +204,21 @@ function! s:GetCurrentDir() abort
     return dir
 endfunction
 
-function! s:GetBufferType(bufnum) abort
-    let ft = getbufvar(a:bufnum, '&filetype')
-
-    if empty(ft)
-        let ft = getbufvar(a:bufnum, '&buftype')
-    endif
-
-    return ft
+function! s:GetBufferType() abort
+    return strlen(&filetype) ? &filetype : &buftype
 endfunction
 
-function! s:GetFileName(fname) abort
+function! s:GetFileName() abort
+    let fname = expand('%:~:.')
+
+    if empty(fname)
+        return '[No Name]'
+    endif
+
+    return fname
+endfunction
+
+function! s:FormatFileName(fname) abort
     if strlen(a:fname)
         if s:CurrentWinWidth() < s:xsmall_window_width
             return a:fname
@@ -215,7 +227,7 @@ function! s:GetFileName(fname) abort
         let l:path = expand('%:~:.')
 
         if strlen(l:path) > 50
-            let l:path = s:ShortenFileName(l:path)
+            let l:path = s:ShortenPath(l:path)
         endif
 
         if strlen(l:path) > 50
@@ -229,13 +241,16 @@ function! s:GetFileName(fname) abort
 endfunction
 
 function! s:ModifiedStatus() abort
-    if &filetype !=? 'help' && &modified
-        if &modifiable
-            return ' +'
+    if &modified
+        if !&modifiable
+            return '[+-]'
         else
-            return '[-] +'
+            return '[+]'
         endif
+    elseif !&modifiable
+        return '[-]'
     endif
+
     return ''
 endfunction
 
@@ -243,8 +258,8 @@ function! s:ReadonlyStatus() abort
     return &readonly ? s:symbols.readonly . ' ' : ''
 endfunction
 
-function! s:GetFileNameWithFlags() abort
-    return s:ReadonlyStatus() . s:GetFileName(expand('%t')) . s:ModifiedStatus()
+function! s:FileNameStatus() abort
+    return s:ReadonlyStatus() . s:FormatFileName(s:GetFileName()) . s:ModifiedStatus()
 endfunction
 
 " Copied from https://github.com/ahmedelgabri/dotfiles/blob/master/files/vim/.vim/autoload/statusline.vim
@@ -264,30 +279,46 @@ function! s:FileSize() abort
     endif
 endfunction
 
-function! s:GetGitBranch() abort
-    if exists('*FugitiveHead')
-        return FugitiveHead()
-    elseif exists('*fugitive#head')
-        return fugitive#head()
-    elseif exists(':Gina') == 2
-        return gina#component#repo#branch()
+function! s:FileSizeStatus() abort
+    if g:lightline_show_file_size
+        return s:FileSize()
     endif
     return ''
 endfunction
 
-function! s:ShortenBranch(branch, length)
+function! s:GetGitBranch() abort
+    let branch = ''
+
+    if exists('*FugitiveHead')
+        let branch = FugitiveHead()
+
+        if empty(branch) && exists('*FugitiveDetect') && !exists('b:git_dir')
+            call FugitiveDetect(getcwd())
+            let branch = FugitiveHead()
+        endif
+    elseif exists('*fugitive#head')
+        let branch = fugitive#head()
+
+        if empty(branch) && exists('*fugitive#detect') && !exists('b:git_dir')
+            call fugitive#detect(getcwd())
+            let branch = fugitive#head()
+        endif
+    elseif exists(':Gina') == 2
+        let branch = gina#component#repo#branch()
+    endif
+
+    return branch
+endfunction
+
+function! s:ShortenBranch(branch, length) abort
     let branch = a:branch
 
     if strlen(branch) > a:length
-        let branch = s:ShortenFileName(branch)
+        let branch = s:ShortenPath(branch)
     endif
 
     if strlen(branch) > a:length
         let branch = fnamemodify(branch, ':t')
-    endif
-
-    if strlen(branch) > a:length
-        let branch = strcharpart(branch, 0, 29) . s:powerline_symbols.ellipsis
     endif
 
     return branch
@@ -298,7 +329,13 @@ function! s:FormatBranch(branch) abort
         return s:ShortenBranch(a:branch, 50)
     endif
 
-    return s:ShortenBranch(a:branch, 30)
+    let branch = s:ShortenBranch(a:branch, 30)
+
+    if strlen(branch) > 30
+        let branch = strcharpart(branch, 0, 29) . s:powerline_symbols.ellipsis
+    endif
+
+    return branch
 endfunction
 
 function! s:ClipboardStatus() abort
@@ -315,28 +352,32 @@ endfunction
 
 function! s:IndentationStatus(...) abort
     let shiftwidth = exists('*shiftwidth') ? shiftwidth() : &shiftwidth
-    return printf('%s: %d', (&expandtab ? 'Spaces' : 'Tab Size'), shiftwidth)
+    let compact = get(a:, 1, 0)
+    if compact
+        return printf(&expandtab ? 'SPC: %d' : 'TAB: %d', shiftwidth)
+    else
+        return printf(&expandtab ? 'Spaces: %d' : 'Tab Size: %d', shiftwidth)
+    endif
 endfunction
 
-function! s:FileEncodingStatus(...) abort
-    let encoding = strlen(&fenc) ? &fenc : &enc
+function! s:FileEncodingStatus() abort
+    let l:encoding = strlen(&fileencoding) ? &fileencoding : &encoding
     " Show encoding only if it is not utf-8
-    if empty(encoding) || encoding ==# 'utf-8'
+    if empty(l:encoding) || l:encoding ==# 'utf-8'
         return ''
     endif
-    return printf('[%s]', encoding)
+    return printf('[%s]', l:encoding)
 endfunction
 
-function! s:FileEncodingAndFormatStatus(...) abort
-    let encoding = strlen(&fenc) ? &fenc : &enc
-    let format = &fileformat
+function! s:FileEncodingAndFormatStatus() abort
+    let l:encoding = strlen(&fileencoding) ? &fileencoding : &encoding
 
-    if strlen(encoding) && strlen(format)
-        let stl = printf('%s[%s]', encoding, format)
-    elseif strlen(encoding)
-        let stl = encoding
+    if strlen(l:encoding) && strlen(&fileformat)
+        let stl = printf('%s[%s]', l:encoding, &fileformat)
+    elseif strlen(l:encoding)
+        let stl = l:encoding
     else
-        let stl = printf('[%s]', format)
+        let stl = printf('[%s]', &fileformat)
     endif
 
     " Show format only if it is not utf-8[unix]
@@ -346,86 +387,18 @@ function! s:FileEncodingAndFormatStatus(...) abort
 
     return stl
 endfunction
-function! s:IsCustomMode(...) abort
-    return has_key(s:filetype_modes, &filetype) ||
-                \ has_key(s:filename_modes, expand('%:t')) ||
-                \ (expand('%:t') =~? '^NrrwRgn' && exists('b:nrrw_instn'))
-endfunction
 
-function! s:CustomMode() abort
-    if has_key(s:filetype_modes, &filetype)
-        if &filetype ==# 'qf' && getwininfo(win_getid())[0]['loclist']
-            return 'LocationList'
-        endif
+function! s:FileInfoStatus(...) abort
+    let ft = s:GetBufferType()
 
-        return s:filetype_modes[&filetype]
-    endif
+    if g:lightline_show_devicons && s:has_devicons
+        let compact = get(a:, 1, 0)
 
-    let fname = expand('%:t')
-    if has_key(s:filename_modes, fname)
-        return s:filename_modes[fname]
-    endif
-
-    if fname =~? '^NrrwRgn' && exists('b:nrrw_instn')
-        return printf('%s#%d', 'NrrwRgn', b:nrrw_instn)
-    endif
-
-    return ''
-endfunction
-
-function! s:ShortMode(mode) abort
-    if s:CurrentWinWidth() < s:xsmall_window_width
-        return get(s:short_modes, a:mode, a:mode)
-    endif
-    return a:mode
-endfunction
-
-function! LightlineModeStatus() abort
-    let l:mode = s:CustomMode()
-    if strlen(l:mode)
-        return l:mode
-    endif
-    return s:ShortMode(lightline#mode())
-endfunction
-
-function! LightlineGitBranchStatus() abort
-    if s:CurrentWinWidth() < s:small_window_width || s:IsCustomMode()
-        return
-    endif
-
-    let branch = s:GetGitBranch()
-
-    if empty(branch)
-        return ''
-    endif
-
-    return s:symbols.branch . ' ' . s:FormatBranch(branch)
-endfunction
-
-function! LightlineFileNameStatus() abort
-    if s:IsCustomMode()
-        return ''
-    endif
-    return s:GetFileNameWithFlags()
-endfunction
-
-function! LightlineFileInfoStatus() abort
-    if s:IsCustomMode()
-        return ''
-    endif
-
-    let ft = s:GetBufferType('%')
-
-    if s:CurrentWinWidth() < s:xsmall_window_width
-        return ft
-    endif
-
-    if s:has_devicons
         let parts = s:RemoveEmptyElement([
                     \ s:FileEncodingStatus(),
-                    \ WebDevIconsGetFileFormatSymbol() . ' ',
+                    \ !compact ? WebDevIconsGetFileFormatSymbol() . ' ' : '',
                     \ ft,
-                    \ WebDevIconsGetFileTypeSymbol(bufname('%')) . ' ',
+                    \ !compact ? WebDevIconsGetFileTypeSymbol(expand('%')) . ' ' : '',
                     \ ])
     else
         let parts = s:RemoveEmptyElement([
@@ -434,137 +407,262 @@ function! LightlineFileInfoStatus() abort
                     \ ])
     endif
 
-    let stl = join(parts, ' ')
+    return join(parts, ' ')
+endfunction
 
-    if s:CurrentWinWidth() < s:small_window_width
-        return stl
+let s:lightline_time_threshold = 0.20
+
+function! s:SaveLastTime()
+    let s:lightline_last_custom_mode_time = reltime()
+endfunction
+
+call s:SaveLastTime()
+
+function! s:CustomMode() abort
+    if has_key(b:, 'lightline_custom_mode') && reltimefloat(reltime(s:lightline_last_custom_mode_time)) < s:lightline_time_threshold
+        return b:lightline_custom_mode
+    endif
+    let b:lightline_custom_mode = s:FetchCustomMode()
+    call s:SaveLastTime()
+    return b:lightline_custom_mode
+endfunction
+
+function! s:FetchCustomMode() abort
+    let fname = expand('%:t')
+
+    if has_key(s:filename_modes, fname)
+        let result = {
+                    \ 'custom': 1,
+                    \ 'name': s:filename_modes[fname],
+                    \ 'type': 'name',
+                    \ }
+
+        if fname ==# '__CtrlSF__'
+            let pattern = substitute(ctrlsf#utils#SectionB(), 'Pattern: ', '', '')
+
+            let plugin_status = lightline#concatenate([
+                        \ pattern,
+                        \ ctrlsf#utils#SectionC(),
+                        \ ], 0)
+
+            return extend(result, {
+                        \ 'plugin': plugin_status,
+                        \ 'plugin_inactive': pattern,
+                        \ 'plugin_extra': ctrlsf#utils#SectionX(),
+                        \ })
+        endif
+
+        if fname ==# '__CtrlSFPreview__'
+            let result['plugin'] = ctrlsf#utils#PreviewSectionC()
+            let result['plugin_inactive'] = result['plugin']
+            return result
+        endif
+
+        return result
     endif
 
-    return lightline#concatenate([
-                \ s:FileSize(),
-                \ stl,
-                \ ], 1)
+    if fname =~? '^NrrwRgn'
+        let nrrw_rgn_status = s:NrrwRgnStatus()
+        if len(nrrw_rgn_status)
+            return extend(nrrw_rgn_status, {
+                        \ 'custom': 1,
+                        \ 'type': 'nrrwrgn',
+                        \ })
+        endif
+    endif
+
+    let ft = s:GetBufferType()
+    if has_key(s:filetype_modes, ft)
+        let result = {
+                    \ 'custom': 1,
+                    \ 'name': s:filetype_modes[ft],
+                    \ 'type': 'filetype',
+                    \ }
+
+        if ft ==# 'ctrlp'
+            return extend(result, s:GetCtrlPMode())
+        endif
+
+        if ft ==# 'tagbar'
+            return extend(result, s:GetTagbarMode())
+        endif
+
+        if ft ==# 'terminal'
+            let result['plugin'] = expand('%')
+            return result
+        endif
+
+        if ft ==# 'help'
+            let result['plugin'] = expand('%:p')
+            return result
+        endif
+
+        if ft ==# 'qf'
+            if getwininfo(win_getid())[0]['loclist']
+                let result['name'] = 'Location'
+            endif
+            let result['plugin'] = s:Strip(get(w:, 'quickfix_title', ''))
+            return result
+        endif
+
+        return result
+    endif
+
+    return { 'custom': 0 }
+endfunction
+
+function! s:NrrwRgnStatus(...) abort
+    let result = {}
+
+    if exists(':WidenRegion') == 2
+        if exists('b:nrrw_instn')
+            let result['name'] = printf('%s#%d', 'NrrwRgn', b:nrrw_instn)
+        else
+            let l:mode = substitute(bufname('%'), '^Nrrwrgn_\zs.*\ze_\d\+$', submatch(0), '')
+            let l:mode = substitute(l:mode, '__', '#', '')
+            let result['name'] = l:mode
+        endif
+
+        let dict = exists('*nrrwrgn#NrrwRgnStatus()') ?  nrrwrgn#NrrwRgnStatus() : {}
+
+        if !empty(dict)
+            let result['plugin'] = fnamemodify(dict.fullname, ':~:.')
+            let result['plugin_inactive'] = result['plugin']
+        elseif get(b:, 'orig_buf', 0)
+            let result['plugin'] = bufname(b:orig_buf)
+            let result['plugin_inactive'] = result['plugin']
+        endif
+    endif
+
+    return result
+endfunction
+
+function! s:IsCompact() abort
+    return &spell || &paste || strlen(s:ClipboardStatus()) || s:CurrentWinWidth() <= s:xsmall_window_width
+endfunction
+
+function! LightlineModeStatus() abort
+    let l:mode = s:CustomMode()
+    if l:mode['custom']
+        return l:mode['name']
+    endif
+
+    let mode_label = lightline#mode()
+    if s:CurrentWinWidth() < s:xsmall_window_width
+        return get(s:short_modes, mode_label, mode_label)
+    endif
+
+    return mode_label
+endfunction
+
+function! LightlineGitBranchStatus() abort
+    let l:mode = s:CustomMode()
+    if l:mode['custom']
+        return ''
+    endif
+
+    if g:lightline_show_git_branch && s:CurrentWinWidth() > s:small_window_width
+        let branch = s:FormatBranch(s:GetGitBranch())
+
+        if strlen(branch)
+            return s:symbols.branch . ' ' . branch
+        endif
+    endif
+
+    return ''
+endfunction
+
+function! LightlineFileNameStatus() abort
+    let l:mode = s:CustomMode()
+    if l:mode['custom']
+        return ''
+    endif
+
+    return s:FileNameStatus()
+endfunction
+
+function! LightlineFileInfoStatus() abort
+    let l:mode = s:CustomMode()
+    if l:mode['custom']
+        return ''
+    endif
+
+    let compact = s:IsCompact()
+
+    if s:CurrentWinWidth() >= s:small_window_width
+        return lightline#concatenate([
+                    \ s:FileSize(),
+                    \ s:FileInfoStatus(compact),
+                    \ ], 1)
+    endif
+
+    return s:FileInfoStatus(compact)
 endfunction
 
 function! LightlineIndentationStatus() abort
-    if s:CurrentWinWidth() < s:xsmall_window_width || s:IsCustomMode()
-        return ''
-    endif
-    return s:IndentationStatus()
-endfunction
-
-function! LightlineExtraStatus() abort
-    if s:CurrentWinWidth() < s:small_window_width || s:IsCustomMode()
+    let l:mode = s:CustomMode()
+    if l:mode['custom']
         return ''
     endif
 
-    return lightline#concatenate(
-                \ s:RemoveEmptyElement([
-                \   s:ClipboardStatus(),
-                \   s:PasteStatus(),
-                \   s:SpellStatus(),
-                \ ]),
-                \ 1)
-endfunction
-
-function! s:CtrlPMark() abort
-    call lightline#link('iR'[g:lightline.ctrlp_regex])
-
-    return lightline#concatenate([
-                \ g:lightline.ctrlp_prev,
-                \ '« ' . g:lightline.ctrlp_item . ' »',
-                \ g:lightline.ctrlp_next,
-                \ ], 0)
-endfunction
-
-function! s:CtrlSFMark(fname) abort
-    call lightline#link()
-
-    if a:fname == '__CtrlSF__'
-        return lightline#concatenate([
-                    \ substitute(ctrlsf#utils#SectionB(), 'Pattern: ', '', ''),
-                    \ ctrlsf#utils#SectionC(),
-                    \ ctrlsf#utils#SectionX(),
-                    \ ], 0)
-    endif
-
-    if a:fname == '__CtrlSFPreview__'
-        return lightline#concatenate([
-                    \ ctrlsf#utils#PreviewSectionC(),
-                    \ ], 0)
+    if s:CurrentWinWidth() >= s:small_window_width
+        let compact = s:IsCompact()
+        return s:IndentationStatus(compact)
     endif
 
     return ''
 endfunction
 
-function! s:TagbarMark() abort
-    call lightline#link()
-
-    if empty(g:lightline.tagbar_flags)
-        return lightline#concatenate([
-                    \ g:lightline.tagbar_sort,
-                    \ g:lightline.tagbar_fname,
-                    \ ], 0)
-    else
-        return lightline#concatenate([
-                    \ g:lightline.tagbar_sort,
-                    \ g:lightline.tagbar_fname,
-                    \ join(g:lightline.tagbar_flags, ''),
-                    \ ], 0)
-    endif
-endfunction
-
-function! s:NrrwRgnMark() abort
-    let dict = exists('*nrrwrgn#NrrwRgnStatus()') ?  nrrwrgn#NrrwRgnStatus() : {}
-
-    if !empty(dict)
-        return fnamemodify(dict.fullname, ':~:.')
-    elseif get(b:, 'orig_buf', 0)
-        return bufname(b:orig_buf)
+function! LightlineBufferStatus() abort
+    let l:mode = s:CustomMode()
+    if l:mode['custom']
+        return ''
     endif
 
-    return ''
-endfunction
-
-function! LightlinePluginModeStatus() abort
-    let fname = expand('%:t')
-
-    if &filetype ==# 'ctrlp'
-        return s:CtrlPMark()
-    elseif &filetype ==# 'ctrlsf' || fname ==# '__CtrlSFPreview__' || fname ==# '__CtrlSF__'
-        return s:CtrlSFMark(fname)
-    elseif &filetype ==# 'tagbar' || fname =~? '^__Tagbar__'
-        return s:TagbarMark()
-    elseif &filetype ==# 'qf'
-        return s:Strip(get(w:, 'quickfix_title', ''))
-    elseif &filetype ==# 'help'
-        return expand('%:~:.')
-    elseif fname =~? '^NrrwRgn'
-        return s:NrrwRgnMark()
+    if s:CurrentWinWidth() >= s:small_window_width
+        return lightline#concatenate(
+                    \ s:RemoveEmptyElement([
+                    \   s:ClipboardStatus(),
+                    \   s:PasteStatus(),
+                    \   s:SpellStatus(),
+                    \ ]),
+                    \ 1)
     endif
 
     return ''
 endfunction
 
 function! LightlinePluginStatus() abort
-    if &filetype ==# 'ctrlp'
-        return lightline#concatenate([
-                    \ g:lightline.ctrlp_focus,
-                    \ g:lightline.ctrlp_byfname,
-                    \ g:lightline.ctrlp_dir,
-                    \ ], 1)
+    let l:mode = s:CustomMode()
+    if l:mode['custom']
+        if has_key(l:mode, 'link')
+            call lightline#link(l:mode['link'])
+        endif
+        return get(l:mode, 'plugin', '')
     endif
+
+    return ''
+endfunction
+
+function! LightlinePluginExtraStatus() abort
+    let l:mode = s:CustomMode()
+    if l:mode['custom']
+        return get(l:mode, 'plugin_extra', '')
+    endif
+
     return ''
 endfunction
 
 function! LightlineInactiveStatus() abort
-    let l:mode = s:Strip(s:CustomMode())
-
-    if strlen(l:mode)
-        return l:mode
+    let l:mode = s:CustomMode()
+    if l:mode['custom']
+        return lightline#concatenate(s:RemoveEmptyElement([
+                    \ l:mode['name'],
+                    \ get(l:mode, 'plugin_inactive', '')
+                    \ ]), 0)
     endif
 
-    return s:GetFileNameWithFlags()
+    return s:FileNameStatus()
 endfunction
 
 function! LightlineTabLabel() abort
@@ -616,6 +714,29 @@ let g:ctrlp_status_func = {
             \ 'prog': 'CtrlPProgressStatusLine',
             \ }
 
+function! s:GetCtrlPMode() abort
+    let plugin_status = lightline#concatenate([
+                \ g:lightline.ctrlp_prev,
+                \ '« ' . g:lightline.ctrlp_item . ' »',
+                \ g:lightline.ctrlp_next,
+                \ ], 0)
+
+    let plugin_extra = lightline#concatenate([
+                \ g:lightline.ctrlp_focus,
+                \ g:lightline.ctrlp_byfname,
+                \ g:lightline.ctrlp_dir,
+                \ ], 1)
+
+    return {
+                \ 'custom': 1,
+                \ 'name': s:filetype_modes['ctrlp'],
+                \ 'link': 'nR'[g:lightline.ctrlp_regex],
+                \ 'plugin': plugin_status,
+                \ 'plugin_extra': plugin_extra,
+                \ 'type': 'ctrlp',
+                \ }
+endfunction
+
 function! CtrlPMainStatusLine(focus, byfname, regex, prev, item, next, marked) abort
     let g:lightline.ctrlp_focus   = a:focus
     let g:lightline.ctrlp_byfname = a:byfname
@@ -625,20 +746,57 @@ function! CtrlPMainStatusLine(focus, byfname, regex, prev, item, next, marked) a
     let g:lightline.ctrlp_next    = a:next
     let g:lightline.ctrlp_marked  = a:marked
     let g:lightline.ctrlp_dir     = s:GetCurrentDir()
+
+    let b:lightline_custom_mode = s:GetCtrlPMode()
+    call s:SaveLastTime()
+
     return lightline#statusline(0)
 endfunction
 
 function! CtrlPProgressStatusLine(len) abort
+    let b:lightline_custom_mode = {
+                \ 'custom': 1,
+                \ 'name': s:filetype_modes['ctrlp'],
+                \ 'plugin': a:len,
+                \ 'plugin_extra': s:GetCurrentDir(),
+                \ 'type': 'ctrlp',
+                \ }
     return lightline#statusline(0)
 endfunction
 
 " Tagbar Integration
-let g:tagbar_status_func = 'LightlineTagbar'
+let g:tagbar_status_func = 'TagbarStatusFunc'
 
-function! LightlineTagbar(current, sort, fname, flags, ...) abort
+function! s:GetTagbarMode() abort
+    if empty(g:lightline.tagbar_flags)
+        let plugin_status = lightline#concatenate([
+                    \ g:lightline.tagbar_sort,
+                    \ g:lightline.tagbar_fname,
+                    \ ], 0)
+    else
+        let plugin_status = lightline#concatenate([
+                    \ g:lightline.tagbar_sort,
+                    \ g:lightline.tagbar_fname,
+                    \ join(g:lightline.tagbar_flags, ''),
+                    \ ], 0)
+    endif
+
+    return {
+                \ 'custom': 1,
+                \ 'name': s:filetype_modes['tagbar'],
+                \ 'plugin': plugin_status,
+                \ 'type': 'ctrlp',
+                \ }
+endfunction
+
+function! TagbarStatusFunc(current, sort, fname, flags, ...) abort
     let g:lightline.tagbar_sort  = a:sort
     let g:lightline.tagbar_fname = a:fname
     let g:lightline.tagbar_flags = a:flags
+
+    let b:lightline_custom_mode = s:GetTagbarMode()
+    call s:SaveLastTime()
+
     return lightline#statusline(0)
 endfunction
 
