@@ -132,6 +132,7 @@ let s:has_devicons = (findfile('plugin/webdevicons.vim', &rtp) != '')
 
 " Alternate status dictionaries
 let s:filename_modes = {
+            \ 'ControlP':             'CtrlP',
             \ '__CtrlSF__':           'CtrlSF',
             \ '__CtrlSFPreview__':    'Preview',
             \ '__Tagbar__':           'Tagbar',
@@ -145,7 +146,6 @@ let s:filename_modes = {
             \ }
 
 let s:filetype_modes = {
-            \ 'ctrlp':             'CtrlP',
             \ 'netrw':             'NetrwTree',
             \ 'nerdtree':          'NERDTree',
             \ 'startify':          'Startify',
@@ -182,6 +182,10 @@ function! s:Strip(str) abort
     else
         return substitute(a:str, '^\s*\(.\{-}\)\s*$', '\1', '')
     endif
+endfunction
+
+function! s:Wrap(text) abort
+    return printf('%s %s %s', '«', a:text, '»')
 endfunction
 
 function! s:CurrentWinWidth() abort
@@ -414,132 +418,6 @@ function! s:FileInfoStatus(...) abort
     return join(parts, ' ')
 endfunction
 
-let s:lightline_time_threshold = 0.20
-
-function! s:SaveLastTime()
-    let s:lightline_last_custom_mode_time = reltime()
-endfunction
-
-call s:SaveLastTime()
-
-function! s:CustomMode() abort
-    if has_key(b:, 'lightline_custom_mode') && reltimefloat(reltime(s:lightline_last_custom_mode_time)) < s:lightline_time_threshold
-        return b:lightline_custom_mode
-    endif
-    let b:lightline_custom_mode = s:FetchCustomMode()
-    call s:SaveLastTime()
-    return b:lightline_custom_mode
-endfunction
-
-function! s:FetchCustomMode() abort
-    let fname = expand('%:t')
-
-    if has_key(s:filename_modes, fname)
-        let result = {
-                    \ 'name': s:filename_modes[fname],
-                    \ 'type': 'name',
-                    \ }
-
-        if fname ==# '__CtrlSF__'
-            let pattern = substitute(ctrlsf#utils#SectionB(), 'Pattern: ', '', '')
-
-            let plugin_status = lightline#concatenate([
-                        \ pattern,
-                        \ ctrlsf#utils#SectionC(),
-                        \ ], 0)
-
-            return extend(result, {
-                        \ 'plugin': plugin_status,
-                        \ 'plugin_inactive': pattern,
-                        \ 'plugin_extra': ctrlsf#utils#SectionX(),
-                        \ })
-        endif
-
-        if fname ==# '__CtrlSFPreview__'
-            let result['plugin'] = ctrlsf#utils#PreviewSectionC()
-            let result['plugin_inactive'] = result['plugin']
-            return result
-        endif
-
-        return result
-    endif
-
-    if fname =~? '^NrrwRgn'
-        let nrrw_rgn_status = s:NrrwRgnStatus()
-        if len(nrrw_rgn_status)
-            return extend(nrrw_rgn_status, {
-                        \ 'type': 'nrrwrgn',
-                        \ })
-        endif
-    endif
-
-    let ft = s:GetBufferType()
-    if has_key(s:filetype_modes, ft)
-        let result = {
-                    \ 'name': s:filetype_modes[ft],
-                    \ 'type': 'filetype',
-                    \ }
-
-        if ft ==# 'ctrlp'
-            return extend(result, s:GetCtrlPMode())
-        endif
-
-        if ft ==# 'tagbar'
-            return extend(result, s:GetTagbarMode())
-        endif
-
-        if ft ==# 'terminal'
-            let result['plugin'] = expand('%')
-            return result
-        endif
-
-        if ft ==# 'help'
-            let result['plugin'] = expand('%:p')
-            let result['plugin_inactive'] = result['plugin']
-            return result
-        endif
-
-        if ft ==# 'qf'
-            if getwininfo(win_getid())[0]['loclist']
-                let result['name'] = 'Location'
-            endif
-            let result['plugin'] = s:Strip(get(w:, 'quickfix_title', ''))
-            let result['plugin_inactive'] = result['plugin']
-            return result
-        endif
-
-        return result
-    endif
-
-    return {}
-endfunction
-
-function! s:NrrwRgnStatus(...) abort
-    let result = {}
-
-    if exists(':WidenRegion') == 2
-        if exists('b:nrrw_instn')
-            let result['name'] = printf('%s#%d', 'NrrwRgn', b:nrrw_instn)
-        else
-            let l:mode = substitute(bufname('%'), '^Nrrwrgn_\zs.*\ze_\d\+$', submatch(0), '')
-            let l:mode = substitute(l:mode, '__', '#', '')
-            let result['name'] = l:mode
-        endif
-
-        let dict = exists('*nrrwrgn#NrrwRgnStatus()') ?  nrrwrgn#NrrwRgnStatus() : {}
-
-        if len(dict)
-            let result['plugin'] = fnamemodify(dict.fullname, ':~:.')
-            let result['plugin_inactive'] = result['plugin']
-        elseif get(b:, 'orig_buf', 0)
-            let result['plugin'] = bufname(b:orig_buf)
-            let result['plugin_inactive'] = result['plugin']
-        endif
-    endif
-
-    return result
-endfunction
-
 function! s:IsCompact() abort
     return &spell || &paste || strlen(s:ClipboardStatus()) || s:CurrentWinWidth() <= s:xsmall_window_width
 endfunction
@@ -619,7 +497,7 @@ endfunction
 function! LightlineBufferStatus() abort
     let l:mode = s:CustomMode()
     if len(l:mode)
-        return ''
+        return get(l:mode, 'buffer', '')
     endif
 
     if s:CurrentWinWidth() >= s:small_window_width
@@ -714,6 +592,107 @@ function! LightlineTabReadonly(n) abort
     return gettabwinvar(a:n, winnr, '&readonly') ? s:symbols.readonly : ''
 endfunction
 
+" Plugin Integration
+
+let s:lightline_time_threshold = 0.20
+
+function! s:SaveLastTime()
+    let s:lightline_last_custom_mode_time = reltime()
+endfunction
+
+call s:SaveLastTime()
+
+function! s:CustomMode() abort
+    if has_key(b:, 'lightline_custom_mode') && reltimefloat(reltime(s:lightline_last_custom_mode_time)) < s:lightline_time_threshold
+        return b:lightline_custom_mode
+    endif
+    let b:lightline_custom_mode = s:FetchCustomMode()
+    call s:SaveLastTime()
+    return b:lightline_custom_mode
+endfunction
+
+function! s:FetchCustomMode() abort
+    let fname = expand('%:t')
+
+    if has_key(s:filename_modes, fname)
+        let result = {
+                    \ 'name': s:filename_modes[fname],
+                    \ 'type': 'name',
+                    \ }
+
+        if fname ==# 'ControlP'
+            return extend(result, s:GetCtrlPMode())
+        endif
+
+        if fname ==# '__Tagbar__'
+            return extend(result, s:GetTagbarMode())
+        endif
+
+        if fname ==# '__CtrlSF__'
+            return extend(result, s:GetCtrlSFMode())
+        endif
+
+        if fname ==# '__CtrlSFPreview__'
+            return extend(result, s:GetCtrlSFPreviewMode())
+        endif
+
+        return result
+    endif
+
+    if fname =~? '^NrrwRgn'
+        let nrrw_rgn_mode = s:GetNrrwRgnMode()
+        if len(nrrw_rgn_mode)
+            return nrrw_rgn_mode
+        endif
+    endif
+
+    let ft = s:GetBufferType()
+    if has_key(s:filetype_modes, ft)
+        let result = {
+                    \ 'name': s:filetype_modes[ft],
+                    \ 'type': 'filetype',
+                    \ }
+
+        if ft ==# 'ctrlp'
+            return extend(result, s:GetCtrlPMode())
+        endif
+
+        if ft ==# 'tagbar'
+            return extend(result, s:GetTagbarMode())
+        endif
+
+        if ft ==# 'terminal'
+            return extend(result, {
+                        \ 'plugin': expand('%'),
+                        \ })
+        endif
+
+        if ft ==# 'help'
+            let fname = expand('%:p')
+            return extend(result, {
+                        \ 'plugin': fname,
+                        \ 'plugin_inactive': fname,
+                        \ })
+        endif
+
+        if ft ==# 'qf'
+            if getwininfo(win_getid())[0]['loclist']
+                let result['name'] = 'Location'
+            endif
+            let qf_title = s:Strip(get(w:, 'quickfix_title', ''))
+            return extend(result, {
+                        \ 'plugin': qf_title,
+                        \ 'plugin_inactive': qf_title,
+                        \ })
+        endif
+
+        return result
+    endif
+
+    return {}
+endfunction
+
+
 " CtrlP Integration
 let g:ctrlp_status_func = {
             \ 'main': 'CtrlPMainStatusLine',
@@ -723,21 +702,21 @@ let g:ctrlp_status_func = {
 function! s:GetCtrlPMode() abort
     let plugin_status = lightline#concatenate([
                 \ g:lightline.ctrlp_prev,
-                \ '« ' . g:lightline.ctrlp_item . ' »',
+                \ s:Wrap(g:lightline.ctrlp_item),
                 \ g:lightline.ctrlp_next,
                 \ ], 0)
 
-    let plugin_extra = lightline#concatenate([
+    let buffer_status = lightline#concatenate([
                 \ g:lightline.ctrlp_focus,
                 \ g:lightline.ctrlp_byfname,
-                \ g:lightline.ctrlp_dir,
                 \ ], 1)
 
     return {
-                \ 'name': s:filetype_modes['ctrlp'],
+                \ 'name': s:filename_modes['ControlP'],
                 \ 'link': 'nR'[g:lightline.ctrlp_regex],
                 \ 'plugin': plugin_status,
-                \ 'plugin_extra': plugin_extra,
+                \ 'plugin_extra': g:lightline.ctrlp_dir,
+                \ 'buffer': buffer_status,
                 \ 'type': 'ctrlp',
                 \ }
 endfunction
@@ -760,12 +739,65 @@ endfunction
 
 function! CtrlPProgressStatusLine(len) abort
     let b:lightline_custom_mode = {
-                \ 'name': s:filetype_modes['ctrlp'],
+                \ 'name': s:filename_modes['ControlP'],
                 \ 'plugin': a:len,
                 \ 'plugin_extra': s:GetCurrentDir(),
                 \ 'type': 'ctrlp',
                 \ }
     return lightline#statusline(0)
+endfunction
+
+" CtrlSF Integration
+function! s:GetCtrlSFMode() abort
+    let pattern = substitute(ctrlsf#utils#SectionB(), 'Pattern: ', '', '')
+
+    let plugin_status = lightline#concatenate([
+                \ pattern,
+                \ ctrlsf#utils#SectionC(),
+                \ ], 0)
+
+    return {
+                \ 'plugin': plugin_status,
+                \ 'plugin_inactive': pattern,
+                \ 'plugin_extra': ctrlsf#utils#SectionX(),
+                \ }
+endfunction
+
+function! s:GetCtrlSFPreviewMode() abort
+    let stl = ctrlsf#utils#PreviewSectionC()
+    return {
+                \ 'plugin': stl,
+                \ 'plugin_inactive': stl,
+                \ }
+endfunction
+
+" NrrwRgn Integration
+function! s:GetNrrwRgnMode(...) abort
+    let result = {}
+
+    if exists(':WidenRegion') == 2
+        let result['type'] = 'nrrwrgn'
+
+        if exists('b:nrrw_instn')
+            let result['name'] = printf('%s#%d', 'NrrwRgn', b:nrrw_instn)
+        else
+            let l:mode = substitute(bufname('%'), '^Nrrwrgn_\zs.*\ze_\d\+$', submatch(0), '')
+            let l:mode = substitute(l:mode, '__', '#', '')
+            let result['name'] = l:mode
+        endif
+
+        let dict = exists('*nrrwrgn#NrrwRgnStatus()') ?  nrrwrgn#NrrwRgnStatus() : {}
+
+        if len(dict)
+            let result['plugin'] = fnamemodify(dict.fullname, ':~:.')
+            let result['plugin_inactive'] = result['plugin']
+        elseif get(b:, 'orig_buf', 0)
+            let result['plugin'] = bufname(b:orig_buf)
+            let result['plugin_inactive'] = result['plugin']
+        endif
+    endif
+
+    return result
 endfunction
 
 " Tagbar Integration
