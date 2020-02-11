@@ -494,6 +494,7 @@ function! s:FetchCustomMode() abort
 
         if ft ==# 'help'
             let result['plugin'] = expand('%:p')
+            let result['plugin_inactive'] = result['plugin']
             return result
         endif
 
@@ -502,6 +503,7 @@ function! s:FetchCustomMode() abort
                 let result['name'] = 'Location'
             endif
             let result['plugin'] = s:Strip(get(w:, 'quickfix_title', ''))
+            let result['plugin_inactive'] = result['plugin']
             return result
         endif
 
@@ -525,7 +527,7 @@ function! s:NrrwRgnStatus(...) abort
 
         let dict = exists('*nrrwrgn#NrrwRgnStatus()') ?  nrrwrgn#NrrwRgnStatus() : {}
 
-        if !empty(dict)
+        if len(dict)
             let result['plugin'] = fnamemodify(dict.fullname, ':~:.')
             let result['plugin_inactive'] = result['plugin']
         elseif get(b:, 'orig_buf', 0)
