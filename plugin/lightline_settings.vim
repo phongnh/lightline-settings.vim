@@ -228,7 +228,7 @@ endfunction
 
 function! s:FormatFileName(fname) abort
     if strlen(a:fname)
-        if s:CurrentWinWidth() < s:xsmall_window_width
+        if s:CurrentWinWidth() <= s:xsmall_window_width
             return a:fname
         endif
 
@@ -429,7 +429,7 @@ function! LightlineModeStatus() abort
     endif
 
     let mode_label = lightline#mode()
-    if s:CurrentWinWidth() < s:xsmall_window_width
+    if s:CurrentWinWidth() <= s:xsmall_window_width
         return get(s:short_modes, mode_label, mode_label)
     endif
 
@@ -442,7 +442,7 @@ function! LightlineGitBranchStatus() abort
         return ''
     endif
 
-    if g:lightline_show_git_branch && s:CurrentWinWidth() > s:small_window_width
+    if g:lightline_show_git_branch && s:CurrentWinWidth() >= s:small_window_width
         let branch = s:FormatBranch(s:GetGitBranch())
 
         if strlen(branch)
