@@ -730,7 +730,6 @@ function! s:GetCtrlPMode() abort
                 \ ], 1)
 
     return {
-                \ 'custom': 1,
                 \ 'name': s:filetype_modes['ctrlp'],
                 \ 'link': 'nR'[g:lightline.ctrlp_regex],
                 \ 'plugin': plugin_status,
@@ -757,7 +756,6 @@ endfunction
 
 function! CtrlPProgressStatusLine(len) abort
     let b:lightline_custom_mode = {
-                \ 'custom': 1,
                 \ 'name': s:filetype_modes['ctrlp'],
                 \ 'plugin': a:len,
                 \ 'plugin_extra': s:GetCurrentDir(),
@@ -784,10 +782,9 @@ function! s:GetTagbarMode() abort
     endif
 
     return {
-                \ 'custom': 1,
                 \ 'name': s:filetype_modes['tagbar'],
                 \ 'plugin': plugin_status,
-                \ 'type': 'ctrlp',
+                \ 'type': 'tagbar',
                 \ }
 endfunction
 
