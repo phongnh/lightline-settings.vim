@@ -432,7 +432,6 @@ function! s:FetchCustomMode() abort
 
     if has_key(s:filename_modes, fname)
         let result = {
-                    \ 'custom': 1,
                     \ 'name': s:filename_modes[fname],
                     \ 'type': 'name',
                     \ }
@@ -465,7 +464,6 @@ function! s:FetchCustomMode() abort
         let nrrw_rgn_status = s:NrrwRgnStatus()
         if len(nrrw_rgn_status)
             return extend(nrrw_rgn_status, {
-                        \ 'custom': 1,
                         \ 'type': 'nrrwrgn',
                         \ })
         endif
@@ -474,7 +472,6 @@ function! s:FetchCustomMode() abort
     let ft = s:GetBufferType()
     if has_key(s:filetype_modes, ft)
         let result = {
-                    \ 'custom': 1,
                     \ 'name': s:filetype_modes[ft],
                     \ 'type': 'filetype',
                     \ }
@@ -510,7 +507,7 @@ function! s:FetchCustomMode() abort
         return result
     endif
 
-    return { 'custom': 0 }
+    return {}
 endfunction
 
 function! s:NrrwRgnStatus(...) abort
@@ -545,7 +542,7 @@ endfunction
 
 function! LightlineModeStatus() abort
     let l:mode = s:CustomMode()
-    if l:mode['custom']
+    if len(l:mode)
         return l:mode['name']
     endif
 
@@ -559,7 +556,7 @@ endfunction
 
 function! LightlineGitBranchStatus() abort
     let l:mode = s:CustomMode()
-    if l:mode['custom']
+    if len(l:mode)
         return ''
     endif
 
@@ -576,7 +573,7 @@ endfunction
 
 function! LightlineFileNameStatus() abort
     let l:mode = s:CustomMode()
-    if l:mode['custom']
+    if len(l:mode)
         return ''
     endif
 
@@ -585,7 +582,7 @@ endfunction
 
 function! LightlineFileInfoStatus() abort
     let l:mode = s:CustomMode()
-    if l:mode['custom']
+    if len(l:mode)
         return ''
     endif
 
@@ -603,7 +600,7 @@ endfunction
 
 function! LightlineIndentationStatus() abort
     let l:mode = s:CustomMode()
-    if l:mode['custom']
+    if len(l:mode)
         return ''
     endif
 
@@ -617,7 +614,7 @@ endfunction
 
 function! LightlineBufferStatus() abort
     let l:mode = s:CustomMode()
-    if l:mode['custom']
+    if len(l:mode)
         return ''
     endif
 
@@ -627,8 +624,7 @@ function! LightlineBufferStatus() abort
                     \   s:ClipboardStatus(),
                     \   s:PasteStatus(),
                     \   s:SpellStatus(),
-                    \ ]),
-                    \ 1)
+                    \ ]), 1)
     endif
 
     return ''
@@ -636,7 +632,7 @@ endfunction
 
 function! LightlinePluginStatus() abort
     let l:mode = s:CustomMode()
-    if l:mode['custom']
+    if len(l:mode)
         if has_key(l:mode, 'link')
             call lightline#link(l:mode['link'])
         endif
@@ -648,7 +644,7 @@ endfunction
 
 function! LightlinePluginExtraStatus() abort
     let l:mode = s:CustomMode()
-    if l:mode['custom']
+    if len(l:mode)
         return get(l:mode, 'plugin_extra', '')
     endif
 
@@ -657,11 +653,15 @@ endfunction
 
 function! LightlineInactiveStatus() abort
     let l:mode = s:CustomMode()
-    if l:mode['custom']
-        return lightline#concatenate(s:RemoveEmptyElement([
-                    \ l:mode['name'],
-                    \ get(l:mode, 'plugin_inactive', '')
-                    \ ]), 0)
+    if len(l:mode)
+        if has_key(l:mode, 'plugin_inactive')
+            return lightline#concatenate(
+                        \ s:RemoveEmptyElement([
+                        \   l:mode['name'],
+                        \   get(l:mode, 'plugin_inactive', '')
+                        \ ]), 0)
+        endif
+        return l:mode['name']
     endif
 
     return s:FileNameStatus()
