@@ -151,6 +151,7 @@ let s:filetype_modes = {
             \ 'startify':          'Startify',
             \ 'tagbar':            'Tagbar',
             \ 'vim-plug':          'Plugins',
+            \ 'terminal':          'TERMINAL',
             \ 'help':              'HELP',
             \ 'qf':                'Quickfix',
             \ 'godoc':             'GoDoc',
