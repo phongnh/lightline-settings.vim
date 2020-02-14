@@ -76,7 +76,7 @@ let g:lightline = {
             \ },
             \ 'active': {
             \   'left':  [['mode'], ['plugin', 'branch', 'filename']],
-            \   'right': [['spaces', 'fileinfo', 'plugin_extra'], ['buffer']]
+            \   'right': [['indentation', 'fileinfo', 'plugin_extra'], ['buffer']]
             \ },
             \ 'inactive': {
             \   'left':  [['inactive']],
@@ -87,7 +87,7 @@ let g:lightline = {
             \   'plugin':       'LightlinePluginStatus',
             \   'branch':       'LightlineGitBranchStatus',
             \   'filename':     'LightlineFileNameStatus',
-            \   'spaces':       'LightlineIndentationStatus',
+            \   'indentation':  'LightlineIndentationStatus',
             \   'fileinfo':     'LightlineFileInfoStatus',
             \   'plugin_extra': 'LightlinePluginExtraStatus',
             \   'buffer':       'LightlineBufferStatus',
