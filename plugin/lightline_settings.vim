@@ -28,29 +28,26 @@ let s:xsmall_window_width = 60
 let s:small_window_width  = 80
 let s:normal_window_width = 100
 
-" Symbols
-if g:lightline_powerline
-    let s:symbols = {
-                \ 'separator':    { 'left': "\ue0b0", 'right': "\ue0b2" },
-                \ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" },
-                \ 'linenr':       "\ue0a1",
-                \ 'branch':       "\ue0a0",
-                \ 'readonly':     "\ue0a2",
-                \ 'clipboard':    'ⓒ  ',
-                \ 'paste':        'Ⓟ  ',
-                \ 'ellipsis':     '…',
-                \ }
-else
-    let s:symbols = {
+" Symbols: https://en.wikipedia.org/wiki/Enclosed_Alphanumerics
+let s:symbols = {
                 \ 'separator':    { 'left': '',  'right': ''  },
                 \ 'subseparator': { 'left': '|', 'right': '|' },
                 \ 'linenr':       '☰',
-                \ 'branch':       '⎇',
+                \ 'branch':       '⎇ ',
                 \ 'readonly':     '',
                 \ 'clipboard':    'ⓒ  ',
                 \ 'paste':        'Ⓟ  ',
                 \ 'ellipsis':     '…',
                 \ }
+
+if g:lightline_powerline
+    call extend(s:symbols, {
+                \ 'separator':    { 'left': "\ue0b0", 'right': "\ue0b2" },
+                \ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" },
+                \ 'linenr':       "\ue0a1",
+                \ 'branch':       "\ue0a0",
+                \ 'readonly':     "\ue0a2",
+                \ })
 endif
 
 if g:lightline_noshowmode
