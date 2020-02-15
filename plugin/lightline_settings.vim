@@ -369,54 +369,35 @@ function! s:IndentationStatus(...) abort
     endif
 endfunction
 
-function! s:FileEncodingStatus() abort
-    let l:encoding = strlen(&fileencoding) ? &fileencoding : &encoding
-    " Show encoding only if it is not utf-8
-    if empty(l:encoding) || l:encoding ==# 'utf-8'
-        return ''
-    endif
-    return printf('[%s]', l:encoding)
-endfunction
-
 function! s:FileEncodingAndFormatStatus() abort
     let l:encoding = strlen(&fileencoding) ? &fileencoding : &encoding
+    let l:bomb     = &bomb ? '[BOM]' : ''
+    let l:format   = strlen(&fileformat) ? printf('[%s]', &fileformat) : ''
 
-    if strlen(l:encoding) && strlen(&fileformat)
-        let stl = printf('%s[%s]', l:encoding, &fileformat)
-    elseif strlen(l:encoding)
-        let stl = l:encoding
-    else
-        let stl = printf('[%s]', &fileformat)
+    " Skip common string utf-8[unix]
+    if (l:encoding . l:format) ==# 'utf-8[unix]'
+        return l:bomb
     endif
 
-    " Show format only if it is not utf-8[unix]
-    if stl ==# 'utf-8[unix]'
-        return ''
-    endif
-
-    return stl
+    return l:encoding . l:bomb . l:format
 endfunction
 
 function! s:FileInfoStatus(...) abort
-    let ft = s:GetBufferType()
+    let parts = [
+                \ s:FileEncodingAndFormatStatus(),
+                \ s:GetBufferType(),
+                \ ]
 
-    if g:lightline_show_devicons && s:has_devicons
-        let compact = get(a:, 1, 0)
+    let compact = get(a:, 1, 0)
 
-        let parts = s:RemoveEmptyElement([
-                    \ s:FileEncodingStatus(),
-                    \ !compact ? WebDevIconsGetFileFormatSymbol() . ' ' : '',
-                    \ ft,
-                    \ !compact ? WebDevIconsGetFileTypeSymbol(expand('%')) . ' ' : '',
-                    \ ])
-    else
-        let parts = s:RemoveEmptyElement([
-                    \ s:FileEncodingAndFormatStatus(),
-                    \ ft,
+    if g:lightline_show_devicons && s:has_devicons && !compact
+        call extend(parts, [
+                    \ WebDevIconsGetFileTypeSymbol(expand('%')) . ' ',
+                    \ WebDevIconsGetFileFormatSymbol() . ' ',
                     \ ])
     endif
 
-    return join(parts, ' ')
+    return join(s:RemoveEmptyElement(parts), ' ')
 endfunction
 
 function! s:IsCompact() abort
