@@ -360,12 +360,12 @@ function! s:SpellStatus() abort
 endfunction
 
 function! s:IndentationStatus(...) abort
-    let shiftwidth = exists('*shiftwidth') ? shiftwidth() : &shiftwidth
+    let l:shiftwidth = exists('*shiftwidth') ? shiftwidth() : &shiftwidth
     let compact = get(a:, 1, 0)
     if compact
-        return printf(&expandtab ? 'SPC: %d' : 'TAB: %d', shiftwidth)
+        return printf(&expandtab ? 'SPC: %d' : 'TAB: %d', l:shiftwidth)
     else
-        return printf(&expandtab ? 'Spaces: %d' : 'Tab Size: %d', shiftwidth)
+        return printf(&expandtab ? 'Spaces: %d' : 'Tab Size: %d', l:shiftwidth)
     endif
 endfunction
 
