@@ -145,6 +145,7 @@ let s:filename_modes = {
 let s:filetype_modes = {
             \ 'netrw':             'NetrwTree',
             \ 'nerdtree':          'NERDTree',
+            \ 'fern':              'fern',
             \ 'startify':          'Startify',
             \ 'tagbar':            'Tagbar',
             \ 'vim-plug':          'Plugins',
@@ -636,6 +637,10 @@ function! s:FetchCustomMode() abort
             return extend(result, s:GetCtrlPMode())
         endif
 
+        if ft ==# 'fern'
+            return extend(result, s:GetFernMode())
+        endif
+
         if ft ==# 'tagbar'
             return extend(result, s:GetTagbarMode())
         endif
@@ -724,6 +729,30 @@ function! CtrlPProgressStatusLine(len) abort
                 \ 'type': 'ctrlp',
                 \ }
     return lightline#statusline(0)
+endfunction
+
+" Fern Integration
+function! s:GetFernMode(...) abort
+    let result = {}
+
+    let fern_name = get(a:, 1, expand('%'))
+    let pattern = '^fern://\(.\+\)/file://\(.\+\)\$'
+    let data = matchlist(fern_name, pattern)
+
+    if len(data)
+        let fern_mode = get(data, 1, '')
+        if match(fern_mode, 'drawer') > -1
+            let result['name'] = 'Drawer#' . matchstr(fern_mode, '\d\+')
+        endif
+
+        let fern_folder = get(data, 2, '')
+        let fern_folder = substitute(fern_folder, ';\?#.\+', '', '')
+        let fern_folder = fnamemodify(fern_folder, ':p:~:.:h')
+
+        let result['plugin'] = fern_folder
+    endif
+
+    return result
 endfunction
 
 " CtrlSF Integration
