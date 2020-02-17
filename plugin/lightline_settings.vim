@@ -3,7 +3,7 @@
 " Version:    0.1.0
 
 if exists('g:loaded_vim_lightline_settings') || v:version < 700
-    finish
+    " finish
 endif
 
 let g:loaded_vim_lightline_settings = 1
@@ -338,7 +338,7 @@ function! s:FormatBranch(branch) abort
     let branch = s:ShortenBranch(a:branch, 30)
 
     if strlen(branch) > 30
-        let branch = strcharpart(branch, 0, 29) . s:powerline_symbols.ellipsis
+        let branch = strcharpart(branch, 0, 29) . s:symbols.ellipsis
     endif
 
     return branch
