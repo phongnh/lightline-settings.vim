@@ -140,6 +140,7 @@ let s:filename_modes = {
             \ '[Plugins]':            'Plugins',
             \ '__committia_status__': 'Committia Status',
             \ '__committia_diff__':   'Committia Diff',
+            \ '__doc__':              'Document',
             \ }
 
 let s:filetype_modes = {
