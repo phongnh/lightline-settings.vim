@@ -844,9 +844,6 @@ function! TagbarStatusFunc(current, sort, fname, flags, ...) abort
     let g:lightline.tagbar_fname = a:fname
     let g:lightline.tagbar_flags = a:flags
 
-    let b:lightline_custom_mode = s:GetTagbarMode()
-    call s:SaveLastTime()
-
     return lightline#statusline(0)
 endfunction
 
