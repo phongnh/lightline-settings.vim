@@ -3,7 +3,7 @@
 " Version:    0.1.0
 
 if exists('g:loaded_vim_lightline_settings') || v:version < 700
-    " finish
+    finish
 endif
 
 let g:loaded_vim_lightline_settings = 1
