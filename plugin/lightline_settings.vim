@@ -338,6 +338,11 @@ function! s:ShortenBranch(branch, length) abort
         let branch = fnamemodify(branch, ':t')
     endif
 
+    if strlen(branch) > a:length
+        " Show only JIRA ticket prefix
+        let branch = substitute(branch, '^\([A-Z]\{3,}-\d\{1,}\)-.\+', '\1', '')
+    endif
+
     return branch
 endfunction
 
