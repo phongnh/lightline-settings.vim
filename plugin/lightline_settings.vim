@@ -26,7 +26,7 @@ let g:NERDTreeStatusline = -1
 " Window width
 let s:xsmall_window_width = 60
 let s:small_window_width  = 80
-let s:normal_window_width = 100
+let s:normal_window_width = 120
 
 " Symbols: https://en.wikipedia.org/wiki/Enclosed_Alphanumerics
 let s:symbols = {
