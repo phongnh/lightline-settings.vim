@@ -17,7 +17,7 @@ let g:lightline_theme                 = get(g:, 'lightline_theme', 'solarized')
 let g:lightline_noshowmode            = get(g:, 'lightline_noshowmode', 1)
 let g:lightline_show_tab_close_button = get(g:, 'lightline_show_tab_close_button', 0)
 let g:lightline_show_git_branch       = get(g:, 'lightline_show_git_branch', 1)
-let g:lightline_show_file_size        = get(g:, 'lightline_show_file_size', 1)
+let g:lightline_show_file_size        = get(g:, 'lightline_show_file_size', 0)
 let g:lightline_show_devicons         = get(g:, 'lightline_show_devicons', 1)
 
 " Disable NERDTree statusline
@@ -467,7 +467,7 @@ function! LightlineFileInfoStatus() abort
 
     if s:CurrentWinWidth() >= s:small_window_width
         return lightline#concatenate([
-                    \ s:FileSize(),
+                    \ s:FileSizeStatus(),
                     \ s:FileInfoStatus(compact),
                     \ ], 1)
     endif
