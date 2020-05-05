@@ -17,7 +17,6 @@ let g:lightline_theme                 = get(g:, 'lightline_theme', 'solarized')
 let g:lightline_noshowmode            = get(g:, 'lightline_noshowmode', 1)
 let g:lightline_show_tab_close_button = get(g:, 'lightline_show_tab_close_button', 0)
 let g:lightline_show_git_branch       = get(g:, 'lightline_show_git_branch', 1)
-let g:lightline_show_file_size        = get(g:, 'lightline_show_file_size', 0)
 let g:lightline_show_devicons         = get(g:, 'lightline_show_devicons', 1)
 
 " Disable NERDTree statusline
@@ -270,30 +269,6 @@ function! s:FileNameStatus() abort
     return s:ReadonlyStatus() . s:FormatFileName(s:GetFileName()) . s:ModifiedStatus()
 endfunction
 
-" Copied from https://github.com/ahmedelgabri/dotfiles/blob/master/files/vim/.vim/autoload/statusline.vim
-function! s:FileSize() abort
-    let l:size = getfsize(expand('%'))
-    if l:size == 0 || l:size == -1 || l:size == -2
-        return ''
-    endif
-    if l:size < 1024
-        return l:size . ' bytes'
-    elseif l:size < 1024 * 1024
-        return printf('%.1f', l:size / 1024.0) . 'k'
-    elseif l:size < 1024 * 1024 * 1024
-        return printf('%.1f', l:size / 1024.0 / 1024.0) . 'm'
-    else
-        return printf('%.1f', l:size / 1024.0 / 1024.0 / 1024.0) . 'g'
-    endif
-endfunction
-
-function! s:FileSizeStatus() abort
-    if g:lightline_show_file_size
-        return s:FileSize()
-    endif
-    return ''
-endfunction
-
 function! s:GetGitBranch() abort
     " Get branch from caching if it is available
     if has_key(b:, 'lightline_git_branch') && reltimefloat(reltime(s:lightline_last_finding_branch_time)) < s:lightline_time_threshold
@@ -464,13 +439,6 @@ function! LightlineFileInfoStatus() abort
     endif
 
     let compact = s:IsCompact()
-
-    if s:CurrentWinWidth() >= s:small_window_width
-        return lightline#concatenate([
-                    \ s:FileSizeStatus(),
-                    \ s:FileInfoStatus(compact),
-                    \ ], 1)
-    endif
 
     return s:FileInfoStatus(compact)
 endfunction
