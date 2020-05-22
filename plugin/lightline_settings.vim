@@ -15,6 +15,7 @@ set cpo&vim
 let g:lightline_powerline             = get(g:, 'lightline_powerline', 0)
 let g:lightline_theme                 = get(g:, 'lightline_theme', 'solarized')
 let g:lightline_noshowmode            = get(g:, 'lightline_noshowmode', 1)
+let g:lightline_shorten_path          = get(g:, 'lightline_shorten_path', 0)
 let g:lightline_show_tab_close_button = get(g:, 'lightline_show_tab_close_button', 0)
 let g:lightline_show_git_branch       = get(g:, 'lightline_show_git_branch', 1)
 let g:lightline_show_devicons         = get(g:, 'lightline_show_devicons', 1)
@@ -233,7 +234,7 @@ function! s:FormatFileName(fname) abort
 
         let l:path = expand('%:~:.')
 
-        if strlen(l:path) > 50
+        if strlen(l:path) > 50 && g:lightline_shorten_path
             let l:path = s:ShortenPath(l:path)
         endif
 
@@ -305,7 +306,7 @@ endfunction
 function! s:ShortenBranch(branch, length) abort
     let branch = a:branch
 
-    if strlen(branch) > a:length
+    if strlen(branch) > a:length && g:lightline_shorten_path
         let branch = s:ShortenPath(branch)
     endif
 
