@@ -227,25 +227,21 @@ function! s:GetFileName() abort
 endfunction
 
 function! s:FormatFileName(fname) abort
-    if strlen(a:fname)
-        if s:CurrentWinWidth() <= s:xsmall_window_width
-            return a:fname
-        endif
+    let l:path = a:fname
 
-        let l:path = expand('%:~:.')
-
-        if strlen(l:path) > 50 && g:lightline_shorten_path
-            let l:path = s:ShortenPath(l:path)
-        endif
-
-        if strlen(l:path) > 50
-            let l:path = a:fname
-        endif
-
-        return l:path
+    if s:CurrentWinWidth() <= s:xsmall_window_width
+        return fnamemodify(l:path, ':t')
     endif
 
-    return '[No Name]'
+    if strlen(l:path) > 50 && g:lightline_shorten_path
+        let l:path = s:ShortenPath(l:path)
+    endif
+
+    if strlen(l:path) > 50
+        let l:path = fnamemodify(l:path, ':t')
+    endif
+
+    return l:path
 endfunction
 
 function! s:ModifiedStatus() abort
