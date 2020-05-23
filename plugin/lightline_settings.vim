@@ -266,6 +266,10 @@ function! s:FileNameStatus() abort
     return s:ReadonlyStatus() . s:FormatFileName(s:GetFileName()) . s:ModifiedStatus()
 endfunction
 
+function! s:InactiveFileNameStatus() abort
+    return s:ReadonlyStatus() . s:GetFileName() . s:ModifiedStatus()
+endfunction
+
 function! s:GetGitBranch() abort
     " Get branch from caching if it is available
     if has_key(b:, 'lightline_git_branch') && reltimefloat(reltime(s:lightline_last_finding_branch_time)) < s:lightline_time_threshold
@@ -506,7 +510,7 @@ function! LightlineInactiveStatus() abort
         return l:mode['name']
     endif
 
-    return s:FileNameStatus()
+    return s:InactiveFileNameStatus()
 endfunction
 
 function! LightlineTabLabel() abort
