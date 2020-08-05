@@ -146,6 +146,7 @@ let s:filename_modes = {
 let s:filetype_modes = {
             \ 'netrw':             'NetrwTree',
             \ 'nerdtree':          'NERDTree',
+            \ 'chadtree':          'CHADTree',
             \ 'LuaTree':           'LuaTree',
             \ 'fern':              'fern',
             \ 'startify':          'Startify',
