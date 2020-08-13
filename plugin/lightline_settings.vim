@@ -54,6 +54,8 @@ if g:lightline_noshowmode
     augroup VimLightlightSettings
         autocmd!
         autocmd VimEnter * setglobal noshowmode
+        " Hack for LuaTree
+        autocmd FileType LuaTree call lightline#update()
     augroup END
 endif
 
