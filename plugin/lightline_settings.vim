@@ -50,12 +50,16 @@ if g:lightline_powerline
                 \ })
 endif
 
+augroup VimLightlightSettings
+    autocmd!
+    " Hack for LuaTree
+    autocmd FileType LuaTree call lightline#update()
+augroup END
+
 if g:lightline_noshowmode
-    augroup VimLightlightSettings
+    augroup VimLightlightNoshowmode
         autocmd!
         autocmd VimEnter * setglobal noshowmode
-        " Hack for LuaTree
-        autocmd FileType LuaTree call lightline#update()
     augroup END
 endif
 
