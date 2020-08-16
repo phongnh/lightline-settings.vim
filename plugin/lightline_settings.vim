@@ -59,6 +59,23 @@ if g:lightline_noshowmode
     augroup END
 endif
 
+if exists('g:plug_home')
+    function! s:ReloadLightlineTheme() abort
+        let l:colorscheme_path = join([s:lightline_colorscheme_dir, g:lightline_theme . '.vim'], '/')
+        if filereadable(l:colorscheme_path)
+            execute 'source ' . l:colorscheme_path
+            call lightline#colorscheme()
+        endif
+    endfunction
+
+    let s:lightline_colorscheme_dir = join([g:plug_home, 'lightline.vim', 'autoload', 'lightline', 'colorscheme'], '/')
+
+    augroup VimLightlightColorscheme
+        autocmd!
+        autocmd ColorSchemePre * call <SID>ReloadLightlineTheme()
+    augroup END
+endif
+
 let g:lightline = {
             \ 'colorscheme': g:lightline_theme,
             \ 'enable': {
