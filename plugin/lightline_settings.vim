@@ -13,6 +13,8 @@ set cpo&vim
 
 " Settings
 let g:lightline_powerline             = get(g:, 'lightline_powerline', 0)
+let g:lightline_powerline_style       = get(g:, 'lightline_powerline_style', 'default')
+let g:lightline_powerline_spaces      = extend({ 'left': 0, 'left_alt': 0, 'right': 0, 'right_alt':0 }, get(g:, 'lightline_powerline_spaces', {}))
 let g:lightline_theme                 = get(g:, 'lightline_theme', 'solarized')
 let g:lightline_noshowmode            = get(g:, 'lightline_noshowmode', 1)
 let g:lightline_shorten_path          = get(g:, 'lightline_shorten_path', 0)
@@ -42,11 +44,55 @@ let s:symbols = {
 
 if g:lightline_powerline
     call extend(s:symbols, {
-                \ 'separator':    { 'left': "\ue0b0", 'right': "\ue0b2" },
-                \ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" },
                 \ 'linenr':       "\ue0a1",
                 \ 'branch':       "\ue0a0",
                 \ 'readonly':     "\ue0a2",
+                \ })
+
+    let s:subseparator = { 'left': '', 'right': '' }
+
+    if g:lightline_powerline_style ==? 'curvy'
+        let s:separator    = { 'left': "\ue0b4", 'right': "\ue0b6" }
+        let s:subseparator = { 'left': "\ue0b5", 'right': "\ue0b7" }
+    elseif g:lightline_powerline_style ==? 'angly1'
+        let s:separator    = { 'left': "\ue0b8", 'right': "\ue0ba" }
+        let s:subseparator = { 'left': "\ue0b9", 'right': "\ue0bb" }
+    elseif g:lightline_powerline_style ==? 'angly2'
+        let s:separator    = { 'left': "\ue0bc", 'right': "\ue0be" }
+        let s:subseparator = { 'left': "\ue0bd", 'right': "\ue0bf" }
+    elseif g:lightline_powerline_style ==? 'angly-mixed1'
+        let s:separator    = { 'left': "\ue0b8", 'right': "\ue0be" }
+        let s:subseparator = { 'left': "\ue0b9", 'right': "\ue0bf" }
+    elseif g:lightline_powerline_style ==? 'angly-mixed2'
+        let s:separator    = { 'left': "\ue0b8", 'right': "\ue0b9" }
+        let s:subseparator = { 'left': "\ue0ba", 'right': "\ue0bb" }
+    elseif g:lightline_powerline_style ==? 'flames' || g:lightline_powerline_style ==? 'flamey'
+        let s:separator    = { 'left': "\ue0c0", 'right': "\ue0c2" }
+        let s:subseparator = { 'left': "\ue0c1", 'right': "\ue0c3" }
+    elseif g:lightline_powerline_style ==? 'pixelated-blocks1' || g:lightline_powerline_style ==? 'pixey1'
+        let s:separator = { 'left': "\ue0c4", 'right': "\ue0c5" }
+    elseif g:lightline_powerline_style ==? 'pixelated-blocks2' || g:lightline_powerline_style ==? 'pixey2'
+        let s:separator = { 'left': "\ue0c6", 'right': "\ue0c7" }
+    elseif g:lightline_powerline_style ==? 'sun'
+        let s:separator = { 'left': "\ue0c8", 'right': "\ue0ca" }
+    elseif g:lightline_powerline_style ==? 'custom'
+        let s:separator    = { 'left': "\ue0cc", 'right': "\ue0d0" }
+        let s:subseparator = { 'left': "\ue0cd", 'right': "\ue0d0" }
+    elseif g:lightline_powerline_style ==? 'lego' || g:lightline_powerline_style ==? 'blocky'
+        let s:separator = { 'left': "\ue0d1", 'right': "\ue0d0" }
+    else
+        let s:separator    = { 'left': "\ue0b0", 'right': "\ue0b2" }
+        let s:subseparator = { 'left': "\ue0b1", 'right': "\ue0b3" }
+    endif
+
+    let s:separator['left']     .= repeat(' ', g:lightline_powerline_spaces['left'])
+    let s:separator['right']    .= repeat(' ', g:lightline_powerline_spaces['right'])
+    let s:subseparator['left']  .= repeat(' ', g:lightline_powerline_spaces['left_alt'])
+    let s:subseparator['right'] .= repeat(' ', g:lightline_powerline_spaces['right_alt'])
+
+    call extend(s:symbols, {
+                \ 'separator':    s:separator,
+                \ 'subseparator': s:subseparator,
                 \ })
 endif
 
