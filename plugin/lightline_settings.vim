@@ -37,8 +37,8 @@ let s:symbols = {
                 \ 'linenr':       '☰',
                 \ 'branch':       '⎇ ',
                 \ 'readonly':     '',
-                \ 'clipboard':    'ⓒ  ',
-                \ 'paste':        'Ⓟ  ',
+                \ 'clipboard':    '🅒  ',
+                \ 'paste':        '🅟  ',
                 \ 'ellipsis':     '…',
                 \ }
 
