@@ -218,6 +218,7 @@ let s:filetype_modes = {
             \ 'chadtree':          'CHADTree',
             \ 'LuaTree':           'LuaTree',
             \ 'fern':              'fern',
+            \ 'vaffle':            'Vaffle',
             \ 'startify':          'Startify',
             \ 'tagbar':            'Tagbar',
             \ 'vim-plug':          'Plugins',
@@ -682,6 +683,10 @@ function! s:CustomMode() abort
             return extend(result, s:GetFernMode())
         endif
 
+        if ft ==# 'vaffle'
+            return extend(result, s:GetVaffleMode())
+        endif
+
         if ft ==# 'tagbar'
             return extend(result, s:GetTagbarMode())
         endif
@@ -798,6 +803,26 @@ function! s:GetFernMode(...) abort
         let fern_folder = fnamemodify(fern_folder, ':p:~:.:h')
 
         let result['plugin'] = fern_folder
+    endif
+
+    return result
+endfunction
+
+" Vaffle Integration
+function! s:GetVaffleMode(...) abort
+    let result = {}
+
+    let vaffle_name = get(a:, 1, expand('%'))
+    let pattern = '^vaffle://\(\d\+\)/\(.\+\)$'
+    let data = matchlist(vaffle_name, pattern)
+
+    if len(data)
+        let vaffle_num    = get(data, 1, 0)
+        let vaffle_folder = get(data, 2, '')
+        let vaffle_folder = fnamemodify(vaffle_folder, ':p:~:h')
+
+        let result['name']   = 'Vaffle#' . vaffle_num
+        let result['plugin'] = vaffle_folder
     endif
 
     return result
