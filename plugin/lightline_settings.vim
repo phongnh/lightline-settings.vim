@@ -795,7 +795,7 @@ function! s:GetFernMode(...) abort
     if len(data)
         let fern_mode = get(data, 1, '')
         if match(fern_mode, 'drawer') > -1
-            let result['name'] = 'Drawer#' . matchstr(fern_mode, '\d\+')
+            let result['name'] = 'Drawer'
         endif
 
         let fern_folder = get(data, 2, '')
