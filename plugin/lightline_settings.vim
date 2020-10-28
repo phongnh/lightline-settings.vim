@@ -217,7 +217,7 @@ let s:filetype_modes = {
             \ 'nerdtree':          'NERDTree',
             \ 'chadtree':          'CHADTree',
             \ 'LuaTree':           'LuaTree',
-            \ 'fern':              'fern',
+            \ 'fern':              'Fern',
             \ 'vaffle':            'Vaffle',
             \ 'startify':          'Startify',
             \ 'tagbar':            'Tagbar',
