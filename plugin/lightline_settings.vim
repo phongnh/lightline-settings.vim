@@ -66,20 +66,6 @@ if g:lightline_powerline
     elseif g:lightline_powerline_style ==? 'angly-mixed2'
         let s:separator    = { 'left': "\ue0b8", 'right': "\ue0b9" }
         let s:subseparator = { 'left': "\ue0ba", 'right': "\ue0bb" }
-    elseif g:lightline_powerline_style ==? 'flames' || g:lightline_powerline_style ==? 'flamey'
-        let s:separator    = { 'left': "\ue0c0", 'right': "\ue0c2" }
-        let s:subseparator = { 'left': "\ue0c1", 'right': "\ue0c3" }
-    elseif g:lightline_powerline_style ==? 'pixelated-blocks1' || g:lightline_powerline_style ==? 'pixey1'
-        let s:separator = { 'left': "\ue0c4", 'right': "\ue0c5" }
-    elseif g:lightline_powerline_style ==? 'pixelated-blocks2' || g:lightline_powerline_style ==? 'pixey2'
-        let s:separator = { 'left': "\ue0c6", 'right': "\ue0c7" }
-    elseif g:lightline_powerline_style ==? 'sun'
-        let s:separator = { 'left': "\ue0c8", 'right': "\ue0ca" }
-    elseif g:lightline_powerline_style ==? 'custom'
-        let s:separator    = { 'left': "\ue0cc", 'right': "\ue0d0" }
-        let s:subseparator = { 'left': "\ue0cd", 'right': "\ue0d0" }
-    elseif g:lightline_powerline_style ==? 'lego' || g:lightline_powerline_style ==? 'blocky'
-        let s:separator = { 'left': "\ue0d1", 'right': "\ue0d0" }
     else
         let s:separator    = { 'left': "\ue0b0", 'right': "\ue0b2" }
         let s:subseparator = { 'left': "\ue0b1", 'right': "\ue0b3" }
