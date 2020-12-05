@@ -398,8 +398,12 @@ function! s:FormatBranch(branch) abort
     return branch
 endfunction
 
+function! s:IsClipboardEnabled() abort
+    return match(&clipboard, 'unnamed') > -1
+endfunction
+
 function! s:ClipboardStatus() abort
-    return match(&clipboard, 'unnamed') > -1 ? s:symbols.clipboard : ''
+    return s:IsClipboardEnabled() ? s:symbols.clipboard : ''
 endfunction
 
 function! s:PasteStatus() abort
@@ -452,7 +456,7 @@ function! s:FileInfoStatus(...) abort
 endfunction
 
 function! s:IsCompact() abort
-    return &spell || &paste || strlen(s:ClipboardStatus()) || s:CurrentWinWidth() <= s:xsmall_window_width
+    return &spell || &paste || s:IsClipboardEnabled() || s:CurrentWinWidth() <= s:xsmall_window_width
 endfunction
 
 function! LightlineModeStatus() abort
