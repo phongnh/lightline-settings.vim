@@ -49,37 +49,46 @@ if g:lightline_powerline
                 \ 'readonly':     "\ue0a2",
                 \ })
 
-    let s:subseparator = { 'left': '', 'right': '' }
+    let s:powerline_separator_styles = {
+                \ 'default': { 'left': "\ue0b0", 'right': "\ue0b2" },
+                \ 'curvy':   { 'left': "\ue0b4", 'right': "\ue0b6" },
+                \ 'angly1':  { 'left': "\ue0b8", 'right': "\ue0ba" },
+                \ 'angly2':  { 'left': "\ue0bc", 'right': "\ue0be" },
+                \ 'angly3':  { 'left': "\ue0b8", 'right': "\ue0be" },
+                \ 'angly4':  { 'left': "\ue0bc", 'right': "\ue0ba" },
+                \ }
 
-    if g:lightline_powerline_style ==? 'curvy'
-        let s:separator    = { 'left': "\ue0b4", 'right': "\ue0b6" }
-        let s:subseparator = { 'left': "\ue0b5", 'right': "\ue0b7" }
-    elseif g:lightline_powerline_style ==? 'angly1'
-        let s:separator    = { 'left': "\ue0b8", 'right': "\ue0ba" }
-        let s:subseparator = { 'left': "\ue0b9", 'right': "\ue0bb" }
-    elseif g:lightline_powerline_style ==? 'angly2'
-        let s:separator    = { 'left': "\ue0bc", 'right': "\ue0be" }
-        let s:subseparator = { 'left': "\ue0bd", 'right': "\ue0bf" }
-    elseif g:lightline_powerline_style ==? 'angly-mixed1'
-        let s:separator    = { 'left': "\ue0b8", 'right': "\ue0be" }
-        let s:subseparator = { 'left': "\ue0b9", 'right': "\ue0bf" }
-    elseif g:lightline_powerline_style ==? 'angly-mixed2'
-        let s:separator    = { 'left': "\ue0b8", 'right': "\ue0b9" }
-        let s:subseparator = { 'left': "\ue0ba", 'right': "\ue0bb" }
-    else
-        let s:separator    = { 'left': "\ue0b0", 'right': "\ue0b2" }
-        let s:subseparator = { 'left': "\ue0b1", 'right': "\ue0b3" }
-    endif
+    let s:powerline_subseparator_styles = {
+                \ 'default': { 'left': "\ue0b1", 'right': "\ue0b3" },
+                \ 'curvy':   { 'left': "\ue0b5", 'right': "\ue0b7" },
+                \ 'angly1':  { 'left': "\ue0b9", 'right': "\ue0bb" },
+                \ 'angly2':  { 'left': "\ue0bd", 'right': "\ue0bf" },
+                \ 'angly3':  { 'left': "\ue0b9", 'right': "\ue0bf" },
+                \ 'angly4':  { 'left': "\ue0bd", 'right': "\ue0bb" },
+                \ }
 
-    let s:separator['left']     .= repeat(' ', g:lightline_powerline_spaces['left'])
-    let s:separator['right']    .= repeat(' ', g:lightline_powerline_spaces['right'])
-    let s:subseparator['left']  .= repeat(' ', g:lightline_powerline_spaces['left_alt'])
-    let s:subseparator['right'] .= repeat(' ', g:lightline_powerline_spaces['right_alt'])
+    function! s:Rand() abort
+        return str2nr(matchstr(reltimestr(reltime()), '\v\.@<=\d+')[1:])
+    endfunction
 
-    call extend(s:symbols, {
-                \ 'separator':    s:separator,
-                \ 'subseparator': s:subseparator,
-                \ })
+    function! s:GetSeparator(style, spaces) abort
+        let l:style = a:style
+        if l:style ==? 'random'
+            let l:style = keys(s:powerline_separator_styles)[s:Rand() % len(s:powerline_separator_styles)]
+        endif
+
+        let l:separator    = copy(get(s:powerline_separator_styles, l:style, s:powerline_separator_styles['default']))
+        let l:subseparator = copy(get(s:powerline_subseparator_styles, l:style, s:powerline_subseparator_styles['default']))
+
+        let l:separator['left']     .= repeat(' ', a:spaces['left'])
+        let l:separator['right']    .= repeat(' ', a:spaces['right'])
+        let l:subseparator['left']  .= repeat(' ', a:spaces['left_alt'])
+        let l:subseparator['right'] .= repeat(' ', a:spaces['right_alt'])
+
+        return { 'separator': l:separator, 'subseparator': l:subseparator }
+    endfunction
+
+    call extend(s:symbols, s:GetSeparator(g:lightline_powerline_style, g:lightline_powerline_spaces))
 endif
 
 augroup VimLightlightSettings
