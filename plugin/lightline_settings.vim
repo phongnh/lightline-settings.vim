@@ -172,6 +172,9 @@ let g:lightline = {
             \   'left':  [['inactive']],
             \   'right': []
             \ },
+            \ 'component': {
+            \   'tablabel': 'Tabs',
+            \ },
             \ 'component_function': {
             \   'mode':         'LightlineModeStatus',
             \   'plugin':       'LightlinePluginStatus',
@@ -182,7 +185,6 @@ let g:lightline = {
             \   'plugin_extra': 'LightlinePluginExtraStatus',
             \   'buffer':       'LightlineBufferStatus',
             \   'inactive':     'LightlineInactiveStatus',
-            \   'tablabel':     'LightlineTabLabel',
             \ },
             \ 'tab_component_function': {
             \   'tabnum':   'LightlineTabNum',
@@ -192,6 +194,15 @@ let g:lightline = {
             \ }
 
 call extend(g:lightline, s:separators)
+
+" Detect DevIcons
+let s:has_devicons = (findfile('plugin/webdevicons.vim', &rtp) != '')
+" let s:has_devicons = exists('*WebDevIconsGetFileTypeSymbol') && exists('*WebDevIconsGetFileFormatSymbol')
+
+if s:has_devicons
+    " Show Vim Logo in Tabline
+    let g:lightline.component.tablabel = "\ue7c5"
+endif
 
 if findfile('plugin/bufferline.vim', &rtp) != '' && get(g:, 'lightline_bufferline', 0)
     " https://github.com/mengelbrecht/lightline-bufferline
@@ -215,10 +226,6 @@ if findfile('plugin/bufferline.vim', &rtp) != '' && get(g:, 'lightline_bufferlin
     "             \ 5: '₅', 6: '₆', 7: '₇', 8: '₈', 9: '₉'
     "             \ }
 endif
-
-" Detect DevIcons
-let s:has_devicons = (findfile('plugin/webdevicons.vim', &rtp) != '')
-" let s:has_devicons = exists('*WebDevIconsGetFileTypeSymbol') && exists('*WebDevIconsGetFileFormatSymbol')
 
 " Alternate status dictionaries
 let s:filename_modes = {
@@ -617,11 +624,10 @@ function! LightlineInactiveStatus() abort
     return s:InactiveFileNameStatus()
 endfunction
 
-function! LightlineTabLabel() abort
-    return 'Tabs'
-endfunction
-
 function! LightlineTabNum(n) abort
+    " if s:has_devicons
+    "     return printf('%d %s', a:n,  s:separators.tabline_subseparator.left)
+    " endif
     return printf('%d:', a:n)
 endfunction
 
