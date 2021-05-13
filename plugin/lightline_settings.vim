@@ -32,14 +32,17 @@ let s:normal_window_width = 120
 
 " Symbols: https://en.wikipedia.org/wiki/Enclosed_Alphanumerics
 let s:symbols = {
-                \ 'separator':    { 'left': '',  'right': ''  },
-                \ 'subseparator': { 'left': '|', 'right': '|' },
                 \ 'linenr':       '☰',
                 \ 'branch':       '⎇ ',
                 \ 'readonly':     '',
                 \ 'clipboard':    '🅒  ',
                 \ 'paste':        '🅟  ',
                 \ 'ellipsis':     '…',
+                \ }
+
+let s:separators = {
+                \ 'separator':    { 'left': '',  'right': ''  },
+                \ 'subseparator': { 'left': '|', 'right': '|' },
                 \ }
 
 if g:lightline_powerline
@@ -52,20 +55,38 @@ if g:lightline_powerline
     let s:powerline_separator_styles = {
                 \ 'default': { 'left': "\ue0b0", 'right': "\ue0b2" },
                 \ 'curvy':   { 'left': "\ue0b4", 'right': "\ue0b6" },
-                \ 'angly1':  { 'left': "\ue0b8", 'right': "\ue0ba" },
-                \ 'angly2':  { 'left': "\ue0bc", 'right': "\ue0be" },
+                \ 'angly1':  { 'left': "\ue0b8", 'right': "\ue0be" },
+                \ 'angly2':  { 'left': "\ue0bc", 'right': "\ue0ba" },
                 \ 'angly3':  { 'left': "\ue0b8", 'right': "\ue0be" },
                 \ 'angly4':  { 'left': "\ue0bc", 'right': "\ue0ba" },
+                \ 'angly5':  { 'left': "\ue0b8", 'right': "\ue0ba" },
+                \ 'angly6':  { 'left': "\ue0bc", 'right': "\ue0be" },
                 \ }
+
+    let s:powerline_tabline_separator_styles = extend(deepcopy(s:powerline_separator_styles), {
+                \ 'angly3': copy(s:powerline_separator_styles['angly4']),
+                \ 'angly4': copy(s:powerline_separator_styles['angly3']),
+                \ 'angly5': copy(s:powerline_separator_styles['angly6']),
+                \ 'angly6': copy(s:powerline_separator_styles['angly5']),
+                \ })
 
     let s:powerline_subseparator_styles = {
                 \ 'default': { 'left': "\ue0b1", 'right': "\ue0b3" },
                 \ 'curvy':   { 'left': "\ue0b5", 'right': "\ue0b7" },
-                \ 'angly1':  { 'left': "\ue0b9", 'right': "\ue0bb" },
-                \ 'angly2':  { 'left': "\ue0bd", 'right': "\ue0bf" },
-                \ 'angly3':  { 'left': "\ue0b9", 'right': "\ue0bf" },
-                \ 'angly4':  { 'left': "\ue0bd", 'right': "\ue0bb" },
+                \ 'angly1':  { 'left': "\ue0b9", 'right': "\ue0b9" },
+                \ 'angly2':  { 'left': "\ue0bb", 'right': "\ue0bb" },
+                \ 'angly3':  { 'left': "\ue0b9", 'right': "\ue0b9" },
+                \ 'angly4':  { 'left': "\ue0bb", 'right': "\ue0bb" },
+                \ 'angly5':  { 'left': "\ue0b9", 'right': "\ue0bb" },
+                \ 'angly6':  { 'left': "\ue0bb", 'right': "\ue0b9" },
                 \ }
+
+    let s:powerline_tabline_subseparator_styles = extend(deepcopy(s:powerline_subseparator_styles), {
+                \ 'angly3': copy(s:powerline_subseparator_styles['angly4']),
+                \ 'angly4': copy(s:powerline_subseparator_styles['angly3']),
+                \ 'angly5': copy(s:powerline_subseparator_styles['angly6']),
+                \ 'angly6': copy(s:powerline_subseparator_styles['angly5']),
+                \ })
 
     function! s:Rand() abort
         return str2nr(matchstr(reltimestr(reltime()), '\v\.@<=\d+')[1:])
@@ -85,10 +106,18 @@ if g:lightline_powerline
         let l:subseparator['left']  .= repeat(' ', a:spaces['left_alt'])
         let l:subseparator['right'] .= repeat(' ', a:spaces['right_alt'])
 
-        return { 'separator': l:separator, 'subseparator': l:subseparator }
+        let l:tabline_separator    = copy(get(s:powerline_tabline_separator_styles, l:style, s:powerline_tabline_separator_styles['default']))
+        let l:tabline_subseparator = copy(get(s:powerline_tabline_subseparator_styles, l:style, s:powerline_tabline_subseparator_styles['default']))
+
+        let l:tabline_separator['left']     .= repeat(' ', a:spaces['left'])
+        let l:tabline_separator['right']    .= repeat(' ', a:spaces['right'])
+        let l:tabline_subseparator['left']  .= repeat(' ', a:spaces['left_alt'])
+        let l:tabline_subseparator['right'] .= repeat(' ', a:spaces['right_alt'])
+
+        return { 'separator': l:separator, 'subseparator': l:subseparator, 'tabline_separator': l:tabline_separator, 'tabline_subseparator': l:tabline_subseparator }
     endfunction
 
-    call extend(s:symbols, s:GetSeparator(g:lightline_powerline_style, g:lightline_powerline_spaces))
+    call extend(s:separators, s:GetSeparator(g:lightline_powerline_style, g:lightline_powerline_spaces))
 endif
 
 augroup VimLightlightSettings
@@ -160,9 +189,9 @@ let g:lightline = {
             \   'filename': 'LightlineTabFileType',
             \   'readonly': 'LightlineTabReadonly',
             \ },
-            \ 'separator':    s:symbols.separator,
-            \ 'subseparator': s:symbols.subseparator,
             \ }
+
+call extend(g:lightline, s:separators)
 
 if findfile('plugin/bufferline.vim', &rtp) != '' && get(g:, 'lightline_bufferline', 0)
     " https://github.com/mengelbrecht/lightline-bufferline
