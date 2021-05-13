@@ -173,7 +173,8 @@ let g:lightline = {
             \   'right': []
             \ },
             \ 'component': {
-            \   'tablabel': 'Tabs',
+            \   'tablabel':    'Tabs',
+            \   'bufferlabel': 'Buffers',
             \ },
             \ 'component_function': {
             \   'mode':         'LightlineModeStatus',
@@ -201,12 +202,13 @@ let s:has_devicons = (findfile('plugin/webdevicons.vim', &rtp) != '')
 
 if s:has_devicons
     " Show Vim Logo in Tabline
-    let g:lightline.component.tablabel = "\ue7c5"
+    let g:lightline.component.tablabel    = "\ue7c5"
+    let g:lightline.component.bufferlabel = "\ue7c5"
 endif
 
 if findfile('plugin/bufferline.vim', &rtp) != '' && get(g:, 'lightline_bufferline', 0)
     " https://github.com/mengelbrecht/lightline-bufferline
-    let g:lightline.tabline          = { 'left': [['buffers']], 'right': [['close']] }
+    let g:lightline.tabline          = { 'left': [['bufferlabel', 'buffers']], 'right': [['close']] }
     let g:lightline.component_expand = { 'buffers': 'lightline#bufferline#buffers' }
     let g:lightline.component_type   = { 'buffers': 'tabsel' }
 
@@ -215,6 +217,8 @@ if findfile('plugin/bufferline.vim', &rtp) != '' && get(g:, 'lightline_bufferlin
     let g:lightline#bufferline#show_number       = 1
     let g:lightline#bufferline#shorten_path      = 1
     let g:lightline#bufferline#unnamed           = '[No Name]'
+    let g:lightline#bufferline#enable_devicons   = s:has_devicons
+    let g:lightline#bufferline#icon_position     = 'right'
 
     " let g:lightline#bufferline#number_map = {
     "             \ 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴',
