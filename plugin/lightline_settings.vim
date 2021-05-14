@@ -53,39 +53,39 @@ if g:lightline_powerline
                 \ })
 
     let s:powerline_separator_styles = {
-                \ 'default': { 'left': "\ue0b0", 'right': "\ue0b2" },
-                \ 'curvy':   { 'left': "\ue0b4", 'right': "\ue0b6" },
-                \ 'angly1':  { 'left': "\ue0b8", 'right': "\ue0be" },
-                \ 'angly2':  { 'left': "\ue0bc", 'right': "\ue0ba" },
-                \ 'angly3':  { 'left': "\ue0b8", 'right': "\ue0be" },
-                \ 'angly4':  { 'left': "\ue0bc", 'right': "\ue0ba" },
-                \ 'angly5':  { 'left': "\ue0b8", 'right': "\ue0ba" },
-                \ 'angly6':  { 'left': "\ue0bc", 'right': "\ue0be" },
+                \ 'default':     { 'left': "\ue0b0", 'right': "\ue0b2" },
+                \ 'curvy':       { 'left': "\ue0b4", 'right': "\ue0b6" },
+                \ 'angly1':      { 'left': "\ue0b8", 'right': "\ue0be" },
+                \ 'angly2':      { 'left': "\ue0bc", 'right': "\ue0ba" },
+                \ 'angly3':      { 'left': "\ue0b8", 'right': "\ue0ba" },
+                \ 'angly4':      { 'left': "\ue0bc", 'right': "\ue0be" },
+                \ 'angly-left':  { 'left': "\ue0b8", 'right': "\ue0be" },
+                \ 'angly-right': { 'left': "\ue0bc", 'right': "\ue0ba" },
                 \ }
 
     let s:powerline_tabline_separator_styles = extend(deepcopy(s:powerline_separator_styles), {
+                \ 'angly1': copy(s:powerline_separator_styles['angly2']),
+                \ 'angly2': copy(s:powerline_separator_styles['angly1']),
                 \ 'angly3': copy(s:powerline_separator_styles['angly4']),
                 \ 'angly4': copy(s:powerline_separator_styles['angly3']),
-                \ 'angly5': copy(s:powerline_separator_styles['angly6']),
-                \ 'angly6': copy(s:powerline_separator_styles['angly5']),
                 \ })
 
     let s:powerline_subseparator_styles = {
-                \ 'default': { 'left': "\ue0b1", 'right': "\ue0b3" },
-                \ 'curvy':   { 'left': "\ue0b5", 'right': "\ue0b7" },
-                \ 'angly1':  { 'left': "\ue0b9", 'right': "\ue0b9" },
-                \ 'angly2':  { 'left': "\ue0bb", 'right': "\ue0bb" },
-                \ 'angly3':  { 'left': "\ue0b9", 'right': "\ue0b9" },
-                \ 'angly4':  { 'left': "\ue0bb", 'right': "\ue0bb" },
-                \ 'angly5':  { 'left': "\ue0b9", 'right': "\ue0bb" },
-                \ 'angly6':  { 'left': "\ue0bb", 'right': "\ue0b9" },
+                \ 'default':     { 'left': "\ue0b1", 'right': "\ue0b3" },
+                \ 'curvy':       { 'left': "\ue0b5", 'right': "\ue0b7" },
+                \ 'angly1':      { 'left': "\ue0b9", 'right': "\ue0b9" },
+                \ 'angly2':      { 'left': "\ue0bb", 'right': "\ue0bb" },
+                \ 'angly3':      { 'left': "\ue0b9", 'right': "\ue0bb" },
+                \ 'angly4':      { 'left': "\ue0bd", 'right': "\ue0b9" },
+                \ 'angly-left':  { 'left': "\ue0b9", 'right': "\ue0b9" },
+                \ 'angly-right': { 'left': "\ue0bb", 'right': "\ue0bb" },
                 \ }
 
     let s:powerline_tabline_subseparator_styles = extend(deepcopy(s:powerline_subseparator_styles), {
+                \ 'angly1': copy(s:powerline_subseparator_styles['angly2']),
+                \ 'angly2': copy(s:powerline_subseparator_styles['angly1']),
                 \ 'angly3': copy(s:powerline_subseparator_styles['angly4']),
                 \ 'angly4': copy(s:powerline_subseparator_styles['angly3']),
-                \ 'angly5': copy(s:powerline_subseparator_styles['angly6']),
-                \ 'angly6': copy(s:powerline_subseparator_styles['angly5']),
                 \ })
 
     function! s:Rand() abort
