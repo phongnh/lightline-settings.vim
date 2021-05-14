@@ -92,32 +92,45 @@ if g:lightline_powerline
         return str2nr(matchstr(reltimestr(reltime()), '\v\.@<=\d+')[1:])
     endfunction
 
-    function! s:GetSeparator(style, spaces) abort
-        let l:style = a:style
-        if l:style ==? 'random'
-            let l:style = keys(s:powerline_separator_styles)[s:Rand() % len(s:powerline_separator_styles)]
-        endif
-
-        let l:separator    = copy(get(s:powerline_separator_styles, l:style, s:powerline_separator_styles['default']))
-        let l:subseparator = copy(get(s:powerline_subseparator_styles, l:style, s:powerline_subseparator_styles['default']))
+    function! s:GetSeparator(style, separator_styles, subseparator_styles, spaces) abort
+        let l:separator    = copy(get(a:separator_styles, a:style, a:separator_styles['default']))
+        let l:subseparator = copy(get(a:subseparator_styles, a:style, a:subseparator_styles['default']))
 
         let l:separator['left']     .= repeat(' ', a:spaces['left'])
         let l:separator['right']    .= repeat(' ', a:spaces['right'])
         let l:subseparator['left']  .= repeat(' ', a:spaces['left_alt'])
         let l:subseparator['right'] .= repeat(' ', a:spaces['right_alt'])
 
-        let l:tabline_separator    = copy(get(s:powerline_tabline_separator_styles, l:style, s:powerline_tabline_separator_styles['default']))
-        let l:tabline_subseparator = copy(get(s:powerline_tabline_subseparator_styles, l:style, s:powerline_tabline_subseparator_styles['default']))
-
-        let l:tabline_separator['left']     .= repeat(' ', a:spaces['left'])
-        let l:tabline_separator['right']    .= repeat(' ', a:spaces['right'])
-        let l:tabline_subseparator['left']  .= repeat(' ', a:spaces['left_alt'])
-        let l:tabline_subseparator['right'] .= repeat(' ', a:spaces['right_alt'])
-
-        return { 'separator': l:separator, 'subseparator': l:subseparator, 'tabline_separator': l:tabline_separator, 'tabline_subseparator': l:tabline_subseparator }
+        return [l:separator, l:subseparator]
     endfunction
 
-    call extend(s:separators, s:GetSeparator(g:lightline_powerline_style, g:lightline_powerline_spaces))
+    function! s:SetSeparator(style, spaces) abort
+        let l:style = a:style
+        if l:style ==? 'random'
+            let l:style = keys(s:powerline_separator_styles)[s:Rand() % len(s:powerline_separator_styles)]
+        endif
+
+        let [l:separator, l:subseparator] = s:GetSeparator(
+                    \ l:style,
+                    \ s:powerline_separator_styles,
+                    \ s:powerline_subseparator_styles,
+                    \ a:spaces)
+
+        let [l:tabline_separator, l:tabline_subseparator] = s:GetSeparator(
+                    \ l:style,
+                    \ s:powerline_tabline_separator_styles,
+                    \ s:powerline_tabline_subseparator_styles,
+                    \ a:spaces)
+
+        call extend(s:separators, {
+                    \ 'separator':            l:separator,
+                    \ 'subseparator':         l:subseparator,
+                    \ 'tabline_separator':    l:tabline_separator,
+                    \ 'tabline_subseparator': l:tabline_subseparator,
+                    \ })
+    endfunction
+
+    call s:SetSeparator(g:lightline_powerline_style, g:lightline_powerline_spaces)
 endif
 
 augroup VimLightlightSettings
