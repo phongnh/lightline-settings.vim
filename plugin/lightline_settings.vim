@@ -21,6 +21,7 @@ let g:lightline_shorten_path          = get(g:, 'lightline_shorten_path', 0)
 let g:lightline_show_tab_close_button = get(g:, 'lightline_show_tab_close_button', 0)
 let g:lightline_show_git_branch       = get(g:, 'lightline_show_git_branch', 1)
 let g:lightline_show_devicons         = get(g:, 'lightline_show_devicons', 1)
+let g:lightline_show_vim_logo         = get(g:, 'lightline_show_vim_logo', 1)
 
 " Disable NERDTree statusline
 let g:NERDTreeStatusline = -1
@@ -238,7 +239,7 @@ elseif g:lightline_show_devicons && s:has_devicons
     endfunction
 endif
 
-if s:lightline_show_devicons
+if g:lightline_show_vim_logo && s:lightline_show_devicons
     " Show Vim Logo in Tabline
     let g:lightline.component.tablabel    = "\ue7c5"
     let g:lightline.component.bufferlabel = "\ue7c5"
