@@ -209,11 +209,36 @@ let g:lightline = {
 
 call extend(g:lightline, s:separators)
 
-" Detect DevIcons
+" Detect vim-devicons or nerdfont.vim
 let s:has_devicons = (findfile('plugin/webdevicons.vim', &rtp) != '')
 " let s:has_devicons = exists('*WebDevIconsGetFileTypeSymbol') && exists('*WebDevIconsGetFileFormatSymbol')
+let s:has_nerdfont = (findfile('autoload/nerdfont.vim', &rtp) != '')
 
-if s:has_devicons
+let s:lightline_show_devicons = 0
+
+if g:lightline_show_devicons && s:has_nerdfont
+    let s:lightline_show_devicons = 1
+
+    function! s:GetFileTypeSymbol(filename) abort
+        return nerdfont#find(a:filename)
+    endfunction
+
+    function! s:GetFileFormatSymbol(...) abort
+        return nerdfont#fileformat#find()
+    endfunction
+elseif g:lightline_show_devicons && s:has_devicons
+    let s:lightline_show_devicons = 1
+
+    function! s:GetFileTypeSymbol(filename) abort
+        return WebDevIconsGetFileTypeSymbol(a:filename)
+    endfunction
+
+    function! s:GetFileFormatSymbol(...) abort
+        return WebDevIconsGetFileFormatSymbol()
+    endfunction
+endif
+
+if s:lightline_show_devicons
     " Show Vim Logo in Tabline
     let g:lightline.component.tablabel    = "\ue7c5"
     let g:lightline.component.bufferlabel = "\ue7c5"
@@ -231,6 +256,7 @@ if findfile('plugin/bufferline.vim', &rtp) != '' && get(g:, 'lightline_bufferlin
     let g:lightline#bufferline#shorten_path      = 1
     let g:lightline#bufferline#unnamed           = '[No Name]'
     let g:lightline#bufferline#enable_devicons   = s:has_devicons
+    let g:lightline#bufferline#enable_nerdfont   = s:has_nerdfont
     let g:lightline#bufferline#icon_position     = 'right'
 
     " let g:lightline#bufferline#number_map = {
@@ -507,10 +533,10 @@ function! s:FileInfoStatus(...) abort
 
     let compact = get(a:, 1, 0)
 
-    if g:lightline_show_devicons && s:has_devicons && !compact
+    if s:lightline_show_devicons && !compact
         call extend(parts, [
-                    \ WebDevIconsGetFileTypeSymbol(expand('%')) . ' ',
-                    \ WebDevIconsGetFileFormatSymbol() . ' ',
+                    \ s:GetFileTypeSymbol(expand('%')) . ' ',
+                    \ s:GetFileFormatSymbol() . ' ',
                     \ ])
     endif
 
