@@ -241,8 +241,8 @@ endif
 
 if g:lightline_show_vim_logo && s:lightline_show_devicons
     " Show Vim Logo in Tabline
-    let g:lightline.component.tablabel    = "\ue7c5"
-    let g:lightline.component.bufferlabel = "\ue7c5"
+    let g:lightline.component.tablabel    = "\ue7c5" . ' '
+    let g:lightline.component.bufferlabel = "\ue7c5" . ' '
 endif
 
 if findfile('plugin/bufferline.vim', &rtp) != '' && get(g:, 'lightline_bufferline', 0)
