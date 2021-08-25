@@ -297,6 +297,7 @@ let s:filetype_modes = {
             \ 'LuaTree':           'LuaTree',
             \ 'fern':              'Fern',
             \ 'vaffle':            'Vaffle',
+            \ 'dirvish':           'Dirvish',
             \ 'Mundo':             'Mundo',
             \ 'MundoDiff':         'Mundo Preview',
             \ 'startify':          'Startify',
@@ -770,6 +771,10 @@ function! s:CustomMode() abort
             return extend(result, s:GetVaffleMode())
         endif
 
+        if ft ==# 'dirvish'
+            return extend(result, s:GetDirvishMode())
+        endif
+
         if ft ==# 'tagbar'
             return extend(result, s:GetTagbarMode())
         endif
@@ -905,6 +910,11 @@ function! s:GetVaffleMode(...) abort
     endif
 
     return result
+endfunction
+
+" Dirvish Integration
+function! s:GetDirvishMode(...) abort
+    return { 'plugin': expand('%:p:h') }
 endfunction
 
 " CtrlSF Integration
