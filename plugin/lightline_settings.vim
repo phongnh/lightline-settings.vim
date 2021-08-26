@@ -180,7 +180,10 @@ let g:lightline = {
             \ },
             \ 'active': {
             \   'left':  [['mode'], ['plugin', 'branch', 'filename']],
-            \   'right': [['indentation', 'fileinfo', 'plugin_extra'], ['buffer']]
+            \   'right': [
+            \       ['indentation', 'fileinfo'] + (get(g:, 'lightline_show_linenr', 0) ? ['lineinfo'] : []) + ['plugin_extra'],
+            \       ['buffer'],
+            \   ]
             \ },
             \ 'inactive': {
             \   'left':  [['inactive']],
@@ -197,6 +200,7 @@ let g:lightline = {
             \   'filename':     'LightlineFileNameStatus',
             \   'indentation':  'LightlineIndentationStatus',
             \   'fileinfo':     'LightlineFileInfoStatus',
+            \   'lineinfo':     'LightlineLineInfoStatus',
             \   'plugin_extra': 'LightlinePluginExtraStatus',
             \   'buffer':       'LightlineBufferStatus',
             \   'inactive':     'LightlineInactiveStatus',
@@ -599,6 +603,25 @@ function! LightlineFileInfoStatus() abort
     let compact = s:IsCompact()
 
     return s:FileInfoStatus(compact)
+endfunction
+
+function! LightlineLineInfoStatus() abort
+    let l:mode = s:CustomMode()
+    if len(l:mode)
+        return ''
+    endif
+
+    if line('w0') == 1 && line('w$') == line('$')
+        let l:percent = 'All'
+    elseif line('w0') == 1
+        let l:percent = 'Top'
+    elseif line('w$') == line('$')
+        let l:percent = 'Bot'
+    else
+        let l:percent = printf('%d%%', line('.') * 100 / line('$'))
+    endif
+
+   return printf('%4d:%-3d %3s', line('.'), col('.'), l:percent)
 endfunction
 
 function! LightlineIndentationStatus() abort
