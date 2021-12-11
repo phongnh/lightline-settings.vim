@@ -12,8 +12,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 " Settings
-let g:lightline_powerline             = get(g:, 'lightline_powerline', 0)
-let g:lightline_powerline_style       = get(g:, 'lightline_powerline_style', 'default')
+let g:lightline_powerline_fonts       = get(g:, 'lightline_powerline_fonts', 0)
 let g:lightline_theme                 = get(g:, 'lightline_theme', 'solarized')
 let g:lightline_noshowmode            = get(g:, 'lightline_noshowmode', 1)
 let g:lightline_shorten_path          = get(g:, 'lightline_shorten_path', 0)
@@ -96,14 +95,14 @@ let g:lightline = {
             \ },
             \ }
 
-if g:lightline_powerline
+if g:lightline_powerline_fonts
     call extend(s:symbols, {
                 \ 'linenr':   "\ue0a1",
                 \ 'branch':   "\ue0a0",
                 \ 'readonly': "\ue0a2",
                 \ })
 
-    call lightline_settings#SetPowerlineSeparators(g:lightline_powerline_style)
+    call lightline_settings#SetPowerlineSeparators(get(g:, 'lightline_powerline_style', 'default'))
 endif
 
 " Detect vim-devicons or nerdfont.vim
@@ -147,7 +146,7 @@ if findfile('plugin/bufferline.vim', &rtp) != '' && get(g:, 'lightline_bufferlin
     let g:lightline.component_expand = { 'buffers': 'lightline#bufferline#buffers' }
     let g:lightline.component_type   = { 'buffers': 'tabsel' }
 
-    let g:lightline#bufferline#unicode_symbols   = get(g:, 'lightline_powerline', 0)
+    let g:lightline#bufferline#unicode_symbols   = g:lightline_powerline_fonts
     let g:lightline#bufferline#filename_modifier = ':t'
     let g:lightline#bufferline#show_number       = 1
     let g:lightline#bufferline#shorten_path      = 1
