@@ -105,33 +105,32 @@ if g:lightline_powerline_fonts
     call lightline_settings#SetPowerlineSeparators(get(g:, 'lightline_powerline_style', 'default'))
 endif
 
-" Detect vim-devicons or nerdfont.vim
-let s:has_devicons = (findfile('plugin/webdevicons.vim', &rtp) != '')
-" let s:has_devicons = exists('*WebDevIconsGetFileTypeSymbol') && exists('*WebDevIconsGetFileFormatSymbol')
-let s:has_nerdfont = (findfile('autoload/nerdfont.vim', &rtp) != '')
-
 let s:lightline_show_devicons = 0
 
-if g:lightline_show_devicons && s:has_nerdfont
-    let s:lightline_show_devicons = 1
+if g:lightline_show_devicons
+    " Detect vim-devicons or nerdfont.vim
+    " let s:has_devicons = exists('*WebDevIconsGetFileTypeSymbol') && exists('*WebDevIconsGetFileFormatSymbol')
+    if findfile('autoload/nerdfont.vim', &rtp) != ''
+        let s:lightline_show_devicons = 1
 
-    function! s:GetFileTypeSymbol(filename) abort
-        return nerdfont#find(a:filename)
-    endfunction
+        function! s:GetFileTypeSymbol(filename) abort
+            return nerdfont#find(a:filename)
+        endfunction
 
-    function! s:GetFileFormatSymbol(...) abort
-        return nerdfont#fileformat#find()
-    endfunction
-elseif g:lightline_show_devicons && s:has_devicons
-    let s:lightline_show_devicons = 1
+        function! s:GetFileFormatSymbol(...) abort
+            return nerdfont#fileformat#find()
+        endfunction
+    elseif findfile('plugin/webdevicons.vim', &rtp) != ''
+        let s:lightline_show_devicons = 1
 
-    function! s:GetFileTypeSymbol(filename) abort
-        return WebDevIconsGetFileTypeSymbol(a:filename)
-    endfunction
+        function! s:GetFileTypeSymbol(filename) abort
+            return WebDevIconsGetFileTypeSymbol(a:filename)
+        endfunction
 
-    function! s:GetFileFormatSymbol(...) abort
-        return WebDevIconsGetFileFormatSymbol()
-    endfunction
+        function! s:GetFileFormatSymbol(...) abort
+            return WebDevIconsGetFileFormatSymbol()
+        endfunction
+    endif
 endif
 
 if g:lightline_show_vim_logo && s:lightline_show_devicons
@@ -140,7 +139,7 @@ if g:lightline_show_vim_logo && s:lightline_show_devicons
     let g:lightline.component.bufferlabel = "\ue7c5" . ' '
 endif
 
-if findfile('plugin/bufferline.vim', &rtp) != '' && get(g:, 'lightline_bufferline', 0)
+if get(g:, 'lightline_bufferline', 0) && findfile('plugin/bufferline.vim', &rtp) != ''
     " https://github.com/mengelbrecht/lightline-bufferline
     let g:lightline.tabline          = { 'left': [['bufferlabel', 'buffers']], 'right': [['close']] }
     let g:lightline.component_expand = { 'buffers': 'lightline#bufferline#buffers' }
