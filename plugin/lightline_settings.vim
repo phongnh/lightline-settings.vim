@@ -219,6 +219,7 @@ let s:filetype_modes = {
             \ 'Mundo':             'Mundo',
             \ 'MundoDiff':         'Mundo Preview',
             \ 'startify':          'Startify',
+            \ 'alpha':             'Alpha',
             \ 'tagbar':            'Tagbar',
             \ 'vim-plug':          'Plugins',
             \ 'terminal':          'TERMINAL',
