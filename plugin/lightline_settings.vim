@@ -205,6 +205,7 @@ let s:filename_modes = {
             \ '__committia_status__': 'Committia Status',
             \ '__committia_diff__':   'Committia Diff',
             \ '__doc__':              'Document',
+            \ '__LSP_SETTINGS__':     'LSP Settings',
             \ }
 
 let s:filetype_modes = {
