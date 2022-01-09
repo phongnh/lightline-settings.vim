@@ -222,6 +222,8 @@ let s:filetype_modes = {
             \ 'startify':          'Startify',
             \ 'alpha':             'Alpha',
             \ 'tagbar':            'Tagbar',
+            \ 'vista':             'Vista',
+            \ 'vista_kind':        'Vista',
             \ 'vim-plug':          'Plugins',
             \ 'terminal':          'TERMINAL',
             \ 'help':              'HELP',
@@ -716,6 +718,10 @@ function! s:CustomMode() abort
 
         if ft ==# 'tagbar'
             return extend(result, s:GetTagbarMode())
+        endif
+
+        if ft ==# 'vista_kind' || ft ==# 'vista'
+            return extend(result, lightline_settings#VistaMode())
         endif
 
         if ft ==# 'terminal'
