@@ -217,8 +217,8 @@ endfunction
 
 augroup VimLightlineColorscheme
     autocmd!
-    autocmd VimEnter * call <SID>FindLightlineThemes() | setglobal noshowmode
-    autocmd ColorScheme * if !has('vim_starting') | call <SID>ReloadLightlineTheme() | endif
+    autocmd VimEnter * call <SID>FindLightlineThemes() | call <SID>ReloadLightlineTheme() | setglobal noshowmode
+    autocmd ColorScheme * call <SID>ReloadLightlineTheme()
 augroup END
 
 " Alternate status dictionaries
