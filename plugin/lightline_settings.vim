@@ -212,12 +212,12 @@ function! s:ReloadLightlineTheme() abort
         let l:colorscheme = substitute(l:colorscheme, '-', '_', 'g')
     endif
 
-    call <SID>SetLightlineTheme(l:colorscheme)
+    call s:SetLightlineTheme(l:colorscheme)
 endfunction
 
 augroup VimLightlineColorscheme
     autocmd!
-    autocmd VimEnter * call <SID>FindLightlineThemes()
+    autocmd VimEnter * call <SID>FindLightlineThemes() | setglobal noshowmode
     autocmd ColorScheme * if !has('vim_starting') | call <SID>ReloadLightlineTheme() | endif
 augroup END
 
