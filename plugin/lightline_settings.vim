@@ -172,22 +172,62 @@ if g:lightline_noshowmode
     augroup END
 endif
 
-if exists('g:plug_home')
-    function! s:ReloadLightlineTheme() abort
-        let l:colorscheme_path = join([s:lightline_colorscheme_dir, g:lightline_theme . '.vim'], '/')
-        if filereadable(l:colorscheme_path)
-            execute 'source ' . l:colorscheme_path
-            call lightline#colorscheme()
-        endif
-    endfunction
+command! LightlineReload call <SID>LightlineReload()
+command! -nargs=1 -complete=custom,<SID>ListLightlineColorschemes LightlineTheme call <SID>SetLightlineTheme(<f-args>)
 
-    let s:lightline_colorscheme_dir = join([g:plug_home, 'lightline.vim', 'autoload', 'lightline', 'colorscheme'], '/')
+function! s:LightlineReload() abort
+    call lightline#init()
+    call lightline#colorscheme()
+    call lightline#update()
+endfunction
 
-    augroup VimLightlineColorscheme
-        autocmd!
-        autocmd ColorSchemePre * call <SID>ReloadLightlineTheme()
-    augroup END
-endif
+function! s:FindLightlineThemes() abort
+    let s:lightline_colorschemes = map(split(globpath(&rtp, 'autoload/lightline/colorscheme/*.vim')), "fnamemodify(v:val, ':t:r')")
+    let s:lightline_colorschemes_completion = join(s:lightline_colorschemes, "\n")
+endfunction
+
+function! s:ListLightlineColorschemes(...) abort
+    return s:lightline_colorschemes_completion
+endfunction
+
+function! s:SetLightlineTheme(colorscheme) abort
+    if index(s:lightline_colorschemes, a:colorscheme) < 0
+        return
+    endif
+
+    " Reload palette
+    let l:colorscheme_path = findfile(printf('autoload/lightline/colorscheme/%s.vim', a:colorscheme), &rtp)
+    if !empty(l:colorscheme_path) && filereadable(l:colorscheme_path)
+        execute 'source ' . l:colorscheme_path
+    endif
+
+    let g:lightline.colorscheme = a:colorscheme
+    call s:LightlineReload()
+endfunction
+
+function! s:ReloadLightlineTheme() abort
+    let l:colorscheme = get(a:, 1, get(g:, 'colors_name', ''))
+
+    if l:colorscheme =~ 'solarized\|soluarized'
+        let l:colorscheme = 'solarized'
+    endif
+
+    if index(s:lightline_colorschemes, l:colorscheme) < 0
+        let l:colorscheme = tolower(l:colorscheme)
+    endif
+
+    if index(s:lightline_colorschemes, l:colorscheme) < 0
+        let l:colorscheme = substitute(l:colorscheme, '-', '_', 'g')
+    endif
+
+    call <SID>SetLightlineTheme(l:colorscheme)
+endfunction
+
+augroup VimLightlineColorscheme
+    autocmd!
+    autocmd VimEnter * call <SID>FindLightlineThemes()
+    autocmd ColorScheme * if !has('vim_starting') | call <SID>ReloadLightlineTheme() | endif
+augroup END
 
 " Alternate status dictionaries
 let s:filename_modes = {
