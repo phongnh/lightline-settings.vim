@@ -265,6 +265,7 @@ let s:filetype_modes = {
             \ 'gitcommit':         'Commit Message',
             \ 'fugitiveblame':     'FugitiveBlame',
             \ 'gitmessengerpopup': 'Git Messenger',
+            \ 'GV':                'GV',
             \ 'agit':              'Agit',
             \ 'agit_diff':         'Agit Diff',
             \ 'agit_stat':         'Agit Stat',
