@@ -198,21 +198,27 @@ function! s:SetLightlineTheme(colorscheme) abort
 endfunction
 
 function! s:ReloadLightlineTheme() abort
-    let l:colorscheme = get(g:, 'colors_name', '')
+    let l:original_colorscheme = get(g:, 'colors_name', '')
     if has('vim_starting') && exists('g:lightline_theme')
-        let l:colorscheme = g:lightline_theme
+        let l:original_colorscheme = g:lightline_theme
     endif
 
-    if l:colorscheme =~ 'solarized\|soluarized\|flattened'
-        let l:colorscheme = 'solarized'
+    if l:original_colorscheme =~ 'solarized\|soluarized\|flattened'
+        let l:original_colorscheme = 'solarized'
+    endif
+
+    let l:colorscheme = l:original_colorscheme
+
+    if index(s:lightline_colorschemes, l:colorscheme) < 0
+        let l:colorscheme = tolower(l:original_colorscheme)
     endif
 
     if index(s:lightline_colorschemes, l:colorscheme) < 0
-        let l:colorscheme = tolower(l:colorscheme)
+        let l:colorscheme = substitute(l:original_colorscheme, '-', '_', 'g')
     endif
 
     if index(s:lightline_colorschemes, l:colorscheme) < 0
-        let l:colorscheme = substitute(l:colorscheme, '-', '_', 'g')
+        let l:colorscheme = substitute(l:original_colorscheme, '-', '', 'g')
     endif
 
     call s:SetLightlineTheme(l:colorscheme)
