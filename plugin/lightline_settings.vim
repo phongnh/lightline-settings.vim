@@ -129,6 +129,22 @@ if g:lightline_show_devicons
         function! s:GetFileFormatSymbol(...) abort
             return WebDevIconsGetFileFormatSymbol()
         endfunction
+    elseif exists("g:LightlineWebDevIconsFind")
+        let s:lightline_show_devicons = 1
+
+        function! s:GetFileTypeSymbol(filename) abort
+            return g:LightlineWebDevIconsFind(a:filename)
+        endfunction
+
+        let s:web_devicons_fileformats = {
+                    \ 'dos': '',
+                    \ 'mac': '',
+                    \ 'unix': '',
+                    \ }
+
+        function! s:GetFileFormatSymbol(...) abort
+            return get(s:web_devicons_fileformats, &fileformat, '')
+        endfunction
     endif
 endif
 
