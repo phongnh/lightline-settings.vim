@@ -190,6 +190,9 @@ function! s:LightlineReload() abort
 endfunction
 
 function! s:FindLightlineThemes() abort
+    if exists('s:lightline_colorschemes')
+        return s:lightline_colorschemes
+    endif
     let s:lightline_colorschemes = map(split(globpath(&rtp, 'autoload/lightline/colorscheme/*.vim')), "fnamemodify(v:val, ':t:r')")
     let s:lightline_colorschemes_completion = join(s:lightline_colorschemes, "\n")
 endfunction
@@ -214,6 +217,8 @@ function! s:SetLightlineTheme(colorscheme) abort
 endfunction
 
 function! s:ReloadLightlineTheme() abort
+    call s:FindLightlineThemes()
+
     let l:original_colorscheme = get(g:, 'colors_name', '')
     if has('vim_starting') && exists('g:lightline_theme')
         let l:original_colorscheme = g:lightline_theme
@@ -242,7 +247,7 @@ endfunction
 
 augroup VimLightlineColorscheme
     autocmd!
-    autocmd VimEnter * call <SID>FindLightlineThemes() | call <SID>ReloadLightlineTheme() | setglobal noshowmode
+    autocmd VimEnter * call <SID>ReloadLightlineTheme() | setglobal noshowmode
     autocmd ColorScheme * call <SID>ReloadLightlineTheme()
 augroup END
 
