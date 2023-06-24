@@ -887,13 +887,10 @@ endfunction
 
 " NeoTree Integration
 function! s:GetNeoTreeMode(...) abort
-    let result = {}
+    let result = { 'name': 'NeoTree' }
 
     if exists('b:neo_tree_source')
-        call extend(result, {
-                    \ 'name': 'NeoTree',
-                    \ 'plugin': b:neo_tree_source,
-                    \ })
+        let result['plugin'] = b:neo_tree_source
     endif
 
     return result
