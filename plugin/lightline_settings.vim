@@ -275,6 +275,7 @@ let s:filetype_modes = {
             \ 'nerdtree':          'NERDTree',
             \ 'CHADTree':          'CHADTree',
             \ 'NvimTree':          'NvimTree',
+            \ 'neo-tree':          'NeoTree',
             \ 'LuaTree':           'LuaTree',
             \ 'fern':              'Fern',
             \ 'vaffle':            'Vaffle',
@@ -767,6 +768,10 @@ function! s:CustomMode() abort
             return extend(result, s:GetCtrlPMode())
         endif
 
+        if ft ==# 'neo-tree'
+            return extend(result, s:GetNeoTreeMode())
+        endif
+
         if ft ==# 'fern'
             return extend(result, s:GetFernMode())
         endif
@@ -878,6 +883,20 @@ function! CtrlPProgressStatusLine(len) abort
     let g:lightline.ctrlp_dir  = s:GetCurrentDir()
 
     return lightline#statusline(0)
+endfunction
+
+" NeoTree Integration
+function! s:GetNeoTreeMode(...) abort
+    let result = {}
+
+    if exists('b:neo_tree_source')
+        call extend(result, {
+                    \ 'name': 'NeoTree',
+                    \ 'plugin': b:neo_tree_source,
+                    \ })
+    endif
+
+    return result
 endfunction
 
 " Fern Integration
