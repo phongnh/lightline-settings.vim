@@ -271,7 +271,7 @@ let s:filename_modes = {
             \ }
 
 let s:filetype_modes = {
-            \ 'netrw':             'NetrwTree',
+            \ 'netrw':             'Netrw',
             \ 'nerdtree':          'NERDTree',
             \ 'CHADTree':          'CHADTree',
             \ 'NvimTree':          'NvimTree',
@@ -769,6 +769,10 @@ function! s:CustomMode() abort
             return extend(result, s:GetCtrlPMode())
         endif
 
+        if ft ==# 'netrw'
+            return extend(result, s:GetNetrwMode())
+        endif
+
         if ft ==# 'neo-tree'
             return extend(result, s:GetNeoTreeMode())
         endif
@@ -888,6 +892,17 @@ function! CtrlPProgressStatusLine(len) abort
     let g:lightline.ctrlp_dir  = s:GetCurrentDir()
 
     return lightline#statusline(0)
+endfunction
+
+" Netrw Integration
+function! s:GetNetrwMode(...) abort
+    let result = {}
+
+    if exists('b:netrw_curdir')
+        let result['plugin'] = fnamemodify(b:netrw_curdir, ':p:~:.:h')
+    endif
+
+    return result
 endfunction
 
 " NeoTree Integration
