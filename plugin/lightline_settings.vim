@@ -216,10 +216,13 @@ function! s:SetLightlineTheme(colorscheme) abort
     call s:LightlineReload()
 endfunction
 
-function! s:ReloadLightlineTheme() abort
-    call s:FindLightlineThemes()
+let s:lightline_colorscheme_mappings = {
+            \ 'gruvbox': ['gruvbox8', 'gruvbox-material'],
+            \ }
 
+function! s:DetectLightlineTheme() abort
     let l:original_colorscheme = get(g:, 'colors_name', '')
+
     if has('vim_starting') && exists('g:lightline_theme')
         let l:original_colorscheme = g:lightline_theme
     endif
@@ -229,18 +232,33 @@ function! s:ReloadLightlineTheme() abort
     endif
 
     let l:colorscheme = l:original_colorscheme
-
-    if index(s:lightline_colorschemes, l:colorscheme) < 0
-        let l:colorscheme = tolower(l:original_colorscheme)
+    if index(s:lightline_colorschemes, l:colorscheme) > -1
+        return l:colorscheme
     endif
 
-    if index(s:lightline_colorschemes, l:colorscheme) < 0
-        let l:colorscheme = substitute(l:original_colorscheme, '-', '_', 'g')
+    let l:colorscheme = tolower(l:original_colorscheme)
+    if index(s:lightline_colorschemes, l:colorscheme) > -1
+        return l:colorscheme
     endif
 
-    if index(s:lightline_colorschemes, l:colorscheme) < 0
-        let l:colorscheme = substitute(l:original_colorscheme, '-', '', 'g')
+    for l:alternative_colorscheme in get(s:lightline_colorscheme_mappings, l:colorscheme, [])
+        if index(s:lightline_colorschemes, l:alternative_colorscheme) > -1
+            return l:alternative_colorscheme
+        endif
+    endfor
+
+    let l:colorscheme = substitute(l:original_colorscheme, '-', '_', 'g')
+    if index(s:lightline_colorschemes, l:colorscheme) > -1
+        return l:colorscheme
     endif
+
+    return substitute(l:original_colorscheme, '-', '', 'g')
+endfunction
+
+function! s:ReloadLightlineTheme() abort
+    call s:FindLightlineThemes()
+
+    let l:colorscheme = s:DetectLightlineTheme()
 
     call s:SetLightlineTheme(l:colorscheme)
 endfunction
