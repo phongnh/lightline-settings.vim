@@ -914,7 +914,9 @@ endfunction
 
 " Netrw Integration
 function! s:GetNetrwMode(...) abort
-    let result = {}
+    let result = {
+                \ 'plugin_extra': printf('%s [%s]', get(g:, 'netrw_sort_by', ''), get(g:, 'netrw_sort_direction', 'n') =~ 'n' ? '+' : '-'),
+                \ }
 
     if exists('b:netrw_curdir')
         let result['plugin'] = fnamemodify(b:netrw_curdir, ':p:~:.:h')
