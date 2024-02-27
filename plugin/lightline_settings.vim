@@ -290,6 +290,7 @@ let s:filename_modes = {
 
 let s:filetype_modes = {
             \ 'netrw':             'Netrw',
+            \ 'molder':            'Molder',
             \ 'nerdtree':          'NERDTree',
             \ 'CHADTree':          'CHADTree',
             \ 'NvimTree':          'NvimTree',
@@ -791,6 +792,10 @@ function! s:CustomMode() abort
             return extend(result, s:GetNetrwMode())
         endif
 
+        if ft ==# 'molder'
+            return extend(result, s:GetMolderMode())
+        endif
+
         if ft ==# 'neo-tree'
             return extend(result, s:GetNeoTreeMode())
         endif
@@ -920,6 +925,17 @@ function! s:GetNetrwMode(...) abort
 
     if exists('b:netrw_curdir')
         let result['plugin'] = fnamemodify(b:netrw_curdir, ':p:~:.:h')
+    endif
+
+    return result
+endfunction
+
+" vim-molder Integration
+function! s:GetMolderMode(...) abort
+    let result = {}
+
+    if exists('b:molder_dir')
+        let result['plugin'] = fnamemodify(b:molder_dir, ':p:~:.:h')
     endif
 
     return result
