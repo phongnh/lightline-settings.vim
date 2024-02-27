@@ -943,7 +943,7 @@ endfunction
 
 " NeoTree Integration
 function! s:GetNeoTreeMode(...) abort
-    let result = { 'name': 'NeoTree' }
+    let result = {}
 
     if exists('b:neo_tree_source')
         let result['plugin'] = b:neo_tree_source
@@ -954,7 +954,7 @@ endfunction
 
 " Carbon Integration
 function! s:GetCarbonMode(...) abort
-    let result = { 'name': 'Carbon' }
+    let result = {}
 
     if exists('b:carbon')
         let result['plugin'] = fnamemodify(b:carbon['path'], ':p:~:.:h')
