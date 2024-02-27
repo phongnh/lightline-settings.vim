@@ -295,6 +295,7 @@ let s:filetype_modes = {
             \ 'CHADTree':          'CHADTree',
             \ 'NvimTree':          'NvimTree',
             \ 'neo-tree':          'NeoTree',
+            \ 'oil':               'Oil',
             \ 'LuaTree':           'LuaTree',
             \ 'carbon.explorer':   'Carbon',
             \ 'fern':              'Fern',
@@ -800,6 +801,10 @@ function! s:CustomMode() abort
             return extend(result, s:GetNeoTreeMode())
         endif
 
+        if ft ==# 'oil'
+            return extend(result, s:GetOilMode())
+        endif
+
         if ft ==# 'carbon.explorer'
             return extend(result, s:GetCarbonMode())
         endif
@@ -948,6 +953,23 @@ function! s:GetNeoTreeMode(...) abort
     if exists('b:neo_tree_source')
         let result['plugin'] = b:neo_tree_source
     endif
+
+    return result
+endfunction
+
+" oil.nvim Integration
+function! s:GetOilMode(...) abort
+    let result = {}
+
+    let l:oil_dir = expand('%')
+    if l:oil_dir =~# '^oil://'
+        let l:oil_dir = substitute(l:oil_dir, '^oil://', '', '')
+        let result['plugin'] = fnamemodify(l:oil_dir, ':p:~:.:h')
+    endif
+
+    " if exists('b:oil_ready') && b:oil_ready
+    "     let result['plugin'] = fnamemodify(luaeval('require("oil").get_current_dir()'), ':p:~:.:h')
+    " endif
 
     return result
 endfunction
