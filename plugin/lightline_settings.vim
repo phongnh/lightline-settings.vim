@@ -798,7 +798,7 @@ function! s:CustomMode() abort
         endif
 
         if ft ==# 'neo-tree'
-            return extend(result, s:GetNeoTreeMode())
+            return extend(result, lightline_settings#neotree#Mode())
         endif
 
         if ft ==# 'oil'
@@ -866,17 +866,6 @@ let g:ctrlp_status_func = {
             \ 'main': 'lightline_settings#ctrlp#MainStatus',
             \ 'prog': 'lightline_settings#ctrlp#ProgressStatus',
             \ }
-
-" NeoTree Integration
-function! s:GetNeoTreeMode(...) abort
-    let result = {}
-
-    if exists('b:neo_tree_source')
-        let result['plugin'] = b:neo_tree_source
-    endif
-
-    return result
-endfunction
 
 " Tagbar Integration
 let g:tagbar_status_func = 'lightline_settings#tagbar#Status'
