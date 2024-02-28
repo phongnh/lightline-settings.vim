@@ -794,7 +794,7 @@ function! s:CustomMode() abort
         endif
 
         if ft ==# 'molder'
-            return extend(result, s:GetMolderMode())
+            return extend(result, lightline_settings#molder#Mode())
         endif
 
         if ft ==# 'neo-tree'
@@ -866,17 +866,6 @@ let g:ctrlp_status_func = {
             \ 'main': 'lightline_settings#ctrlp#MainStatus',
             \ 'prog': 'lightline_settings#ctrlp#ProgressStatus',
             \ }
-
-" vim-molder Integration
-function! s:GetMolderMode(...) abort
-    let result = {}
-
-    if exists('b:molder_dir')
-        let result['plugin'] = fnamemodify(b:molder_dir, ':p:~:.:h')
-    endif
-
-    return result
-endfunction
 
 " NeoTree Integration
 function! s:GetNeoTreeMode(...) abort
