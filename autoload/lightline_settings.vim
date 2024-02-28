@@ -1,3 +1,17 @@
+if exists('*trim')
+    function! s:Strip(str) abort
+        return trim(a:str)
+    endfunction
+else
+    function! s:Strip(str) abort
+        return substitute(a:str, '^\s*\(.\{-}\)\s*$', '\1', '')
+    endfunction
+endif
+
+function! lightline_settings#Strip(str) abort
+    return s:Strip(a:str)
+endfunction
+
 function! s:InitPowerlineStyles() abort
     let s:statusline_separator_styles = {
                 \ '><': { 'left': "\ue0b0", 'right': "\ue0b2" },

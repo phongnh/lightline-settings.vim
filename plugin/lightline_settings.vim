@@ -336,18 +336,6 @@ let s:short_modes = {
             \ 'TERMINAL': 'T',
             \ }
 
-function! s:Strip(str) abort
-    if exists('*trim')
-        return trim(a:str)
-    else
-        return substitute(a:str, '^\s*\(.\{-}\)\s*$', '\1', '')
-    endif
-endfunction
-
-function! s:Wrap(text) abort
-    return printf('%s %s %s', '«', a:text, '»')
-endfunction
-
 function! s:CurrentWinWidth() abort
     return winwidth(0)
 endfunction
@@ -362,14 +350,6 @@ endfunction
 
 function! s:RemoveEmptyElement(list) abort
     return filter(copy(a:list), '!empty(v:val)')
-endfunction
-
-function! s:GetCurrentDir() abort
-    let dir = fnamemodify(getcwd(), ':~:.')
-    if empty(dir)
-        let dir = getcwd()
-    endif
-    return dir
 endfunction
 
 function! s:GetBufferType() abort

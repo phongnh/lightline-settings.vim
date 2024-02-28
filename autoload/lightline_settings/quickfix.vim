@@ -5,7 +5,7 @@ function! lightline_settings#quickfix#Mode(...) abort
         let result['name'] = 'Location'
     endif
 
-    let qf_title = s:Strip(get(w:, 'quickfix_title', ''))
+    let qf_title = lightline_settings#Strip(get(w:, 'quickfix_title', ''))
     return extend(result, {
                 \ 'plugin': qf_title,
                 \ 'plugin_inactive': qf_title,
