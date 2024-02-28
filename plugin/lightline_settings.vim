@@ -830,28 +830,15 @@ function! s:CustomMode() abort
         endif
 
         if ft ==# 'terminal'
-            return extend(result, {
-                        \ 'plugin': expand('%'),
-                        \ })
+            return extend(result, lightline_settings#terminal#Mode())
         endif
 
         if ft ==# 'help'
-            let fname = expand('%:p')
-            return extend(result, {
-                        \ 'plugin': fname,
-                        \ 'plugin_inactive': fname,
-                        \ })
+            return extend(result, lightline_settings#help#Mode())
         endif
 
         if ft ==# 'qf'
-            if getwininfo(win_getid())[0]['loclist']
-                let result['name'] = 'Location'
-            endif
-            let qf_title = s:Strip(get(w:, 'quickfix_title', ''))
-            return extend(result, {
-                        \ 'plugin': qf_title,
-                        \ 'plugin_inactive': qf_title,
-                        \ })
+            return extend(result, lightline_settings#quickfix#Mode())
         endif
 
         return result
