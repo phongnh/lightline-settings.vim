@@ -64,7 +64,7 @@ let g:lightline = {
             \       ['plugin'] + (get(g:, 'lightline_show_git_branch', 0) ? ['branch'] : []) + ['filename'],
             \   ],
             \   'right': [
-            \       ['indentation', 'fileinfo'] + (get(g:, 'lightline_show_linenr', 0) ? ['lineinfo'] : []) + ['plugin_extra'],
+            \       ['fileinfo'] + (get(g:, 'lightline_show_linenr', 0) ? ['lineinfo'] : []) + ['plugin_extra'],
             \       ['buffer'],
             \   ]
             \ },
@@ -81,7 +81,6 @@ let g:lightline = {
             \   'plugin':       'LightlinePluginStatus',
             \   'branch':       'LightlineGitBranchStatus',
             \   'filename':     'LightlineFileNameStatus',
-            \   'indentation':  'LightlineIndentationStatus',
             \   'fileinfo':     'LightlineFileInfoStatus',
             \   'lineinfo':     'LightlineLineInfoStatus',
             \   'plugin_extra': 'LightlinePluginExtraStatus',
@@ -458,20 +457,6 @@ function! LightlineLineInfoStatus() abort
     return printf('%4d:%-3d %3s', line('.'), col('.'), l:percent)
 endfunction
 
-function! LightlineIndentationStatus() abort
-    let l:mode = s:CustomMode()
-    if len(l:mode)
-        return ''
-    endif
-
-    if winwidth(0) >= g:lightline_winwidth_config.small
-        let compact = s:IsCompact()
-        return s:IndentationStatus(compact)
-    endif
-
-    return ''
-endfunction
-
 function! LightlineBufferStatus() abort
     let l:mode = s:CustomMode()
     if len(l:mode)
@@ -479,11 +464,11 @@ function! LightlineBufferStatus() abort
     endif
 
     if winwidth(0) >= g:lightline_winwidth_config.small
-        return lightline#concatenate(
-                    \ [
-                    \   s:ClipboardStatus(),
-                    \   s:PasteStatus(),
-                    \   s:SpellStatus(),
+        return lightline#concatenate([
+                    \ s:SpellStatus(),
+                    \ s:PasteStatus(),
+                    \ s:ClipboardStatus(),
+                    \ s:IndentationStatus(s:IsCompact()),
                     \ ], 1)
     endif
 
