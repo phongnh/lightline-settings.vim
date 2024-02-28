@@ -294,10 +294,6 @@ function! s:CurrentWinWidth() abort
     return winwidth(0)
 endfunction
 
-function! s:RemoveEmptyElement(list) abort
-    return filter(copy(a:list), '!empty(v:val)')
-endfunction
-
 function! s:GetBufferType() abort
     return strlen(&filetype) ? &filetype : &buftype
 endfunction
@@ -410,7 +406,7 @@ function! s:FileInfoStatus(...) abort
                     \ ])
     endif
 
-    return join(s:RemoveEmptyElement(parts), ' ')
+    return join(filter(copy(a:list), '!empty(v:val)'), ' ')
 endfunction
 
 function! s:IsCompact() abort
@@ -509,11 +505,11 @@ function! LightlineBufferStatus() abort
 
     if s:CurrentWinWidth() >= s:small_window_width
         return lightline#concatenate(
-                    \ s:RemoveEmptyElement([
+                    \ [
                     \   s:ClipboardStatus(),
                     \   s:PasteStatus(),
                     \   s:SpellStatus(),
-                    \ ]), 1)
+                    \ ], 1)
     endif
 
     return ''
@@ -545,10 +541,10 @@ function! LightlineInactiveStatus() abort
     if len(l:mode)
         if has_key(l:mode, 'plugin_inactive')
             return lightline#concatenate(
-                        \ s:RemoveEmptyElement([
+                        \ [
                         \   l:mode['name'],
                         \   get(l:mode, 'plugin_inactive', '')
-                        \ ]), 0)
+                        \ ], 0)
         endif
         return l:mode['name']
     endif
