@@ -1032,29 +1032,18 @@ endfunction
 let g:tagbar_status_func = 'lightline_settings#tagbar#Status'
 
 " ZoomWin Integration
-let s:ZoomWin_funcref = []
+let g:lightline_zoomwin_funcref = []
 
 if exists('g:ZoomWin_funcref')
-    if type(g:ZoomWin_funcref) == 2
-        let s:ZoomWin_funcref = [g:ZoomWin_funcref]
-    elseif type(g:ZoomWin_funcref) == 3
-        let s:ZoomWin_funcref = g:ZoomWin_funcref
+    if type(g:ZoomWin_funcref) == v:t_func
+        let g:lightline_zoomwin_funcref = [g:ZoomWin_funcref]
+    elseif type(g:ZoomWin_funcref) == v:t_func
+        let g:lightline_zoomwin_funcref = g:ZoomWin_funcref
     endif
+    let g:lightline_zoomwin_funcref = uniq(copy(g:lightline_zoomwin_funcref))
 endif
-let s:ZoomWin_funcref = uniq(copy(s:ZoomWin_funcref))
 
-function! ZoomWinStatusLine(zoomstate) abort
-    for F in s:ZoomWin_funcref
-        if type(F) == 2 && F != function('ZoomWinStatusLine')
-            call F(a:zoomstate)
-        endif
-    endfor
-    if exists('*lightline#update')
-        call lightline#update()
-    endif
-endfunction
-
-let g:ZoomWin_funcref= function('ZoomWinStatusLine')
+let g:ZoomWin_funcref = function('lightline_settings#zoomwin#Status')
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
