@@ -4,5 +4,5 @@ function! lightline_settings#help#Mode(...) abort
                 \ 'name': 'HELP',
                 \ 'plugin': fname,
                 \ 'plugin_inactive': fname,
-                \ })
+                \ }
 endfunction
