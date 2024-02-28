@@ -29,7 +29,7 @@ let s:small_window_width  = 80
 let s:normal_window_width = 120
 
 " Symbols: https://en.wikipedia.org/wiki/Enclosed_Alphanumerics
-let s:symbols = {
+let g:lightline_symbols = {
                 \ 'linenr':    '☰',
                 \ 'branch':    '⎇ ',
                 \ 'readonly':  '',
@@ -95,7 +95,7 @@ let g:lightline = {
             \ }
 
 if g:lightline_powerline_fonts
-    call extend(s:symbols, {
+    call extend(g:lightline_symbols, {
                 \ 'linenr':   "\ue0a1",
                 \ 'branch':   "\ue0a0",
                 \ 'readonly': "\ue0a2",
@@ -399,7 +399,7 @@ function! s:ModifiedStatus() abort
 endfunction
 
 function! s:ReadonlyStatus() abort
-    return &readonly ? s:symbols.readonly . ' ' : ''
+    return &readonly ? g:lightline_symbols.readonly . ' ' : ''
 endfunction
 
 function! s:FileNameStatus() abort
@@ -410,82 +410,16 @@ function! s:InactiveFileNameStatus() abort
     return s:ReadonlyStatus() . s:GetFileName() . s:ModifiedStatus()
 endfunction
 
-function! s:GetGitBranch() abort
-    " Get branch from caching if it is available
-    if has_key(b:, 'lightline_git_branch') && reltimefloat(reltime(s:lightline_last_finding_branch_time)) < s:lightline_time_threshold
-        return b:lightline_git_branch
-    endif
-
-    let branch = ''
-
-    if exists('*FugitiveHead')
-        let branch = FugitiveHead()
-
-        if empty(branch) && exists('*FugitiveDetect') && !exists('b:git_dir')
-            call FugitiveDetect(getcwd())
-            let branch = FugitiveHead()
-        endif
-    elseif exists('*fugitive#head')
-        let branch = fugitive#head()
-
-        if empty(branch) && exists('*fugitive#detect') && !exists('b:git_dir')
-            call fugitive#detect(getcwd())
-            let branch = fugitive#head()
-        endif
-    elseif exists(':Gina') == 2
-        let branch = gina#component#repo#branch()
-    endif
-
-    " Caching
-    let b:lightline_git_branch = branch
-    let s:lightline_last_finding_branch_time = reltime()
-
-    return branch
-endfunction
-
-function! s:ShortenBranch(branch, length) abort
-    let branch = a:branch
-
-    if strlen(branch) > a:length && g:lightline_shorten_path
-        let branch = s:ShortenPath(branch)
-    endif
-
-    if strlen(branch) > a:length
-        let branch = fnamemodify(branch, ':t')
-    endif
-
-    if strlen(branch) > a:length
-        " Show only JIRA ticket prefix
-        let branch = substitute(branch, '^\([A-Z]\{3,}-\d\{1,}\)-.\+', '\1', '')
-    endif
-
-    return branch
-endfunction
-
-function! s:FormatBranch(branch) abort
-    if s:CurrentWinWidth() >= s:normal_window_width
-        return s:ShortenBranch(a:branch, 50)
-    endif
-
-    let branch = s:ShortenBranch(a:branch, 30)
-
-    if strlen(branch) > 30
-        let branch = strcharpart(branch, 0, 29) . s:symbols.ellipsis
-    endif
-
-    return branch
-endfunction
-
 function! s:IsClipboardEnabled() abort
     return match(&clipboard, 'unnamed') > -1
 endfunction
 
 function! s:ClipboardStatus() abort
-    return s:IsClipboardEnabled() ? s:symbols.clipboard : ''
+    return s:IsClipboardEnabled() ? g:lightline_symbols.clipboard : ''
 endfunction
 
 function! s:PasteStatus() abort
-    return &paste ? s:symbols.paste : ''
+    return &paste ? g:lightline_symbols.paste : ''
 endfunction
 
 function! s:SpellStatus() abort
@@ -558,10 +492,10 @@ function! LightlineGitBranchStatus() abort
     endif
 
     if g:lightline_show_git_branch && s:CurrentWinWidth() >= s:small_window_width
-        let branch = s:FormatBranch(s:GetGitBranch())
+        let branch = lightline_settings#git#Branch()
 
         if strlen(branch)
-            return s:symbols.branch . ' ' . branch
+            return g:lightline_symbols.branch . ' ' . branch
         endif
     endif
 
@@ -715,14 +649,10 @@ endfunction
 " Copied from https://github.com/itchyny/lightline-powerful
 function! LightlineTabReadonly(n) abort
     let winnr = tabpagewinnr(a:n)
-    return gettabwinvar(a:n, winnr, '&readonly') ? s:symbols.readonly : ''
+    return gettabwinvar(a:n, winnr, '&readonly') ? g:lightline_symbols.readonly : ''
 endfunction
 
 " Plugin Integration
-
-let s:lightline_time_threshold = 0.50
-let s:lightline_last_finding_branch_time = reltime()
-
 function! s:CustomMode() abort
     let fname = expand('%:t')
 
