@@ -12,13 +12,12 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 " Settings
-let g:lightline_powerline_fonts       = get(g:, 'lightline_powerline_fonts', 0)
-let g:lightline_theme                 = get(g:, 'lightline_theme', 'solarized')
-let g:lightline_shorten_path          = get(g:, 'lightline_shorten_path', 0)
-let g:lightline_show_tab_close_button = get(g:, 'lightline_show_tab_close_button', 0)
-let g:lightline_show_git_branch       = get(g:, 'lightline_show_git_branch', 1)
-let g:lightline_show_devicons         = get(g:, 'lightline_show_devicons', 1)
-let g:lightline_show_vim_logo         = get(g:, 'lightline_show_vim_logo', 1)
+let g:lightline_powerline_fonts = get(g:, 'lightline_powerline_fonts', 0)
+let g:lightline_theme           = get(g:, 'lightline_theme', 'solarized')
+let g:lightline_shorten_path    = get(g:, 'lightline_shorten_path', 0)
+let g:lightline_show_git_branch = get(g:, 'lightline_show_git_branch', 1)
+let g:lightline_show_devicons   = get(g:, 'lightline_show_devicons', 1)
+let g:lightline_show_vim_logo   = get(g:, 'lightline_show_vim_logo', 1)
 
 " Window width
 let s:xsmall_window_width = 60
