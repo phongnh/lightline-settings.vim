@@ -753,7 +753,7 @@ function! s:CustomMode() abort
                     \ }
 
         if fname ==# 'ControlP'
-            return extend(result, s:GetCtrlPMode())
+            return extend(result, lightline_settings#ctrlp#Mode())
         endif
 
         if fname ==# '__Tagbar__'
@@ -863,64 +863,9 @@ endfunction
 
 " CtrlP Integration
 let g:ctrlp_status_func = {
-            \ 'main': 'CtrlPMainStatusLine',
-            \ 'prog': 'CtrlPProgressStatusLine',
+            \ 'main': 'lightline_settings#ctrlp#MainStatus',
+            \ 'prog': 'lightline_settings#ctrlp#ProgressStatus',
             \ }
-
-function! s:GetCtrlPMode() abort
-    let result = {
-                \ 'name': s:filename_modes['ControlP'],
-                \ 'plugin_extra': g:lightline.ctrlp_dir,
-                \ 'type': 'ctrlp',
-                \ }
-
-    if g:lightline.ctrlp_main
-        let plugin_status = lightline#concatenate([
-                    \ g:lightline.ctrlp_prev,
-                    \ s:Wrap(g:lightline.ctrlp_item),
-                    \ g:lightline.ctrlp_next,
-                    \ ], 0)
-
-        let buffer_status = lightline#concatenate([
-                    \ g:lightline.ctrlp_focus,
-                    \ g:lightline.ctrlp_byfname,
-                    \ ], 1)
-
-        call extend(result, {
-                    \ 'link': 'nR'[g:lightline.ctrlp_regex],
-                    \ 'plugin': plugin_status,
-                    \ 'buffer': buffer_status,
-                    \ })
-    else
-        call extend(result, {
-                    \ 'plugin': g:lightline.ctrlp_len,
-                    \ })
-    endif
-
-    return result
-endfunction
-
-function! CtrlPMainStatusLine(focus, byfname, regex, prev, item, next, marked) abort
-    let g:lightline.ctrlp_main    = 1
-    let g:lightline.ctrlp_focus   = a:focus
-    let g:lightline.ctrlp_byfname = a:byfname
-    let g:lightline.ctrlp_regex   = a:regex
-    let g:lightline.ctrlp_prev    = a:prev
-    let g:lightline.ctrlp_item    = a:item
-    let g:lightline.ctrlp_next    = a:next
-    let g:lightline.ctrlp_marked  = a:marked
-    let g:lightline.ctrlp_dir     = s:GetCurrentDir()
-
-    return lightline#statusline(0)
-endfunction
-
-function! CtrlPProgressStatusLine(len) abort
-    let g:lightline.ctrlp_main = 0
-    let g:lightline.ctrlp_len  = a:len
-    let g:lightline.ctrlp_dir  = s:GetCurrentDir()
-
-    return lightline#statusline(0)
-endfunction
 
 " Netrw Integration
 function! s:GetNetrwMode(...) abort
