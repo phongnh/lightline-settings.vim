@@ -100,49 +100,7 @@ if g:lightline_powerline_fonts
     call lightline_settings#powerline#SetSeparators(get(g:, 'lightline_powerline_style', 'default'))
 endif
 
-let s:lightline_show_devicons = 0
-
-if g:lightline_show_devicons
-    " Detect vim-devicons or nerdfont.vim
-    " let s:has_devicons = exists('*WebDevIconsGetFileTypeSymbol') && exists('*WebDevIconsGetFileFormatSymbol')
-    if findfile('autoload/nerdfont.vim', &rtp) != ''
-        let s:lightline_show_devicons = 1
-
-        function! s:GetFileTypeSymbol(filename) abort
-            return nerdfont#find(a:filename)
-        endfunction
-
-        function! s:GetFileFormatSymbol(...) abort
-            return nerdfont#fileformat#find()
-        endfunction
-    elseif findfile('plugin/webdevicons.vim', &rtp) != ''
-        let s:lightline_show_devicons = 1
-
-        function! s:GetFileTypeSymbol(filename) abort
-            return WebDevIconsGetFileTypeSymbol(a:filename)
-        endfunction
-
-        function! s:GetFileFormatSymbol(...) abort
-            return WebDevIconsGetFileFormatSymbol()
-        endfunction
-    elseif exists("g:LightlineWebDevIconsFind")
-        let s:lightline_show_devicons = 1
-
-        function! s:GetFileTypeSymbol(filename) abort
-            return g:LightlineWebDevIconsFind(a:filename)
-        endfunction
-
-        let s:web_devicons_fileformats = {
-                    \ 'dos': '',
-                    \ 'mac': '',
-                    \ 'unix': '',
-                    \ }
-
-        function! s:GetFileFormatSymbol(...) abort
-            return get(s:web_devicons_fileformats, &fileformat, '')
-        endfunction
-    endif
-endif
+let s:lightline_show_devicons = g:lightline_show_devicons && lightline_settings#devicons#Detect()
 
 if g:lightline_show_vim_logo && s:lightline_show_devicons
     " Show Vim Logo in Tabline
@@ -447,8 +405,8 @@ function! s:FileInfoStatus(...) abort
 
     if s:lightline_show_devicons && !compact
         call extend(parts, [
-                    \ s:GetFileTypeSymbol(expand('%')) . ' ',
-                    \ s:GetFileFormatSymbol() . ' ',
+                    \ lightline_settings#devicons#FileType(expand('%')) . ' ',
+                    \ lightline_settings#devicons#FileFormat() . ' ',
                     \ ])
     endif
 
