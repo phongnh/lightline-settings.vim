@@ -1,6 +1,3 @@
-" Window width
-let s:normal_window_width = 120
-
 " Caching
 let s:lightline_time_threshold = 0.50
 let s:lightline_last_finding_branch_time = reltime()
@@ -25,7 +22,7 @@ function! s:ShortenBranch(branch, length) abort
 endfunction
 
 function! s:FormatBranch(branch) abort
-    if winwidth(0) >= s:normal_window_width
+    if winwidth(0) >= g:lightline_winwidth_config.normal
         return s:ShortenBranch(a:branch, 50)
     endif
 

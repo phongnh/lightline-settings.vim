@@ -20,9 +20,11 @@ let g:lightline_show_devicons   = get(g:, 'lightline_show_devicons', 1)
 let g:lightline_show_vim_logo   = get(g:, 'lightline_show_vim_logo', 1)
 
 " Window width
-let s:xsmall_window_width = 60
-let s:small_window_width  = 80
-let s:normal_window_width = 120
+let g:lightline_winwidth_config = extend({
+            \ 'xsmall': 60,
+            \ 'small':  80,
+            \ 'normal': 120,
+            \ }, get(g:, 'lightline_winwidth_config', {}))
 
 " Symbols: https://en.wikipedia.org/wiki/Enclosed_Alphanumerics
 let g:lightline_symbols = {
@@ -268,10 +270,6 @@ let s:short_modes = {
             \ 'TERMINAL': 'T',
             \ }
 
-function! s:CurrentWinWidth() abort
-    return winwidth(0)
-endfunction
-
 function! s:GetBufferType() abort
     return strlen(&filetype) ? &filetype : &buftype
 endfunction
@@ -289,7 +287,7 @@ endfunction
 function! s:FormatFileName(fname) abort
     let l:path = a:fname
 
-    if s:CurrentWinWidth() <= s:xsmall_window_width
+    if winwidth(0) <= g:lightline_winwidth_config.xsmall
         return fnamemodify(l:path, ':t')
     endif
 
@@ -388,7 +386,7 @@ function! s:FileInfoStatus(...) abort
 endfunction
 
 function! s:IsCompact() abort
-    return &spell || &paste || s:IsClipboardEnabled() || s:CurrentWinWidth() <= s:xsmall_window_width
+    return &spell || &paste || s:IsClipboardEnabled() || winwidth(0) <= g:lightline_winwidth_config.xsmall
 endfunction
 
 function! LightlineModeStatus() abort
@@ -398,7 +396,7 @@ function! LightlineModeStatus() abort
     endif
 
     let mode_label = lightline#mode()
-    if s:CurrentWinWidth() <= s:xsmall_window_width
+    if winwidth(0) <= g:lightline_winwidth_config.xsmall
         return get(s:short_modes, mode_label, mode_label)
     endif
 
@@ -411,7 +409,7 @@ function! LightlineGitBranchStatus() abort
         return ''
     endif
 
-    if g:lightline_show_git_branch && s:CurrentWinWidth() >= s:small_window_width
+    if g:lightline_show_git_branch && winwidth(0) >= g:lightline_winwidth_config.small
         let branch = lightline_settings#git#Branch()
     endif
 
@@ -463,7 +461,7 @@ function! LightlineIndentationStatus() abort
         return ''
     endif
 
-    if s:CurrentWinWidth() >= s:small_window_width
+    if winwidth(0) >= g:lightline_winwidth_config.small
         let compact = s:IsCompact()
         return s:IndentationStatus(compact)
     endif
@@ -477,7 +475,7 @@ function! LightlineBufferStatus() abort
         return get(l:mode, 'buffer', '')
     endif
 
-    if s:CurrentWinWidth() >= s:small_window_width
+    if winwidth(0) >= g:lightline_winwidth_config.small
         return lightline#concatenate(
                     \ [
                     \   s:ClipboardStatus(),
