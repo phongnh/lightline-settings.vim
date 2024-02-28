@@ -826,7 +826,7 @@ function! s:CustomMode() abort
         endif
 
         if ft ==# 'vista_kind' || ft ==# 'vista'
-            return extend(result, lightline_settings#VistaMode())
+            return extend(result, lightline_settings#vista#Mode())
         endif
 
         if ft ==# 'terminal'

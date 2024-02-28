@@ -115,12 +115,3 @@ function! lightline_settings#SetPowerlineSeparators(style) abort
 
     call s:SetSeparator(l:statusline_style, l:tabline_style)
 endfunction
-
-function! lightline_settings#VistaMode() abort
-    let provider = get(get(g:, 'vista', {}), 'provider', '')
-    return {
-                \ 'plugin': provider,
-                \ 'plugin_inactive': provider,
-                \ 'type': 'vista',
-                \ }
-endfunction
