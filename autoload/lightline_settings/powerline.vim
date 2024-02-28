@@ -99,6 +99,6 @@ endfunction
 
 function! lightline_settings#powerline#SetSeparators(style, ...) abort
     call s:InitPowerlineStyles()
-    call <SID>SetStatuslineSeparators(a:style)
-    call <SID>SetTablineSeparators(get(a:, 1, a:style))
+    call s:SetStatuslineSeparators(a:style)
+    call s:SetTablineSeparators(get(a:, 1, a:style))
 endfunction
