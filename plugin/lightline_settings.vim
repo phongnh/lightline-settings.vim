@@ -806,7 +806,7 @@ function! s:CustomMode() abort
         endif
 
         if ft ==# 'carbon.explorer'
-            return extend(result, s:GetCarbonMode())
+            return extend(result, lightline_settings#carbon#Mode())
         endif
 
         if ft ==# 'fern'
@@ -873,17 +873,6 @@ function! s:GetNeoTreeMode(...) abort
 
     if exists('b:neo_tree_source')
         let result['plugin'] = b:neo_tree_source
-    endif
-
-    return result
-endfunction
-
-" Carbon Integration
-function! s:GetCarbonMode(...) abort
-    let result = {}
-
-    if exists('b:carbon')
-        let result['plugin'] = fnamemodify(b:carbon['path'], ':p:~:.:h')
     endif
 
     return result
