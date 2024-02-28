@@ -818,7 +818,7 @@ function! s:CustomMode() abort
         endif
 
         if ft ==# 'dirvish'
-            return extend(result, s:GetDirvishMode())
+            return extend(result, lightline_settings#dirvish#Mode())
         endif
 
         if ft ==# 'tagbar'
@@ -876,11 +876,6 @@ function! s:GetNeoTreeMode(...) abort
     endif
 
     return result
-endfunction
-
-" Dirvish Integration
-function! s:GetDirvishMode(...) abort
-    return { 'plugin': expand('%:p:h') }
 endfunction
 
 " Tagbar Integration
