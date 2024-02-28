@@ -17,13 +17,12 @@ endfunction
 " Copied from https://github.com/itchyny/lightline-powerful/blob/master/autoload/lightline_powerful.vim
 function! s:TabReadonly(n) abort
     let winnr = tabpagewinnr(a:n)
-    return gettabwinvar(a:n, winnr, '&readonly') ? g:lightline_symbols.readonly . ' ' : ''
+    return gettabwinvar(a:n, winnr, '&readonly') ? g:lightline_symbols.readonly : ''
 endfunction
 
 function! lightline_settings#tab#Name(n) abort
-    return join([
-                \ s:TabNumber(a:n),
-                \ s:TabReadonly(a:n),
-                \ s:TabFileType(a:n),
-                \ ], ' ')
+    return join(
+                \ filter([s:TabNumber(a:n), s:TabReadonly(a:n), s:TabFileType(a:n)], '!empty(v:val)'),
+                \ ' '
+                \ )
 endfunction

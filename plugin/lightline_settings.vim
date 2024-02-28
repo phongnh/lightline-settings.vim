@@ -55,8 +55,8 @@ let g:lightline = {
             \   'right': [],
             \ },
             \ 'tab': {
-            \   'active':   ['tabnum', 'readonly', 'filename', 'modified'],
-            \   'inactive': ['tabnum', 'readonly', 'filename', 'modified'],
+            \   'active':   ['tabname', 'modified'],
+            \   'inactive': ['tabname', 'modified'],
             \ },
             \ 'active': {
             \   'left':  [
@@ -88,9 +88,7 @@ let g:lightline = {
             \   'inactive':     'LightlineInactiveStatus',
             \ },
             \ 'tab_component_function': {
-            \   'tabnum':   'LightlineTabNum',
-            \   'filename': 'LightlineTabFileType',
-            \   'readonly': 'LightlineTabReadonly',
+            \   'tabname': 'lightline_settings#tab#Name',
             \ },
             \ }
 
@@ -206,7 +204,7 @@ augroup VimLightlineColorscheme
 augroup END
 
 " Alternate status dictionaries
-let s:filename_modes = {
+let g:lightline_filename_modes = {
             \ 'ControlP':             'CtrlP',
             \ '__CtrlSF__':           'CtrlSF',
             \ '__CtrlSFPreview__':    'Preview',
@@ -224,7 +222,7 @@ let s:filename_modes = {
             \ '__LSP_SETTINGS__':     'LSP Settings',
             \ }
 
-let s:filetype_modes = {
+let g:lightline_filetype_modes = {
             \ 'netrw':             'Netrw',
             \ 'molder':            'Molder',
             \ 'nerdtree':          'NERDTree',
@@ -512,55 +510,36 @@ function! LightlineInactiveStatus() abort
     return s:InactiveFileNameStatus()
 endfunction
 
-function! LightlineTabNum(n) abort
-    " if s:has_devicons
-    "     return printf('%d %s', a:n,  s:separators.tabline_subseparator.left)
-    " endif
-    return printf('%d:', a:n)
-endfunction
-
-" Copied from https://github.com/itchyny/lightline-powerful
-let s:buffer_count_by_basename = {}
 augroup lightline_settings
     autocmd!
-    autocmd BufEnter,WinEnter,WinLeave * call s:update_bufnrs()
+    autocmd VimEnter * call lightline_settings#Init()
 augroup END
 
-function! s:update_bufnrs() abort
-    let s:buffer_count_by_basename = {}
-    let bufnrs = filter(range(1, bufnr('$')), 'len(bufname(v:val)) && bufexists(v:val) && buflisted(v:val)')
-    for name in map(bufnrs, 'expand("#" . v:val . ":t")')
-        if name !=# ''
-            let s:buffer_count_by_basename[name] = get(s:buffer_count_by_basename, name) + 1
-        endif
-    endfor
-endfunction
-
-function! LightlineTabFileType(n) abort
-    let bufnr = tabpagebuflist(a:n)[tabpagewinnr(a:n) - 1]
-    let bufname = expand('#' . bufnr . ':t')
-    let ft = gettabwinvar(a:n, tabpagewinnr(a:n), '&ft')
-    if get(s:buffer_count_by_basename, bufname) > 1
-        let fname = substitute(expand('#' . bufnr . ':p'), '.*/\([^/]\+/\)', '\1', '')
-    else
-        let fname = bufname
-    endif
-    return fname =~# '^\[preview' ? 'Preview' : get(s:filetype_modes, ft, get(s:filename_modes, fname, fname))
-endfunction
-
-" Copied from https://github.com/itchyny/lightline-powerful
-function! LightlineTabReadonly(n) abort
-    let winnr = tabpagewinnr(a:n)
-    return gettabwinvar(a:n, winnr, '&readonly') ? g:lightline_symbols.readonly : ''
-endfunction
-
 " Plugin Integration
+let g:lightline_plugin_modes = {
+            \ 'ctrlp':           'lightline_settings#ctrlp#Mode',
+            \ 'netrw':           'lightline_settings#netrw#Mode',
+            \ 'dirvish':         'lightline_settings#dirvish#Mode',
+            \ 'molder':          'lightline_settings#molder#Mode',
+            \ 'vaffle':          'lightline_settings#vaffle#Mode',
+            \ 'fern':            'lightline_settings#fern#Mode',
+            \ 'carbon.explorer': 'lightline_settings#carbon#Mode',
+            \ 'neo-tree':        'lightline_settings#neotree#Mode',
+            \ 'oil':             'lightline_settings#oil#Mode',
+            \ 'tagbar':          'lightline_settings#tagbar#Mode',
+            \ 'vista_kind':      'lightline_settings#vista#Mode',
+            \ 'vista':           'lightline_settings#vista#Mode',
+            \ 'terminal':        'lightline_settings#terminal#Mode',
+            \ 'help':            'lightline_settings#help#Mode',
+            \ 'qf':              'lightline_settings#quickfix#Mode',
+            \ }
+
 function! s:CustomMode() abort
     let fname = expand('%:t')
 
-    if has_key(s:filename_modes, fname)
+    if has_key(g:lightline_filename_modes, fname)
         let result = {
-                    \ 'name': s:filename_modes[fname],
+                    \ 'name': g:lightline_filename_modes[fname],
                     \ 'type': 'name',
                     \ }
 
@@ -591,66 +570,14 @@ function! s:CustomMode() abort
     endif
 
     let ft = s:GetBufferType()
-    if has_key(s:filetype_modes, ft)
+    if has_key(g:lightline_filetype_modes, ft)
         let result = {
-                    \ 'name': s:filetype_modes[ft],
+                    \ 'name': g:lightline_filetype_modes[ft],
                     \ 'type': 'filetype',
                     \ }
 
-        if ft ==# 'ctrlp'
-            return extend(result, lightline_settings#ctrlp#Mode())
-        endif
-
-        if ft ==# 'netrw'
-            return extend(result, lightline_settings#netrw#Mode())
-        endif
-
-        if ft ==# 'molder'
-            return extend(result, lightline_settings#molder#Mode())
-        endif
-
-        if ft ==# 'neo-tree'
-            return extend(result, lightline_settings#neotree#Mode())
-        endif
-
-        if ft ==# 'oil'
-            return extend(result, lightline_settings#oil#Mode())
-        endif
-
-        if ft ==# 'carbon.explorer'
-            return extend(result, lightline_settings#carbon#Mode())
-        endif
-
-        if ft ==# 'fern'
-            return extend(result, lightline_settings#fern#Mode())
-        endif
-
-        if ft ==# 'vaffle'
-            return extend(result, lightline_settings#vaffle#Mode())
-        endif
-
-        if ft ==# 'dirvish'
-            return extend(result, lightline_settings#dirvish#Mode())
-        endif
-
-        if ft ==# 'tagbar'
-            return extend(result, lightline_settings#tagbar#Mode())
-        endif
-
-        if ft ==# 'vista_kind' || ft ==# 'vista'
-            return extend(result, lightline_settings#vista#Mode())
-        endif
-
-        if ft ==# 'terminal'
-            return extend(result, lightline_settings#terminal#Mode())
-        endif
-
-        if ft ==# 'help'
-            return extend(result, lightline_settings#help#Mode())
-        endif
-
-        if ft ==# 'qf'
-            return extend(result, lightline_settings#quickfix#Mode())
+        if has_key(g:lightline_plugin_modes, ft)
+            return extend(result, function(g:lightline_plugin_modes[ft])())
         endif
 
         return result
