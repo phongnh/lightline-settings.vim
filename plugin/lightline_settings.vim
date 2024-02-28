@@ -761,11 +761,11 @@ function! s:CustomMode() abort
         endif
 
         if fname ==# '__CtrlSF__'
-            return extend(result, s:GetCtrlSFMode())
+            return extend(result, lightline_settings#ctrlsf#Mode())
         endif
 
         if fname ==# '__CtrlSFPreview__'
-            return extend(result, s:GetCtrlSFPreviewMode())
+            return extend(result, lightline_settings#ctrlsf#PreviewMode())
         endif
 
         return result
@@ -973,30 +973,6 @@ endfunction
 " Dirvish Integration
 function! s:GetDirvishMode(...) abort
     return { 'plugin': expand('%:p:h') }
-endfunction
-
-" CtrlSF Integration
-function! s:GetCtrlSFMode() abort
-    let pattern = substitute(ctrlsf#utils#SectionB(), 'Pattern: ', '', '')
-
-    let plugin_status = lightline#concatenate([
-                \ pattern,
-                \ ctrlsf#utils#SectionC(),
-                \ ], 0)
-
-    return {
-                \ 'plugin': plugin_status,
-                \ 'plugin_inactive': pattern,
-                \ 'plugin_extra': ctrlsf#utils#SectionX(),
-                \ }
-endfunction
-
-function! s:GetCtrlSFPreviewMode() abort
-    let stl = ctrlsf#utils#PreviewSectionC()
-    return {
-                \ 'plugin': stl,
-                \ 'plugin_inactive': stl,
-                \ }
 endfunction
 
 " Tagbar Integration
