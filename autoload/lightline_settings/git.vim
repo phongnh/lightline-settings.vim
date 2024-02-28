@@ -72,5 +72,11 @@ function! s:GetGitBranch() abort
 endfunction
 
 function! lightline_settings#git#Branch(...) abort
-    return s:FormatBranch(s:GetGitBranch())
+    let branch = s:FormatBranch(s:GetGitBranch())
+
+    if strlen(branch)
+        return g:lightline_symbols.branch . ' ' . branch
+    endif
+
+    return branch
 endfunction

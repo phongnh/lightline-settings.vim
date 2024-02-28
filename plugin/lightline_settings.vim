@@ -413,10 +413,6 @@ function! LightlineGitBranchStatus() abort
 
     if g:lightline_show_git_branch && s:CurrentWinWidth() >= s:small_window_width
         let branch = lightline_settings#git#Branch()
-
-        if strlen(branch)
-            return g:lightline_symbols.branch . ' ' . branch
-        endif
     endif
 
     return ''
