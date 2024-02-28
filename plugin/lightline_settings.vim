@@ -26,13 +26,13 @@ let s:normal_window_width = 120
 
 " Symbols: https://en.wikipedia.org/wiki/Enclosed_Alphanumerics
 let g:lightline_symbols = {
-                \ 'linenr':    '☰',
-                \ 'branch':    '⎇ ',
-                \ 'readonly':  '',
-                \ 'clipboard': '🅒  ',
-                \ 'paste':     '🅟  ',
-                \ 'ellipsis':  '…',
-                \ }
+            \ 'linenr':    '☰',
+            \ 'branch':    '⎇ ',
+            \ 'readonly':  '',
+            \ 'clipboard': '🅒  ',
+            \ 'paste':     '🅟  ',
+            \ 'ellipsis':  '…',
+            \ }
 
 let g:lightline = {
             \ 'colorscheme': g:lightline_theme,
@@ -480,7 +480,7 @@ function! LightlineLineInfoStatus() abort
         let l:percent = printf('%d%%', line('.') * 100 / line('$'))
     endif
 
-   return printf('%4d:%-3d %3s', line('.'), col('.'), l:percent)
+    return printf('%4d:%-3d %3s', line('.'), col('.'), l:percent)
 endfunction
 
 function! LightlineIndentationStatus() abort
