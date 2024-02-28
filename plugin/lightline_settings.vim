@@ -810,7 +810,7 @@ function! s:CustomMode() abort
         endif
 
         if ft ==# 'fern'
-            return extend(result, s:GetFernMode())
+            return extend(result, lightline_settings#fern#Mode())
         endif
 
         if ft ==# 'vaffle'
@@ -873,30 +873,6 @@ function! s:GetNeoTreeMode(...) abort
 
     if exists('b:neo_tree_source')
         let result['plugin'] = b:neo_tree_source
-    endif
-
-    return result
-endfunction
-
-" Fern Integration
-function! s:GetFernMode(...) abort
-    let result = {}
-
-    let fern_name = get(a:, 1, expand('%'))
-    let pattern = '^fern://\(.\+\)/file://\(.\+\)\$'
-    let data = matchlist(fern_name, pattern)
-
-    if len(data)
-        let fern_mode = get(data, 1, '')
-        if match(fern_mode, 'drawer') > -1
-            let result['name'] = 'Drawer'
-        endif
-
-        let fern_folder = get(data, 2, '')
-        let fern_folder = substitute(fern_folder, ';\?\(#.\+\)\?\$\?$', '', '')
-        let fern_folder = fnamemodify(fern_folder, ':p:~:.:h')
-
-        let result['plugin'] = fern_folder
     endif
 
     return result
