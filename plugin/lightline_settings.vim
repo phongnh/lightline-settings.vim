@@ -20,9 +20,6 @@ let g:lightline_show_git_branch       = get(g:, 'lightline_show_git_branch', 1)
 let g:lightline_show_devicons         = get(g:, 'lightline_show_devicons', 1)
 let g:lightline_show_vim_logo         = get(g:, 'lightline_show_vim_logo', 1)
 
-" Disable NERDTree statusline
-let g:NERDTreeStatusline = -1
-
 " Window width
 let s:xsmall_window_width = 60
 let s:small_window_width  = 80
@@ -749,6 +746,8 @@ function! s:CustomMode() abort
     return {}
 endfunction
 
+" Disable NERDTree statusline
+let g:NERDTreeStatusline = -1
 
 " CtrlP Integration
 let g:ctrlp_status_func = {

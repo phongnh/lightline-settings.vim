@@ -71,6 +71,6 @@ function! s:GetGitBranch() abort
     return branch
 endfunction
 
-function! lightline_settings#git#Branch() abort
+function! lightline_settings#git#Branch(...) abort
     return s:FormatBranch(s:GetGitBranch())
 endfunction
