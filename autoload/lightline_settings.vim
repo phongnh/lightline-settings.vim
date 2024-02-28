@@ -12,6 +12,20 @@ function! lightline_settings#Strip(str) abort
     return s:Strip(a:str)
 endfunction
 
+if exists('*pathshorten')
+    function! s:ShortenPath(filename) abort
+        return pathshorten(a:filename)
+    endfunction
+else
+    function! s:ShortenPath(filename) abort
+        return substitute(a:filename, '\v\w\zs.{-}\ze(\\|/)', '', 'g')
+    endfunction
+endif
+
+function! lightline_settings#ShortenPath(file) abort
+    return s:ShortenPath(a:file)
+endfunction
+
 function! s:InitPowerlineStyles() abort
     let s:statusline_separator_styles = {
                 \ '><': { 'left': "\ue0b0", 'right': "\ue0b2" },

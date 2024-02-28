@@ -340,14 +340,6 @@ function! s:CurrentWinWidth() abort
     return winwidth(0)
 endfunction
 
-function! s:ShortenPath(filename) abort
-    if exists('*pathshorten')
-        return pathshorten(a:filename)
-    else
-        return substitute(a:filename, '\v\w\zs.{-}\ze(\\|/)', '', 'g')
-    endif
-endfunction
-
 function! s:RemoveEmptyElement(list) abort
     return filter(copy(a:list), '!empty(v:val)')
 endfunction
@@ -374,7 +366,7 @@ function! s:FormatFileName(fname) abort
     endif
 
     if strlen(l:path) > 50 && g:lightline_shorten_path
-        let l:path = s:ShortenPath(l:path)
+        let l:path = lightline_settings#ShortenPath(l:path)
     endif
 
     if strlen(l:path) > 50

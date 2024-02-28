@@ -9,7 +9,7 @@ function! s:ShortenBranch(branch, length) abort
     let branch = a:branch
 
     if strlen(branch) > a:length && g:lightline_shorten_path
-        let branch = s:ShortenPath(branch)
+        let branch = lightline_settings#ShortenPath(branch)
     endif
 
     if strlen(branch) > a:length
