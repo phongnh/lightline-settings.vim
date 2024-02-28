@@ -790,7 +790,7 @@ function! s:CustomMode() abort
         endif
 
         if ft ==# 'netrw'
-            return extend(result, s:GetNetrwMode())
+            return extend(result, lightline_settings#netrw#Mode())
         endif
 
         if ft ==# 'molder'
@@ -866,19 +866,6 @@ let g:ctrlp_status_func = {
             \ 'main': 'lightline_settings#ctrlp#MainStatus',
             \ 'prog': 'lightline_settings#ctrlp#ProgressStatus',
             \ }
-
-" Netrw Integration
-function! s:GetNetrwMode(...) abort
-    let result = {
-                \ 'plugin_extra': printf('%s [%s]', get(g:, 'netrw_sort_by', ''), get(g:, 'netrw_sort_direction', 'n') =~ 'n' ? '+' : '-'),
-                \ }
-
-    if exists('b:netrw_curdir')
-        let result['plugin'] = fnamemodify(b:netrw_curdir, ':p:~:.:h')
-    endif
-
-    return result
-endfunction
 
 " vim-molder Integration
 function! s:GetMolderMode(...) abort
