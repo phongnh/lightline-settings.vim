@@ -98,7 +98,7 @@ if g:lightline_powerline_fonts
                 \ 'readonly': "\ue0a2",
                 \ })
 
-    call lightline_settings#SetPowerlineSeparators(get(g:, 'lightline_powerline_style', 'default'))
+    call lightline_settings#powerline#SetSeparators(get(g:, 'lightline_powerline_style', 'default'))
 endif
 
 let s:lightline_show_devicons = 0
