@@ -406,7 +406,7 @@ function! s:FileInfoStatus(...) abort
                     \ ])
     endif
 
-    return join(filter(copy(a:list), '!empty(v:val)'), ' ')
+    return join(filter(copy(parts), '!empty(v:val)'), ' ')
 endfunction
 
 function! s:IsCompact() abort
