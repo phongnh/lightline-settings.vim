@@ -52,14 +52,17 @@ let g:lightline = {
             \ },
             \ 'tabline': {
             \   'left':  [['tablabel'], ['tabs']],
-            \   'right': []
+            \   'right': [],
             \ },
             \ 'tab': {
             \   'active':   ['tabnum', 'readonly', 'filename', 'modified'],
-            \   'inactive': ['tabnum', 'readonly', 'filename', 'modified']
+            \   'inactive': ['tabnum', 'readonly', 'filename', 'modified'],
             \ },
             \ 'active': {
-            \   'left':  [['mode'], ['plugin', 'branch', 'filename']],
+            \   'left':  [
+            \       ['mode'],
+            \       ['plugin'] + (get(g:, 'lightline_show_git_branch', 0) ? ['branch'] : []) + ['filename'],
+            \   ],
             \   'right': [
             \       ['indentation', 'fileinfo'] + (get(g:, 'lightline_show_linenr', 0) ? ['lineinfo'] : []) + ['plugin_extra'],
             \       ['buffer'],
@@ -409,7 +412,7 @@ function! LightlineGitBranchStatus() abort
         return ''
     endif
 
-    if g:lightline_show_git_branch && winwidth(0) >= g:lightline_winwidth_config.small
+    if winwidth(0) >= g:lightline_winwidth_config.small
         let branch = lightline_settings#git#Branch()
     endif
 
