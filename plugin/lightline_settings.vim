@@ -814,7 +814,7 @@ function! s:CustomMode() abort
         endif
 
         if ft ==# 'vaffle'
-            return extend(result, s:GetVaffleMode())
+            return extend(result, lightline_settings#vaffle#Mode())
         endif
 
         if ft ==# 'dirvish'
@@ -873,22 +873,6 @@ function! s:GetNeoTreeMode(...) abort
 
     if exists('b:neo_tree_source')
         let result['plugin'] = b:neo_tree_source
-    endif
-
-    return result
-endfunction
-
-" Vaffle Integration
-function! s:GetVaffleMode(...) abort
-    let result = {}
-
-    let vaffle_name = get(a:, 1, expand('%'))
-    let pattern = '^vaffle://\(\d\+\)/\(.\+\)$'
-    let data = matchlist(vaffle_name, pattern)
-
-    let vaffle_folder = get(data, 2, '')
-    if strlen(vaffle_folder)
-        let result['plugin'] = fnamemodify(vaffle_folder, ':p:~:h')
     endif
 
     return result
