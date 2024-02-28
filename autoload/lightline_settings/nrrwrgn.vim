@@ -1,5 +1,5 @@
 function! lightline_settings#nrrwrgn#Mode(...) abort
-    let result = {}
+    let result = { 'name': 'NrrwRgn' }
 
     if exists(':WidenRegion') == 2
         let result['type'] = 'nrrwrgn'

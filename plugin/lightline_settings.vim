@@ -563,10 +563,7 @@ function! s:CustomMode() abort
     endif
 
     if fname =~? '^NrrwRgn'
-        let nrrw_rgn_mode = lightline_settings#nrrwrgn#Mode()
-        if len(nrrw_rgn_mode)
-            return nrrw_rgn_mode
-        endif
+        return lightline_settings#nrrwrgn#Mode()
     endif
 
     let ft = s:GetBufferType()
