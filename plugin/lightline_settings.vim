@@ -786,7 +786,7 @@ function! s:CustomMode() abort
                     \ }
 
         if ft ==# 'ctrlp'
-            return extend(result, s:GetCtrlPMode())
+            return extend(result, lightline_settings#ctrlp#Mode())
         endif
 
         if ft ==# 'netrw'
