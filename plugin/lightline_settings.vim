@@ -757,7 +757,7 @@ function! s:CustomMode() abort
         endif
 
         if fname ==# '__Tagbar__'
-            return extend(result, s:GetTagbarMode())
+            return extend(result, lightline_settings#tagbar#Mode())
         endif
 
         if fname ==# '__CtrlSF__'
@@ -822,7 +822,7 @@ function! s:CustomMode() abort
         endif
 
         if ft ==# 'tagbar'
-            return extend(result, s:GetTagbarMode())
+            return extend(result, lightline_settings#tagbar#Mode())
         endif
 
         if ft ==# 'vista_kind' || ft ==# 'vista'
@@ -1029,36 +1029,7 @@ function! s:GetNrrwRgnMode(...) abort
 endfunction
 
 " Tagbar Integration
-let g:tagbar_status_func = 'TagbarStatusFunc'
-
-function! s:GetTagbarMode() abort
-    if empty(g:lightline.tagbar_flags)
-        let plugin_status = lightline#concatenate([
-                    \ g:lightline.tagbar_sort,
-                    \ g:lightline.tagbar_fname,
-                    \ ], 0)
-    else
-        let plugin_status = lightline#concatenate([
-                    \ g:lightline.tagbar_sort,
-                    \ g:lightline.tagbar_fname,
-                    \ join(g:lightline.tagbar_flags, ''),
-                    \ ], 0)
-    endif
-
-    return {
-                \ 'name': s:filetype_modes['tagbar'],
-                \ 'plugin': plugin_status,
-                \ 'type': 'tagbar',
-                \ }
-endfunction
-
-function! TagbarStatusFunc(current, sort, fname, flags, ...) abort
-    let g:lightline.tagbar_sort  = a:sort
-    let g:lightline.tagbar_fname = a:fname
-    let g:lightline.tagbar_flags = a:flags
-
-    return lightline#statusline(0)
-endfunction
+let g:tagbar_status_func = 'lightline_settings#tagbar#Status'
 
 " ZoomWin Integration
 let s:ZoomWin_funcref = []
