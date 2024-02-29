@@ -67,7 +67,7 @@ function! s:GetStyle(style) abort
 
     if l:style ==? 'random'
         let l:rand = str2nr(matchstr(reltimestr(reltime()), '\v\.@<=\d+')[1:])
-        let l:style = keys(g:crystalline_separator_styles)[l:rand % len(g:crystalline_separator_styles)]
+        let l:style = keys(g:lightline_separator_styles)[l:rand % len(g:lightline_separator_styles)]
     endif
 
     return l:style
