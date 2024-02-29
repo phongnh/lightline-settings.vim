@@ -150,9 +150,7 @@ function! s:SetLightlineTheme(colorscheme) abort
     call s:LightlineReload()
 endfunction
 
-let s:lightline_colorscheme_mappings = {
-            \ 'gruvbox': ['gruvbox8', 'gruvbox-material'],
-            \ }
+let g:lightline_colorscheme_mappings = get(g:, 'lightline_colorscheme_mappings', {})
 
 function! s:DetectLightlineTheme() abort
     let l:original_colorscheme = get(g:, 'colors_name', '')
@@ -175,7 +173,7 @@ function! s:DetectLightlineTheme() abort
         return l:colorscheme
     endif
 
-    for l:alternative_colorscheme in get(s:lightline_colorscheme_mappings, l:colorscheme, [])
+    for l:alternative_colorscheme in get(g:lightline_colorscheme_mappings, l:colorscheme, [])
         if index(s:lightline_colorschemes, l:alternative_colorscheme) > -1
             return l:alternative_colorscheme
         endif
