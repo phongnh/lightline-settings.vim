@@ -221,16 +221,6 @@ function! s:InactiveFileNameStatus() abort
     return s:ReadonlyStatus() . s:GetFileName() . s:ModifiedStatus()
 endfunction
 
-function! s:IndentationStatus(...) abort
-    let l:shiftwidth = exists('*shiftwidth') ? shiftwidth() : &shiftwidth
-    let compact = get(a:, 1, 0)
-    if compact
-        return printf(&expandtab ? 'SPC: %d' : 'TAB: %d', l:shiftwidth)
-    else
-        return printf(&expandtab ? 'Spaces: %d' : 'Tab Size: %d', l:shiftwidth)
-    endif
-endfunction
-
 function! s:FileEncodingAndFormatStatus() abort
     let l:encoding = strlen(&fileencoding) ? &fileencoding : &encoding
     let l:bomb     = &bomb ? '[BOM]' : ''
@@ -334,7 +324,7 @@ function! LightlineBufferStatus() abort
                     \ lightline_settings#parts#Spell(),
                     \ lightline_settings#parts#Paste(),
                     \ lightline_settings#parts#Clipboard(),
-                    \ s:IndentationStatus(lightline_settings#IsCompact()),
+                    \ lightline_settings#parts#Indentation(lightline_settings#IsCompact()),
                     \ ], 1)
     endif
 

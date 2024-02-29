@@ -10,3 +10,12 @@ function! lightline_settings#parts#Spell() abort
     return &spell ? toupper(substitute(&spelllang, ',', '/', 'g')) : ''
 endfunction
 
+function! lightline_settings#parts#Indentation(...) abort
+    let l:shiftwidth = exists('*shiftwidth') ? shiftwidth() : &shiftwidth
+    let compact = get(a:, 1, 0)
+    if compact
+        return printf(&expandtab ? 'SPC: %d' : 'TAB: %d', l:shiftwidth)
+    else
+        return printf(&expandtab ? 'Spaces: %d' : 'Tab Size: %d', l:shiftwidth)
+    endif
+endfunction
