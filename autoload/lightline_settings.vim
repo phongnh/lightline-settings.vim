@@ -45,6 +45,12 @@ function! lightline_settings#FormatFileName(fname, ...) abort
     return l:path
 endfunction
 
+function! lightline_settings#Reload() abort
+    call lightline#init()
+    call lightline#colorscheme()
+    call lightline#update()
+endfunction
+
 " Copied from https://github.com/itchyny/lightline-powerful/blob/master/autoload/lightline_powerful.vim
 function! lightline_settings#Init() abort
     setglobal noshowmode

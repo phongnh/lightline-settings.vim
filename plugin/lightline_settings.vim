@@ -114,14 +114,8 @@ if get(g:, 'lightline_bufferline', 0)
     call lightline_settings#bufferline#Init()
 endif
 
-command! LightlineReload call <SID>LightlineReload()
+command! LightlineReload call lightline_settings#Reload()
 command! -nargs=1 -complete=custom,<SID>ListLightlineColorschemes LightlineTheme call <SID>SetLightlineTheme(<f-args>)
-
-function! s:LightlineReload() abort
-    call lightline#init()
-    call lightline#colorscheme()
-    call lightline#update()
-endfunction
 
 function! s:FindLightlineThemes() abort
     if exists('s:lightline_colorschemes')
