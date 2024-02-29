@@ -355,13 +355,8 @@ function! s:FileInfoStatus(...) abort
                 \ s:GetBufferType(),
                 \ ]
 
-    let compact = get(a:, 1, 0)
-
-    if s:lightline_show_devicons && !compact
-        call extend(parts, [
-                    \ lightline_settings#devicons#FileType(expand('%')) . ' ',
-                    \ lightline_settings#devicons#FileFormat() . ' ',
-                    \ ])
+    if s:lightline_show_devicons
+        call add(parts, lightline_settings#devicons#FileType(expand('%')) . ' ')
     endif
 
     return join(filter(copy(parts), '!empty(v:val)'), ' ')
