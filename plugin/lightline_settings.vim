@@ -302,12 +302,8 @@ function! s:InactiveFileNameStatus() abort
     return s:ReadonlyStatus() . s:GetFileName() . s:ModifiedStatus()
 endfunction
 
-function! s:IsClipboardEnabled() abort
-    return match(&clipboard, 'unnamed') > -1
-endfunction
-
 function! s:ClipboardStatus() abort
-    return s:IsClipboardEnabled() ? g:lightline_symbols.clipboard : ''
+    return lightline_settings#IsClipboardEnabled() ? g:lightline_symbols.clipboard : ''
 endfunction
 
 function! s:PasteStatus() abort
@@ -355,7 +351,7 @@ function! s:FileInfoStatus(...) abort
 endfunction
 
 function! s:IsCompact() abort
-    return &spell || &paste || s:IsClipboardEnabled() || winwidth(0) <= g:lightline_winwidth_config.xsmall
+    return &spell || &paste || lightline_settings#IsClipboardEnabled() || winwidth(0) <= g:lightline_winwidth_config.xsmall
 endfunction
 
 function! LightlineModeStatus() abort

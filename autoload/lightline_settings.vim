@@ -37,6 +37,10 @@ function! lightline_settings#FormatFileName(fname, ...) abort
     return l:path
 endfunction
 
+function! lightline_settings#IsClipboardEnabled() abort
+    return match(&clipboard, 'unnamed') > -1
+endfunction
+
 function! lightline_settings#Reload() abort
     call lightline#init()
     call lightline#colorscheme()
