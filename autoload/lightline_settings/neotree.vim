@@ -1,3 +1,4 @@
+" https://github.com/nvim-neo-tree/neo-tree.nvim
 function! lightline_settings#neotree#Mode(...) abort
     let result = {}
 

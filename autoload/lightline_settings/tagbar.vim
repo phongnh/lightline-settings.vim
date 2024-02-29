@@ -1,3 +1,4 @@
+" https://github.com/preservim/tagbar
 let s:lightline_tagbar = {}
 
 function! lightline_settings#tagbar#Status(current, sort, fname, flags, ...) abort

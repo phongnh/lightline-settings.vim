@@ -1,3 +1,4 @@
+" https://github.com/stevearc/oil.nvim
 function! lightline_settings#oil#Mode(...) abort
     let result = {}
 

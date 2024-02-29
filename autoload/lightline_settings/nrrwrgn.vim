@@ -1,3 +1,4 @@
+" https://github.com/chrisbra/NrrwRgn
 function! lightline_settings#nrrwrgn#Mode(...) abort
     let result = { 'name': 'NrrwRgn' }
 

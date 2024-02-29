@@ -1,3 +1,4 @@
+" https://github.com/SidOfc/carbon.nvim
 function! lightline_settings#carbon#Mode(...) abort
     let result = {}
 

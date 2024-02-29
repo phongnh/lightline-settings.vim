@@ -1,3 +1,4 @@
+" https://github.com/ctrlpvim/ctrlp.vim
 let s:lightline_ctrlp = {}
 
 " TODO: Move these variables and functions to autload and reuse them

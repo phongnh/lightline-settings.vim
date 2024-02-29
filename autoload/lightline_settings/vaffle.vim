@@ -1,3 +1,4 @@
+" https://github.com/cocopon/vaffle.vim
 function! lightline_settings#vaffle#Mode(...) abort
     let result = {}
 

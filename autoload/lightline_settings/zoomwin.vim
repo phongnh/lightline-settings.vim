@@ -1,3 +1,4 @@
+" https://github.com/phongnh/ZoomWin
 function! lightline_settings#zoomwin#Status(zoomstate) abort
     for F in g:lightline_zoomwin_funcref
         if type(F) == v:t_func && F != function('lightline_settings#zoomwin#Status')

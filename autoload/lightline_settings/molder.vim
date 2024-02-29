@@ -1,3 +1,4 @@
+" https://github.com/mattn/vim-molder
 function! lightline_settings#molder#Mode(...) abort
     let result = {}
 
