@@ -284,24 +284,6 @@ function! s:GetFileName() abort
     return fname
 endfunction
 
-function! s:FormatFileName(fname) abort
-    let l:path = a:fname
-
-    if winwidth(0) <= g:lightline_winwidth_config.xsmall
-        return fnamemodify(l:path, ':t')
-    endif
-
-    if strlen(l:path) > 50 && g:lightline_shorten_path
-        let l:path = lightline_settings#ShortenPath(l:path)
-    endif
-
-    if strlen(l:path) > 50
-        let l:path = fnamemodify(l:path, ':t')
-    endif
-
-    return l:path
-endfunction
-
 function! s:ModifiedStatus() abort
     if &modified
         if !&modifiable
@@ -321,7 +303,7 @@ function! s:ReadonlyStatus() abort
 endfunction
 
 function! s:FileNameStatus() abort
-    return s:ReadonlyStatus() . s:FormatFileName(s:GetFileName()) . s:ModifiedStatus()
+    return s:ReadonlyStatus() . lightline_settings#FormatFileName(s:GetFileName()) . s:ModifiedStatus()
 endfunction
 
 function! s:InactiveFileNameStatus() abort

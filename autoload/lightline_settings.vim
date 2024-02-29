@@ -26,6 +26,25 @@ function! lightline_settings#ShortenPath(file) abort
     return s:ShortenPath(a:file)
 endfunction
 
+function! lightline_settings#FormatFileName(fname, ...) abort
+    let l:path = a:fname
+    let l:maxlen = get(a:, 1, 50)
+
+    if winwidth(0) <= g:lightline_winwidth_config.xsmall
+        return fnamemodify(l:path, ':t')
+    endif
+
+    if strlen(l:path) > l:maxlen && g:lightline_shorten_path
+        let l:path = lightline_settings#ShortenPath(l:path)
+    endif
+
+    if strlen(l:path) > l:maxlen
+        let l:path = fnamemodify(l:path, ':t')
+    endif
+
+    return l:path
+endfunction
+
 " Copied from https://github.com/itchyny/lightline-powerful/blob/master/autoload/lightline_powerful.vim
 function! lightline_settings#Init() abort
     setglobal noshowmode
