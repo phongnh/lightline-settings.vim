@@ -3,8 +3,6 @@ function! lightline_settings#nrrwrgn#Mode(...) abort
     let result = { 'name': 'NrrwRgn' }
 
     if exists(':WidenRegion') == 2
-        let result['type'] = 'nrrwrgn'
-
         if exists('b:nrrw_instn')
             let result['name'] = printf('%s#%d', 'NrrwRgn', b:nrrw_instn)
         else

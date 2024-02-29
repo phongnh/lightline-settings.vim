@@ -36,7 +36,6 @@ function! lightline_settings#ctrlp#Mode(...) abort
     let result = {
                 \ 'name': 'CtrlP',
                 \ 'plugin_extra': s:lightline_ctrlp.dir,
-                \ 'type': 'ctrlp',
                 \ }
 
     if s:lightline_ctrlp.main

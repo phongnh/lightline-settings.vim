@@ -26,6 +26,5 @@ function! lightline_settings#tagbar#Mode(...) abort
     return {
                 \ 'name': 'Tagbar',
                 \ 'plugin': plugin_status,
-                \ 'type': 'tagbar',
                 \ }
 endfunction

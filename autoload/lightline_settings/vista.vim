@@ -4,6 +4,5 @@ function! lightline_settings#vista#Mode(...) abort
     return {
                 \ 'plugin': provider,
                 \ 'plugin_inactive': provider,
-                \ 'type': 'vista',
                 \ }
 endfunction
