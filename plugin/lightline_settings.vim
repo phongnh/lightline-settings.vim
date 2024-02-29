@@ -562,7 +562,7 @@ function! s:CustomMode() abort
         return result
     endif
 
-    if fname =~? '^NrrwRgn'
+    if fname =~# '^NrrwRgn_\zs.*\ze_\d\+$'
         return lightline_settings#nrrwrgn#Mode()
     endif
 
