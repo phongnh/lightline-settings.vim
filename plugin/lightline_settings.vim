@@ -141,7 +141,7 @@ function! s:SetLightlineTheme(colorscheme) abort
     endif
 
     let g:lightline.colorscheme = a:colorscheme
-    call s:LightlineReload()
+    call lightline_settings#Reload()
 endfunction
 
 let g:lightline_colorscheme_mappings = get(g:, 'lightline_colorscheme_mappings', {})
