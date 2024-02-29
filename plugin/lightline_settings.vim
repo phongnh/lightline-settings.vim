@@ -249,7 +249,7 @@ let g:lightline_filetype_modes = {
             \ 'agit_stat':         'Agit Stat',
             \ }
 
-let s:short_modes = {
+let s:lightline_shorter_modes = {
             \ 'NORMAL':   'N',
             \ 'INSERT':   'I',
             \ 'VISUAL':   'V',
@@ -358,7 +358,7 @@ function! LightlineModeStatus() abort
 
     let mode_label = lightline#mode()
     if winwidth(0) <= g:lightline_winwidth_config.xsmall
-        return get(s:short_modes, mode_label, mode_label)
+        return get(s:lightline_shorter_modes, mode_label, mode_label)
     endif
 
     return mode_label
