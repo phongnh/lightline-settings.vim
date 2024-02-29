@@ -199,7 +199,7 @@ endfunction
 
 augroup VimLightlineColorscheme
     autocmd!
-    autocmd VimEnter * call <SID>ReloadLightlineTheme() | setglobal noshowmode
+    autocmd VimEnter * call <SID>ReloadLightlineTheme()
     autocmd ColorScheme * call <SID>ReloadLightlineTheme()
 augroup END
 

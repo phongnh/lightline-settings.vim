@@ -28,6 +28,8 @@ endfunction
 
 " Copied from https://github.com/itchyny/lightline-powerful/blob/master/autoload/lightline_powerful.vim
 function! lightline_settings#Init() abort
+    setglobal noshowmode
+
     let g:lightline_buffer_count_by_basename = {}
 
     function! s:UpdateBufferCount() abort
