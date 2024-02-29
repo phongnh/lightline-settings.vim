@@ -181,26 +181,12 @@ let s:lightline_shorter_modes = {
             \ 'TERMINAL': 'T',
             \ }
 
-function! s:GetBufferType() abort
-    return strlen(&filetype) ? &filetype : &buftype
-endfunction
-
-function! s:GetFileName() abort
-    let fname = expand('%:~:.')
-
-    if empty(fname)
-        return '[No Name]'
-    endif
-
-    return fname
-endfunction
-
 function! s:FileNameStatus() abort
-    return lightline_settings#parts#Readonly() . lightline_settings#FormatFileName(s:GetFileName()) . lightline_settings#parts#Modified()
+    return lightline_settings#parts#Readonly() . lightline_settings#FormatFileName(lightline_settings#parts#FileName()) . lightline_settings#parts#Modified()
 endfunction
 
 function! s:InactiveFileNameStatus() abort
-    return lightline_settings#parts#Readonly() . s:GetFileName() . lightline_settings#parts#Modified()
+    return lightline_settings#parts#Readonly() . lightline_settings#parts#FileName() . lightline_settings#parts#Modified()
 endfunction
 
 function! s:FileEncodingAndFormatStatus() abort
@@ -219,7 +205,7 @@ endfunction
 function! s:FileInfoStatus(...) abort
     let parts = [
                 \ s:FileEncodingAndFormatStatus(),
-                \ s:GetBufferType(),
+                \ lightline_settings#parts#BufferType(),
                 \ ]
 
     if s:lightline_show_devicons
@@ -411,7 +397,7 @@ function! s:CustomMode() abort
         return lightline_settings#nrrwrgn#Mode()
     endif
 
-    let ft = s:GetBufferType()
+    let ft = lightline_settings#parts#BufferType()
     if has_key(g:lightline_filetype_modes, ft)
         let result = {
                     \ 'name': g:lightline_filetype_modes[ft],

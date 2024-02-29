@@ -37,3 +37,17 @@ function! lightline_settings#parts#Modified(...) abort
 
     return ''
 endfunction
+
+function! lightline_settings#parts#BufferType() abort
+    return strlen(&filetype) ? &filetype : &buftype
+endfunction
+
+function! lightline_settings#parts#FileName() abort
+    let fname = expand('%')
+
+    if empty(fname)
+        return '[No Name]'
+    endif
+
+    return fnamemodify(fname, ':~:.')
+endfunction
