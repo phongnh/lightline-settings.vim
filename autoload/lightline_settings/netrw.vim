@@ -4,7 +4,7 @@ function! lightline_settings#netrw#Mode(...) abort
                 \ }
 
     if exists('b:netrw_curdir')
-        let result['plugin'] = fnamemodify(b:netrw_curdir, ':p:~:.:h')
+        let result['plugin'] = fnamemodify(b:netrw_curdir, ':p:~:h')
     endif
 
     return result
