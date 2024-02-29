@@ -15,7 +15,9 @@ function! lightline_settings#nrrwrgn#Mode(...) abort
         let dict = exists('*nrrwrgn#NrrwRgnStatus()') ? nrrwrgn#NrrwRgnStatus() : {}
 
         if len(dict)
-            let result['plugin'] = fnamemodify(dict.fullname, ':~:.')
+            let vmode = { 'v': ' [C]', 'V': '', '': ' [B]' }
+            let result['name'] = (dict.multi ? 'Multi' : '') . result['name'] . vmode[dict.visual ? dict.visual : 'V']
+            let result['plugin'] = fnamemodify(dict.fullname, ':~:.') . (dict.multi ? '' : printf(' [%d-%d]', dict.start[1], dict.end[1]))
             let result['plugin_inactive'] = result['plugin']
         elseif get(b:, 'orig_buf', 0)
             let result['plugin'] = bufname(b:orig_buf)
