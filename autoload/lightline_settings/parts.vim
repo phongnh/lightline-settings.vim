@@ -69,3 +69,16 @@ function! lightline_settings#parts#FileName() abort
 
     return fnamemodify(fname, ':~:.')
 endfunction
+
+function! lightline_settings#parts#FileEncodindAndFormat() abort
+    let l:encoding = strlen(&fileencoding) ? &fileencoding : &encoding
+    let l:bomb     = &bomb ? '[BOM]' : ''
+    let l:format   = strlen(&fileformat) ? printf('[%s]', &fileformat) : ''
+
+    " Skip common string utf-8[unix]
+    if (l:encoding . l:format) ==# 'utf-8[unix]'
+        return l:bomb
+    endif
+
+    return l:encoding . l:bomb . l:format
+endfunction

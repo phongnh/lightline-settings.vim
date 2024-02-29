@@ -189,22 +189,9 @@ function! s:InactiveFileNameStatus() abort
     return lightline_settings#parts#Readonly() . lightline_settings#parts#FileName() . lightline_settings#parts#Modified()
 endfunction
 
-function! s:FileEncodingAndFormatStatus() abort
-    let l:encoding = strlen(&fileencoding) ? &fileencoding : &encoding
-    let l:bomb     = &bomb ? '[BOM]' : ''
-    let l:format   = strlen(&fileformat) ? printf('[%s]', &fileformat) : ''
-
-    " Skip common string utf-8[unix]
-    if (l:encoding . l:format) ==# 'utf-8[unix]'
-        return l:bomb
-    endif
-
-    return l:encoding . l:bomb . l:format
-endfunction
-
 function! s:FileInfoStatus(...) abort
     let parts = [
-                \ s:FileEncodingAndFormatStatus(),
+                \ lightline_settings#parts#FileEncodindAndFormat(),
                 \ lightline_settings#parts#BufferType(),
                 \ ]
 
