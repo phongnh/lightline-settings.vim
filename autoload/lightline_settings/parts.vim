@@ -19,3 +19,21 @@ function! lightline_settings#parts#Indentation(...) abort
         return printf(&expandtab ? 'Spaces: %d' : 'Tab Size: %d', l:shiftwidth)
     endif
 endfunction
+
+function! lightline_settings#parts#Readonly(...) abort
+    return &readonly ? g:lightline_symbols.readonly . ' ' : ''
+endfunction
+
+function! lightline_settings#parts#Modified(...) abort
+    if &modified
+        if !&modifiable
+            return '[+-]'
+        else
+            return '[+]'
+        endif
+    elseif !&modifiable
+        return '[-]'
+    endif
+
+    return ''
+endfunction

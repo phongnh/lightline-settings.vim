@@ -195,30 +195,12 @@ function! s:GetFileName() abort
     return fname
 endfunction
 
-function! s:ModifiedStatus() abort
-    if &modified
-        if !&modifiable
-            return '[+-]'
-        else
-            return '[+]'
-        endif
-    elseif !&modifiable
-        return '[-]'
-    endif
-
-    return ''
-endfunction
-
-function! s:ReadonlyStatus() abort
-    return &readonly ? g:lightline_symbols.readonly . ' ' : ''
-endfunction
-
 function! s:FileNameStatus() abort
-    return s:ReadonlyStatus() . lightline_settings#FormatFileName(s:GetFileName()) . s:ModifiedStatus()
+    return lightline_settings#parts#Readonly() . lightline_settings#FormatFileName(s:GetFileName()) . lightline_settings#parts#Modified()
 endfunction
 
 function! s:InactiveFileNameStatus() abort
-    return s:ReadonlyStatus() . s:GetFileName() . s:ModifiedStatus()
+    return lightline_settings#parts#Readonly() . s:GetFileName() . lightline_settings#parts#Modified()
 endfunction
 
 function! s:FileEncodingAndFormatStatus() abort
