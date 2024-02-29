@@ -221,18 +221,6 @@ function! s:InactiveFileNameStatus() abort
     return s:ReadonlyStatus() . s:GetFileName() . s:ModifiedStatus()
 endfunction
 
-function! s:ClipboardStatus() abort
-    return lightline_settings#IsClipboardEnabled() ? g:lightline_symbols.clipboard : ''
-endfunction
-
-function! s:PasteStatus() abort
-    return &paste ? g:lightline_symbols.paste : ''
-endfunction
-
-function! s:SpellStatus() abort
-    return &spell ? toupper(substitute(&spelllang, ',', '/', 'g')) : ''
-endfunction
-
 function! s:IndentationStatus(...) abort
     let l:shiftwidth = exists('*shiftwidth') ? shiftwidth() : &shiftwidth
     let compact = get(a:, 1, 0)
@@ -343,9 +331,9 @@ function! LightlineBufferStatus() abort
 
     if winwidth(0) >= g:lightline_winwidth_config.small
         return lightline#concatenate([
-                    \ s:SpellStatus(),
-                    \ s:PasteStatus(),
-                    \ s:ClipboardStatus(),
+                    \ lightline_settings#parts#Spell(),
+                    \ lightline_settings#parts#Paste(),
+                    \ lightline_settings#parts#Clipboard(),
                     \ s:IndentationStatus(lightline_settings#IsCompact()),
                     \ ], 1)
     endif
@@ -414,6 +402,7 @@ let g:lightline_plugin_modes = {
             \ 'tagbar':          'lightline_settings#tagbar#Mode',
             \ 'vista_kind':      'lightline_settings#vista#Mode',
             \ 'vista':           'lightline_settings#vista#Mode',
+            \ 'gitcommit':       'lightline_settings#gitcommit#Mode',
             \ 'terminal':        'lightline_settings#terminal#Mode',
             \ 'help':            'lightline_settings#help#Mode',
             \ 'qf':              'lightline_settings#quickfix#Mode',
