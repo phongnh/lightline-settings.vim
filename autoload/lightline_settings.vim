@@ -41,6 +41,10 @@ function! lightline_settings#IsClipboardEnabled() abort
     return match(&clipboard, 'unnamed') > -1
 endfunction
 
+function! lightline_settings#IsCompact() abort
+    return &spell || &paste || lightline_settings#IsClipboardEnabled() || winwidth(0) <= g:lightline_winwidth_config.xsmall
+endfunction
+
 function! lightline_settings#Reload() abort
     call lightline#init()
     call lightline#colorscheme()

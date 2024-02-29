@@ -350,10 +350,6 @@ function! s:FileInfoStatus(...) abort
     return join(filter(copy(parts), '!empty(v:val)'), ' ')
 endfunction
 
-function! s:IsCompact() abort
-    return &spell || &paste || lightline_settings#IsClipboardEnabled() || winwidth(0) <= g:lightline_winwidth_config.xsmall
-endfunction
-
 function! LightlineModeStatus() abort
     let l:mode = s:CustomMode()
     if len(l:mode)
@@ -396,7 +392,7 @@ function! LightlineFileInfoStatus() abort
         return ''
     endif
 
-    let compact = s:IsCompact()
+    let compact = lightline_settings#IsCompact()
 
     return s:FileInfoStatus(compact)
 endfunction
@@ -431,7 +427,7 @@ function! LightlineBufferStatus() abort
                     \ s:SpellStatus(),
                     \ s:PasteStatus(),
                     \ s:ClipboardStatus(),
-                    \ s:IndentationStatus(s:IsCompact()),
+                    \ s:IndentationStatus(lightline_settings#IsCompact()),
                     \ ], 1)
     endif
 
