@@ -40,3 +40,15 @@ function! lightline_settings#sections#GitBranch(...) abort
 
     return ''
 endfunction
+
+function! lightline_settings#sections#FileName(...) abort
+    let l:mode = lightline_settings#parts#Integration()
+    if len(l:mode)
+        return ''
+    endif
+    return call('s:RenderFileNameSection', a:000)
+endfunction
+
+function! s:RenderFileNameSection(...) abort
+    return lightline_settings#parts#FileName()
+endfunction
