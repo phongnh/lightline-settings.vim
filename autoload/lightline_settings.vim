@@ -122,8 +122,8 @@ function! lightline_settings#Setup() abort
                 \   'right': '',
                 \ },
                 \ 'subseparator': {
-                \  'left': '|',
-                \  'right': '|',
+                \   'left': '|',
+                \   'right': '|',
                 \ },
                 \ 'tabline': {
                 \   'left':  [['tablabel'], ['tabs']],
