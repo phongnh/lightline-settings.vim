@@ -159,7 +159,7 @@ function! lightline_settings#Setup() abort
                 \   'filetype':     'lightline_settings#sections#FileType',
                 \   'lineinfo':     'lightline_settings#sections#LineInfo',
                 \   'plugin_extra': 'lightline_settings#sections#PluginExtra',
-                \   'buffer':       'LightlineBufferStatus',
+                \   'buffer':       'lightline_settings#sections#Buffer',
                 \   'inactive':     'LightlineInactiveStatus',
                 \ },
                 \ 'tab_component_function': {

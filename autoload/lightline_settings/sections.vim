@@ -80,3 +80,12 @@ function!  lightline_settings#sections#PluginExtra(...) abort
     endif
     return ''
 endfunction
+
+function!  lightline_settings#sections#Buffer(...) abort
+    let l:mode = lightline_settings#parts#Integration()
+    if len(l:mode)
+        return get(l:mode, 'buffer', '')
+    endif
+    return lightline_settings#parts#Indentation(lightline_settings#IsCompact())
+endfunction
+
