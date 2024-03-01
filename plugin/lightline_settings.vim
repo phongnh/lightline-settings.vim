@@ -22,15 +22,6 @@ function! LightlineBufferStatus() abort
     return lightline_settings#parts#Indentation(lightline_settings#IsCompact())
 endfunction
 
-function! LightlinePluginExtraStatus() abort
-    let l:mode = lightline_settings#parts#Integration()
-    if len(l:mode)
-        return get(l:mode, 'plugin_extra', '')
-    endif
-
-    return ''
-endfunction
-
 function! LightlineInactiveStatus() abort
     let l:mode = lightline_settings#parts#Integration()
     if len(l:mode)

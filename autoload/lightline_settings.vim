@@ -158,7 +158,7 @@ function! lightline_settings#Setup() abort
                 \   'filename':     'lightline_settings#sections#FileName',
                 \   'filetype':     'lightline_settings#sections#FileType',
                 \   'lineinfo':     'lightline_settings#sections#LineInfo',
-                \   'plugin_extra': 'LightlinePluginExtraStatus',
+                \   'plugin_extra': 'lightline_settings#sections#PluginExtra',
                 \   'buffer':       'LightlineBufferStatus',
                 \   'inactive':     'LightlineInactiveStatus',
                 \ },

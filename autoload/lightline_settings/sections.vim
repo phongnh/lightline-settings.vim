@@ -72,3 +72,11 @@ function! lightline_settings#sections#LineInfo(...) abort
     endif
     return lightline_settings#parts#SimpleLineInfo()
 endfunction
+
+function!  lightline_settings#sections#PluginExtra(...) abort
+    let l:mode = lightline_settings#parts#Integration()
+    if len(l:mode)
+        return get(l:mode, 'plugin_extra', '')
+    endif
+    return ''
+endfunction
