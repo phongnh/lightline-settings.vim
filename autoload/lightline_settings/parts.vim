@@ -60,15 +60,12 @@ endfunction
 
 function! lightline_settings#parts#FileEncodindAndFormat() abort
     let l:encoding = strlen(&fileencoding) ? &fileencoding : &encoding
-    let l:bomb     = &bomb ? '[BOM]' : ''
-    let l:format   = strlen(&fileformat) ? printf('[%s]', &fileformat) : ''
-
-    " Skip common string utf-8[unix]
-    if (l:encoding . l:format) ==# 'utf-8[unix]'
-        return l:bomb
-    endif
-
-    return l:encoding . l:bomb . l:format
+    let l:encoding = (l:encoding ==# 'utf-8') ? '' : l:encoding . ' '
+    let l:bomb     = &bomb ? g:lightline_symbols.bomb . ' ' : ''
+    let l:noeol    = &eol ? '' : g:lightline_symbols.noeol . ' '
+    let l:format   = get(g:lightline_symbols, &fileformat, '[empty]')
+    let l:format   = (l:format ==# '[unix]') ? '' : l:format . ' '
+    return l:encoding . l:bomb . l:noeol . l:format
 endfunction
 
 function! lightline_settings#parts#FileType(...) abort
