@@ -153,7 +153,7 @@ function! lightline_settings#Setup() abort
                 \ },
                 \ 'component_function': {
                 \   'mode':         'lightline_settings#sections#Mode',
-                \   'plugin':       'LightlinePluginStatus',
+                \   'plugin':       'lightline_settings#sections#Plugin',
                 \   'branch':       'LightlineGitBranchStatus',
                 \   'filename':     'LightlineFileNameStatus',
                 \   'fileinfo':     'LightlineFileInfoStatus',

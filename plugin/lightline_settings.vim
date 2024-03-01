@@ -62,18 +62,6 @@ function! LightlineBufferStatus() abort
     return lightline_settings#parts#Indentation(lightline_settings#IsCompact())
 endfunction
 
-function! LightlinePluginStatus() abort
-    let l:mode = lightline_settings#parts#Integration()
-    if len(l:mode)
-        if has_key(l:mode, 'link')
-            call lightline#link(l:mode['link'])
-        endif
-        return get(l:mode, 'plugin', '')
-    endif
-
-    return ''
-endfunction
-
 function! LightlinePluginExtraStatus() abort
     let l:mode = lightline_settings#parts#Integration()
     if len(l:mode)
