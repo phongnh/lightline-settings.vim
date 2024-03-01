@@ -34,16 +34,10 @@ endfunction
 
 function! lightline_settings#parts#Modified(...) abort
     if &modified
-        if !&modifiable
-            return '[+-]'
-        else
-            return '[+]'
-        endif
-    elseif !&modifiable
-        return '[-]'
+        return !&modifiable ? '[+-]' : '[+]'
+    else
+        return !&modifiable ? '[-]' : ''
     endif
-
-    return ''
 endfunction
 
 function! lightline_settings#parts#SimpleLineInfo(...) abort
