@@ -13,19 +13,6 @@ set cpo&vim
 
 call lightline_settings#Setup()
 
-function! LightlineGitBranchStatus() abort
-    let l:mode = lightline_settings#parts#Integration()
-    if len(l:mode)
-        return ''
-    endif
-
-    if winwidth(0) >= g:lightline_winwidth_config.small
-        let branch = lightline_settings#git#Branch()
-    endif
-
-    return ''
-endfunction
-
 function! LightlineFileNameStatus() abort
     let l:mode = lightline_settings#parts#Integration()
     if len(l:mode)

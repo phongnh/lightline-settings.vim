@@ -27,3 +27,16 @@ endfunction
 function! s:RenderPluginSection(...) abort
     return ''
 endfunction
+
+function! lightline_settings#sections#GitBranch(...) abort
+    let l:mode = lightline_settings#parts#Integration()
+    if len(l:mode)
+        return ''
+    endif
+
+    if winwidth(0) >= g:lightline_winwidth_config.small
+        return lightline_settings#git#Branch()
+    endif
+
+    return ''
+endfunction
