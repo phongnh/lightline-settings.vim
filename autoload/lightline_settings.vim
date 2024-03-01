@@ -160,7 +160,7 @@ function! lightline_settings#Setup() abort
                 \   'lineinfo':     'lightline_settings#sections#LineInfo',
                 \   'plugin_extra': 'lightline_settings#sections#PluginExtra',
                 \   'buffer':       'lightline_settings#sections#Buffer',
-                \   'inactive':     'LightlineInactiveStatus',
+                \   'inactive':     'lightline_settings#sections#InactiveMode',
                 \ },
                 \ 'tab_component_function': {
                 \   'tabname': 'lightline_settings#tab#Name',

@@ -89,3 +89,17 @@ function!  lightline_settings#sections#Buffer(...) abort
     return lightline_settings#parts#Indentation(lightline_settings#IsCompact())
 endfunction
 
+function!  lightline_settings#sections#InactiveMode(...) abort
+    let l:mode = lightline_settings#parts#Integration()
+    if len(l:mode)
+        if has_key(l:mode, 'plugin_inactive')
+            return lightline#concatenate(
+                        \ [
+                        \   l:mode['name'],
+                        \   get(l:mode, 'plugin_inactive', '')
+                        \ ], 0)
+        endif
+        return l:mode['name']
+    endif
+    return lightline_settings#parts#InactiveFileName()
+endfunction

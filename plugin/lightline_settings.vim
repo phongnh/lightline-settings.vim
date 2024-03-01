@@ -13,22 +13,6 @@ set cpo&vim
 
 call lightline_settings#Setup()
 
-function! LightlineInactiveStatus() abort
-    let l:mode = lightline_settings#parts#Integration()
-    if len(l:mode)
-        if has_key(l:mode, 'plugin_inactive')
-            return lightline#concatenate(
-                        \ [
-                        \   l:mode['name'],
-                        \   get(l:mode, 'plugin_inactive', '')
-                        \ ], 0)
-        endif
-        return l:mode['name']
-    endif
-
-    return lightline_settings#parts#InactiveFileName()
-endfunction
-
 command! LightlineReload call lightline_settings#Reload()
 command! -nargs=1 -complete=custom,lightline_settings#theme#ListColorschemes LightlineTheme call lightline_settings#theme#Set(<f-args>)
 
