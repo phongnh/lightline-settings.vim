@@ -4,10 +4,7 @@ let s:lightline_ctrlp = {}
 " TODO: Move these variables and functions to autload and reuse them
 function! s:GetCurrentDir() abort
     let dir = fnamemodify(getcwd(), ':~:.')
-    if empty(dir)
-        let dir = getcwd()
-    endif
-    return dir
+    return empty(dir) ? getcwd() : dir
 endfunction
 
 function! lightline_settings#ctrlp#MainStatus(focus, byfname, regex, prev, item, next, marked) abort

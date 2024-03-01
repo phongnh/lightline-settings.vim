@@ -1,3 +1,11 @@
+function! lightline_settings#parts#Mode() abort
+    if lightline_settings#IsCompact()
+        return get(g:lightline_short_mode_map, mode(), '')
+    else
+        return lightline#mode()
+    endif
+endfunction
+
 function! lightline_settings#parts#Clipboard() abort
     return lightline_settings#IsClipboardEnabled() ? g:lightline_symbols.clipboard : ''
 endfunction
@@ -56,20 +64,6 @@ function! lightline_settings#parts#LineInfo(...) abort
     return printf('%4d:%-3d %3s', line('.'), col('.'), l:percent)
 endfunction
 
-function! lightline_settings#parts#BufferType() abort
-    return strlen(&filetype) ? &filetype : &buftype
-endfunction
-
-function! lightline_settings#parts#FileName() abort
-    let fname = expand('%')
-
-    if empty(fname)
-        return '[No Name]'
-    endif
-
-    return fnamemodify(fname, ':~:.')
-endfunction
-
 function! lightline_settings#parts#FileEncodindAndFormat() abort
     let l:encoding = strlen(&fileencoding) ? &fileencoding : &encoding
     let l:bomb     = &bomb ? '[BOM]' : ''
@@ -81,4 +75,16 @@ function! lightline_settings#parts#FileEncodindAndFormat() abort
     endif
 
     return l:encoding . l:bomb . l:format
+endfunction
+
+function! lightline_settings#parts#FileType(...) abort
+    return lightline_settings#BufferType() . lightline_settings#devicons#FileType(expand('%'))
+endfunction
+
+function! lightline_settings#parts#FileInfo(...) abort
+    let parts = [
+                \ lightline_settings#parts#FileEncodindAndFormat(),
+                \ lightline_settings#parts#FileType(),
+                \ ]
+    return join(filter(copy(parts), 'v:val !=# ""'), ' ')
 endfunction

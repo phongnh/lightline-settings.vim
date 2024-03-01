@@ -15,15 +15,31 @@ set cpo&vim
 let g:lightline_powerline_fonts = get(g:, 'lightline_powerline_fonts', 0)
 let g:lightline_theme           = get(g:, 'lightline_theme', 'solarized')
 let g:lightline_shorten_path    = get(g:, 'lightline_shorten_path', 0)
+let g:lightline_show_short_mode = get(g:, 'lightline_show_short_mode', 0)
 let g:lightline_show_git_branch = get(g:, 'lightline_show_git_branch', 1)
 let g:lightline_show_devicons   = get(g:, 'lightline_show_devicons', 1)
 let g:lightline_show_vim_logo   = get(g:, 'lightline_show_vim_logo', 1)
 
+" Short Modes
+let g:lightline_short_mode_map = {
+            \ 'n':      'N',
+            \ 'i':      'I',
+            \ 'R':      'R',
+            \ 'v':      'V',
+            \ 'V':      'V-L',
+            \ "\<C-v>": 'V-B',
+            \ 'c':      'C',
+            \ 's':      'S',
+            \ 'S':      'S-L',
+            \ "\<C-s>": 'S-B',
+            \ 't':      'T',
+            \ }
+
 " Window width
 let g:lightline_winwidth_config = extend({
-            \ 'xsmall': 60,
-            \ 'small':  80,
-            \ 'normal': 120,
+            \ 'compact': 60,
+            \ 'small':   80,
+            \ 'normal':  120,
             \ }, get(g:, 'lightline_winwidth_config', {}))
 
 " Symbols: https://en.wikipedia.org/wiki/Enclosed_Alphanumerics
@@ -31,8 +47,8 @@ let g:lightline_symbols = {
             \ 'linenr':    '☰',
             \ 'branch':    '⎇ ',
             \ 'readonly':  '',
-            \ 'clipboard': '🅒  ',
-            \ 'paste':     '🅟  ',
+            \ 'clipboard': '🅒 ',
+            \ 'paste':     '🅟 ',
             \ 'ellipsis':  '…',
             \ }
 
@@ -92,6 +108,10 @@ let g:lightline = {
             \ },
             \ }
 
+if g:lightline_show_short_mode
+    let g:lightline.mode_map = copy(g:lightline_short_mode_map)
+endif
+
 if g:lightline_powerline_fonts
     call extend(g:lightline_symbols, {
                 \ 'linenr':   "\ue0a1",
@@ -102,9 +122,8 @@ if g:lightline_powerline_fonts
     call lightline_settings#powerline#SetSeparators(get(g:, 'lightline_powerline_style', 'default'))
 endif
 
-let s:lightline_show_devicons = g:lightline_show_devicons && lightline_settings#devicons#Detect()
-
-if g:lightline_show_vim_logo && s:lightline_show_devicons
+let g:lightline_show_devicons = g:lightline_show_devicons && lightline_settings#devicons#Detect()
+if g:lightline_show_devicons && g:lightline_show_vim_logo
     " Show Vim Logo in Tabline
     let g:lightline.component.tablabel    = "\ue7c5" . ' '
     let g:lightline.component.bufferlabel = "\ue7c5" . ' '
@@ -182,24 +201,11 @@ let s:lightline_shorter_modes = {
             \ }
 
 function! s:FileNameStatus() abort
-    return lightline_settings#parts#Readonly() . lightline_settings#FormatFileName(lightline_settings#parts#FileName()) . lightline_settings#parts#Modified()
+    return lightline_settings#parts#Readonly() . lightline_settings#FormatFileName(lightline_settings#FileName()) . lightline_settings#parts#Modified()
 endfunction
 
 function! s:InactiveFileNameStatus() abort
-    return lightline_settings#parts#Readonly() . lightline_settings#parts#FileName() . lightline_settings#parts#Modified()
-endfunction
-
-function! s:FileInfoStatus(...) abort
-    let parts = [
-                \ lightline_settings#parts#FileEncodindAndFormat(),
-                \ lightline_settings#parts#BufferType(),
-                \ ]
-
-    if s:lightline_show_devicons
-        call add(parts, lightline_settings#devicons#FileType(expand('%')) . ' ')
-    endif
-
-    return join(filter(copy(parts), '!empty(v:val)'), ' ')
+    return lightline_settings#parts#Readonly() . lightline_settings#FileName() . lightline_settings#parts#Modified()
 endfunction
 
 function! LightlineModeStatus() abort
@@ -208,12 +214,12 @@ function! LightlineModeStatus() abort
         return l:mode['name']
     endif
 
-    let mode_label = lightline#mode()
-    if winwidth(0) <= g:lightline_winwidth_config.xsmall
-        return get(s:lightline_shorter_modes, mode_label, mode_label)
-    endif
-
-    return mode_label
+    return lightline#concatenate([
+                \ lightline_settings#parts#Mode(),
+                \ lightline_settings#parts#Clipboard(),
+                \ lightline_settings#parts#Paste(),
+                \ lightline_settings#parts#Spell(),
+                \ ], 0)
 endfunction
 
 function! LightlineGitBranchStatus() abort
@@ -244,9 +250,7 @@ function! LightlineFileInfoStatus() abort
         return ''
     endif
 
-    let compact = lightline_settings#IsCompact()
-
-    return s:FileInfoStatus(compact)
+    return lightline_settings#parts#FileInfo()
 endfunction
 
 function! LightlineLineInfoStatus() abort
@@ -264,16 +268,7 @@ function! LightlineBufferStatus() abort
         return get(l:mode, 'buffer', '')
     endif
 
-    if winwidth(0) >= g:lightline_winwidth_config.small
-        return lightline#concatenate([
-                    \ lightline_settings#parts#Spell(),
-                    \ lightline_settings#parts#Paste(),
-                    \ lightline_settings#parts#Clipboard(),
-                    \ lightline_settings#parts#Indentation(lightline_settings#IsCompact()),
-                    \ ], 1)
-    endif
-
-    return ''
+    return lightline_settings#parts#Indentation(lightline_settings#IsCompact())
 endfunction
 
 function! LightlinePluginStatus() abort
@@ -374,7 +369,7 @@ function! s:CustomMode() abort
         return lightline_settings#nrrwrgn#Mode()
     endif
 
-    let ft = lightline_settings#parts#BufferType()
+    let ft = lightline_settings#BufferType()
     if has_key(g:lightline_filetype_modes, ft)
         let result = {
                     \ 'name': g:lightline_filetype_modes[ft],

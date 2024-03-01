@@ -22,7 +22,7 @@ function! lightline_settings#FormatFileName(fname, ...) abort
     let l:path = a:fname
     let l:maxlen = get(a:, 1, 50)
 
-    if winwidth(0) <= g:lightline_winwidth_config.xsmall
+    if winwidth(0) <= g:lightline_winwidth_config.compact
         return fnamemodify(l:path, ':t')
     endif
 
@@ -42,7 +42,16 @@ function! lightline_settings#IsClipboardEnabled() abort
 endfunction
 
 function! lightline_settings#IsCompact() abort
-    return &spell || &paste || lightline_settings#IsClipboardEnabled() || winwidth(0) <= g:lightline_winwidth_config.xsmall
+    return winwidth(0) <= g:lightline_winwidth_config.compact || count([lightline_settings#IsClipboardEnabled(), &paste, &spell], 1) > 1
+endfunction
+
+function! lightline_settings#BufferType() abort
+    return strlen(&filetype) ? &filetype : &buftype
+endfunction
+
+function! lightline_settings#FileName() abort
+    let fname = expand('%')
+    return strlen(fname) ? fnamemodify(fname, ':~:.') : '[No Name]'
 endfunction
 
 function! lightline_settings#Reload() abort
