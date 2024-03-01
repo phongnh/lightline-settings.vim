@@ -152,7 +152,7 @@ function! lightline_settings#Setup() abort
                 \   'bufferlabel': 'Buffers',
                 \ },
                 \ 'component_function': {
-                \   'mode':         'LightlineModeStatus',
+                \   'mode':         'lightline_settings#sections#Mode',
                 \   'plugin':       'LightlinePluginStatus',
                 \   'branch':       'LightlineGitBranchStatus',
                 \   'filename':     'LightlineFileNameStatus',
