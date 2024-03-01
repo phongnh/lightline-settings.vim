@@ -388,28 +388,5 @@ endfunction
 " Disable NERDTree statusline
 let g:NERDTreeStatusline = -1
 
-" CtrlP Integration
-let g:ctrlp_status_func = {
-            \ 'main': 'lightline_settings#ctrlp#MainStatus',
-            \ 'prog': 'lightline_settings#ctrlp#ProgressStatus',
-            \ }
-
-" Tagbar Integration
-let g:tagbar_status_func = 'lightline_settings#tagbar#Status'
-
-" ZoomWin Integration
-let g:lightline_zoomwin_funcref = []
-
-if exists('g:ZoomWin_funcref')
-    if type(g:ZoomWin_funcref) == v:t_func
-        let g:lightline_zoomwin_funcref = [g:ZoomWin_funcref]
-    elseif type(g:ZoomWin_funcref) == v:t_func
-        let g:lightline_zoomwin_funcref = g:ZoomWin_funcref
-    endif
-    let g:lightline_zoomwin_funcref = uniq(copy(g:lightline_zoomwin_funcref))
-endif
-
-let g:ZoomWin_funcref = function('lightline_settings#zoomwin#Status')
-
 let &cpo = s:save_cpo
 unlet s:save_cpo
