@@ -13,14 +13,6 @@ set cpo&vim
 
 call lightline_settings#Setup()
 
-function! s:FileNameStatus() abort
-    return lightline_settings#parts#Readonly() . lightline_settings#FormatFileName(lightline_settings#FileName()) . lightline_settings#parts#Modified()
-endfunction
-
-function! s:InactiveFileNameStatus() abort
-    return lightline_settings#parts#Readonly() . lightline_settings#FileName() . lightline_settings#parts#Modified()
-endfunction
-
 function! LightlineModeStatus() abort
     let l:mode = lightline_settings#parts#Integration()
     if len(l:mode)
@@ -54,7 +46,7 @@ function! LightlineFileNameStatus() abort
         return ''
     endif
 
-    return s:FileNameStatus()
+    return lightline_settings#parts#FileName()
 endfunction
 
 function! LightlineFileInfoStatus() abort
@@ -118,13 +110,13 @@ function! LightlineInactiveStatus() abort
         return l:mode['name']
     endif
 
-    return s:InactiveFileNameStatus()
+    return lightline_settings#parts#InactiveFileName()
 endfunction
 
 command! LightlineReload call lightline_settings#Reload()
 command! -nargs=1 -complete=custom,lightline_settings#theme#ListColorschemes LightlineTheme call lightline_settings#theme#Set(<f-args>)
 
-augroup lightline_settings
+augroup LightlineSettings
     autocmd!
     autocmd VimEnter * call lightline_settings#Init()
     autocmd VimEnter * call lightline_settings#theme#Reload()

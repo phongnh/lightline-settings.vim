@@ -76,6 +76,14 @@ function! lightline_settings#parts#FileInfo(...) abort
     return lightline_settings#parts#FileType()
 endfunction
 
+function! lightline_settings#parts#FileName(...) abort
+    return lightline_settings#parts#Readonly() . lightline_settings#FormatFileName(lightline_settings#FileName()) . lightline_settings#parts#Modified()
+endfunction
+
+function! lightline_settings#parts#InactiveFileName(...) abort
+    return lightline_settings#parts#Readonly() . lightline_settings#FileName() . lightline_settings#parts#Modified()
+endfunction
+
 " Alternate status dictionaries
 let g:lightline_filename_modes = {
             \ 'ControlP':             'CtrlP',
