@@ -64,3 +64,11 @@ endfunction
 function! s:RenderFileTypeSection(...) abort
     return lightline_settings#parts#FileType()
 endfunction
+
+function! lightline_settings#sections#LineInfo(...) abort
+    let l:mode = lightline_settings#parts#Integration()
+    if len(l:mode)
+        return ''
+    endif
+    return lightline_settings#parts#SimpleLineInfo()
+endfunction

@@ -157,7 +157,7 @@ function! lightline_settings#Setup() abort
                 \   'branch':       'lightline_settings#sections#GitBranch',
                 \   'filename':     'lightline_settings#sections#FileName',
                 \   'filetype':     'lightline_settings#sections#FileType',
-                \   'lineinfo':     'LightlineLineInfoStatus',
+                \   'lineinfo':     'lightline_settings#sections#LineInfo',
                 \   'plugin_extra': 'LightlinePluginExtraStatus',
                 \   'buffer':       'LightlineBufferStatus',
                 \   'inactive':     'LightlineInactiveStatus',

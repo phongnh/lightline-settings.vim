@@ -13,15 +13,6 @@ set cpo&vim
 
 call lightline_settings#Setup()
 
-function! LightlineLineInfoStatus() abort
-    let l:mode = lightline_settings#parts#Integration()
-    if len(l:mode)
-        return ''
-    endif
-
-    return lightline_settings#parts#SimpleLineInfo()
-endfunction
-
 function! LightlineBufferStatus() abort
     let l:mode = lightline_settings#parts#Integration()
     if len(l:mode)
