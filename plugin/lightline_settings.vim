@@ -133,60 +133,6 @@ if get(g:, 'lightline_bufferline', 0)
     call lightline_settings#bufferline#Init()
 endif
 
-" Alternate status dictionaries
-let g:lightline_filename_modes = {
-            \ 'ControlP':             'CtrlP',
-            \ '__CtrlSF__':           'CtrlSF',
-            \ '__CtrlSFPreview__':    'Preview',
-            \ '__Tagbar__':           'Tagbar',
-            \ '__Gundo__':            'Gundo',
-            \ '__Gundo_Preview__':    'Gundo Preview',
-            \ '__Mundo__':            'Mundo',
-            \ '__Mundo_Preview__':    'Mundo Preview',
-            \ '[BufExplorer]':        'BufExplorer',
-            \ '[Command Line]':       'Command Line',
-            \ '[Plugins]':            'Plugins',
-            \ '__committia_status__': 'Committia Status',
-            \ '__committia_diff__':   'Committia Diff',
-            \ '__doc__':              'Document',
-            \ '__LSP_SETTINGS__':     'LSP Settings',
-            \ }
-
-let g:lightline_filetype_modes = {
-            \ 'netrw':             'Netrw',
-            \ 'molder':            'Molder',
-            \ 'dirvish':           'Dirvish',
-            \ 'vaffle':            'Vaffle',
-            \ 'nerdtree':          'NERDTree',
-            \ 'fern':              'Fern',
-            \ 'neo-tree':          'NeoTree',
-            \ 'carbon.explorer':   'Carbon',
-            \ 'oil':               'Oil',
-            \ 'NvimTree':          'NvimTree',
-            \ 'CHADTree':          'CHADTree',
-            \ 'LuaTree':           'LuaTree',
-            \ 'Mundo':             'Mundo',
-            \ 'MundoDiff':         'Mundo Preview',
-            \ 'startify':          'Startify',
-            \ 'alpha':             'Alpha',
-            \ 'tagbar':            'Tagbar',
-            \ 'vista':             'Vista',
-            \ 'vista_kind':        'Vista',
-            \ 'vim-plug':          'Plugins',
-            \ 'terminal':          'TERMINAL',
-            \ 'help':              'HELP',
-            \ 'qf':                'Quickfix',
-            \ 'godoc':             'GoDoc',
-            \ 'gedoc':             'GeDoc',
-            \ 'gitcommit':         'Commit Message',
-            \ 'fugitiveblame':     'FugitiveBlame',
-            \ 'gitmessengerpopup': 'Git Messenger',
-            \ 'GV':                'GV',
-            \ 'agit':              'Agit',
-            \ 'agit_diff':         'Agit Diff',
-            \ 'agit_stat':         'Agit Stat',
-            \ }
-
 let s:lightline_shorter_modes = {
             \ 'NORMAL':   'N',
             \ 'INSERT':   'I',
@@ -209,7 +155,7 @@ function! s:InactiveFileNameStatus() abort
 endfunction
 
 function! LightlineModeStatus() abort
-    let l:mode = s:CustomMode()
+    let l:mode = lightline_settings#parts#Integration()
     if len(l:mode)
         return l:mode['name']
     endif
@@ -223,7 +169,7 @@ function! LightlineModeStatus() abort
 endfunction
 
 function! LightlineGitBranchStatus() abort
-    let l:mode = s:CustomMode()
+    let l:mode = lightline_settings#parts#Integration()
     if len(l:mode)
         return ''
     endif
@@ -236,7 +182,7 @@ function! LightlineGitBranchStatus() abort
 endfunction
 
 function! LightlineFileNameStatus() abort
-    let l:mode = s:CustomMode()
+    let l:mode = lightline_settings#parts#Integration()
     if len(l:mode)
         return ''
     endif
@@ -245,7 +191,7 @@ function! LightlineFileNameStatus() abort
 endfunction
 
 function! LightlineFileInfoStatus() abort
-    let l:mode = s:CustomMode()
+    let l:mode = lightline_settings#parts#Integration()
     if len(l:mode)
         return ''
     endif
@@ -254,7 +200,7 @@ function! LightlineFileInfoStatus() abort
 endfunction
 
 function! LightlineLineInfoStatus() abort
-    let l:mode = s:CustomMode()
+    let l:mode = lightline_settings#parts#Integration()
     if len(l:mode)
         return ''
     endif
@@ -263,7 +209,7 @@ function! LightlineLineInfoStatus() abort
 endfunction
 
 function! LightlineBufferStatus() abort
-    let l:mode = s:CustomMode()
+    let l:mode = lightline_settings#parts#Integration()
     if len(l:mode)
         return get(l:mode, 'buffer', '')
     endif
@@ -272,7 +218,7 @@ function! LightlineBufferStatus() abort
 endfunction
 
 function! LightlinePluginStatus() abort
-    let l:mode = s:CustomMode()
+    let l:mode = lightline_settings#parts#Integration()
     if len(l:mode)
         if has_key(l:mode, 'link')
             call lightline#link(l:mode['link'])
@@ -284,7 +230,7 @@ function! LightlinePluginStatus() abort
 endfunction
 
 function! LightlinePluginExtraStatus() abort
-    let l:mode = s:CustomMode()
+    let l:mode = lightline_settings#parts#Integration()
     if len(l:mode)
         return get(l:mode, 'plugin_extra', '')
     endif
@@ -293,7 +239,7 @@ function! LightlinePluginExtraStatus() abort
 endfunction
 
 function! LightlineInactiveStatus() abort
-    let l:mode = s:CustomMode()
+    let l:mode = lightline_settings#parts#Integration()
     if len(l:mode)
         if has_key(l:mode, 'plugin_inactive')
             return lightline#concatenate(
@@ -317,73 +263,6 @@ augroup lightline_settings
     autocmd VimEnter * call lightline_settings#theme#Reload()
     autocmd ColorScheme * call lightline_settings#theme#Reload()
 augroup END
-
-" Plugin Integration
-let g:lightline_plugin_modes = {
-            \ 'ctrlp':           'lightline_settings#ctrlp#Mode',
-            \ 'netrw':           'lightline_settings#netrw#Mode',
-            \ 'dirvish':         'lightline_settings#dirvish#Mode',
-            \ 'molder':          'lightline_settings#molder#Mode',
-            \ 'vaffle':          'lightline_settings#vaffle#Mode',
-            \ 'fern':            'lightline_settings#fern#Mode',
-            \ 'carbon.explorer': 'lightline_settings#carbon#Mode',
-            \ 'neo-tree':        'lightline_settings#neotree#Mode',
-            \ 'oil':             'lightline_settings#oil#Mode',
-            \ 'tagbar':          'lightline_settings#tagbar#Mode',
-            \ 'vista_kind':      'lightline_settings#vista#Mode',
-            \ 'vista':           'lightline_settings#vista#Mode',
-            \ 'gitcommit':       'lightline_settings#gitcommit#Mode',
-            \ 'terminal':        'lightline_settings#terminal#Mode',
-            \ 'help':            'lightline_settings#help#Mode',
-            \ 'qf':              'lightline_settings#quickfix#Mode',
-            \ }
-
-function! s:CustomMode() abort
-    let fname = expand('%:t')
-
-    if has_key(g:lightline_filename_modes, fname)
-        let result = {
-                    \ 'name': g:lightline_filename_modes[fname],
-                    \ }
-
-        if fname ==# 'ControlP'
-            return extend(result, lightline_settings#ctrlp#Mode())
-        endif
-
-        if fname ==# '__Tagbar__'
-            return extend(result, lightline_settings#tagbar#Mode())
-        endif
-
-        if fname ==# '__CtrlSF__'
-            return extend(result, lightline_settings#ctrlsf#Mode())
-        endif
-
-        if fname ==# '__CtrlSFPreview__'
-            return extend(result, lightline_settings#ctrlsf#PreviewMode())
-        endif
-
-        return result
-    endif
-
-    if fname =~# '^NrrwRgn_\zs.*\ze_\d\+$'
-        return lightline_settings#nrrwrgn#Mode()
-    endif
-
-    let ft = lightline_settings#BufferType()
-    if has_key(g:lightline_filetype_modes, ft)
-        let result = {
-                    \ 'name': g:lightline_filetype_modes[ft],
-                    \ }
-
-        if has_key(g:lightline_plugin_modes, ft)
-            return extend(result, function(g:lightline_plugin_modes[ft])())
-        endif
-
-        return result
-    endif
-
-    return {}
-endfunction
 
 " Disable NERDTree statusline
 let g:NERDTreeStatusline = -1
