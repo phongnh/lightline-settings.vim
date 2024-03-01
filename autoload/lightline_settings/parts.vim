@@ -72,10 +72,6 @@ function! lightline_settings#parts#FileType(...) abort
     return lightline_settings#BufferType() . lightline_settings#devicons#FileType(expand('%'))
 endfunction
 
-function! lightline_settings#parts#FileInfo(...) abort
-    return lightline_settings#parts#FileType()
-endfunction
-
 function! lightline_settings#parts#FileName(...) abort
     return lightline_settings#parts#Readonly() . lightline_settings#FormatFileName(lightline_settings#FileName()) . lightline_settings#parts#Modified()
 endfunction

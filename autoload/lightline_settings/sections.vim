@@ -52,3 +52,15 @@ endfunction
 function! s:RenderFileNameSection(...) abort
     return lightline_settings#parts#FileName()
 endfunction
+
+function! lightline_settings#sections#FileType(...) abort
+    let l:mode = lightline_settings#parts#Integration()
+    if len(l:mode)
+        return ''
+    endif
+    return call('s:RenderFileTypeSection', a:000)
+endfunction
+
+function! s:RenderFileTypeSection(...) abort
+    return lightline_settings#parts#FileType()
+endfunction

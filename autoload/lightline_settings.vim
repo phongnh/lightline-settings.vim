@@ -139,7 +139,7 @@ function! lightline_settings#Setup() abort
                 \       ['plugin'] + (g:lightline_show_git_branch ? ['branch'] : []) + ['filename'],
                 \   ],
                 \   'right': [
-                \       ['fileinfo'] + (g:lightline_show_linenr ? ['lineinfo'] : []) + ['plugin_extra'],
+                \       ['filetype'] + (g:lightline_show_linenr ? ['lineinfo'] : []) + ['plugin_extra'],
                 \       ['buffer'],
                 \   ]
                 \ },
@@ -156,7 +156,7 @@ function! lightline_settings#Setup() abort
                 \   'plugin':       'lightline_settings#sections#Plugin',
                 \   'branch':       'lightline_settings#sections#GitBranch',
                 \   'filename':     'lightline_settings#sections#FileName',
-                \   'fileinfo':     'LightlineFileInfoStatus',
+                \   'filetype':     'lightline_settings#sections#FileType',
                 \   'lineinfo':     'LightlineLineInfoStatus',
                 \   'plugin_extra': 'LightlinePluginExtraStatus',
                 \   'buffer':       'LightlineBufferStatus',
