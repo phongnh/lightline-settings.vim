@@ -136,10 +136,10 @@ function! lightline_settings#Setup() abort
                 \ 'active': {
                 \   'left':  [
                 \       ['mode'],
-                \       ['plugin'] + g:lightline_show_git_branch ? ['branch'] : []) + ['filename'],
+                \       ['plugin'] + (g:lightline_show_git_branch ? ['branch'] : []) + ['filename'],
                 \   ],
                 \   'right': [
-                \       ['fileinfo'] + (g:ightline_show_linenr ? ['lineinfo'] : []) + ['plugin_extra'],
+                \       ['fileinfo'] + (g:lightline_show_linenr ? ['lineinfo'] : []) + ['plugin_extra'],
                 \       ['buffer'],
                 \   ]
                 \ },
