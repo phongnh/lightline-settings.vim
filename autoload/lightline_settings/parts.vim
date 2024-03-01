@@ -58,7 +58,7 @@ function! lightline_settings#parts#LineInfo(...) abort
     return printf('%4d:%-3d %3s', line('.'), col('.'), l:percent)
 endfunction
 
-function! lightline_settings#parts#FileEncodindAndFormat() abort
+function! lightline_settings#parts#FileEncodingAndFormat() abort
     let l:encoding = strlen(&fileencoding) ? &fileencoding : &encoding
     let l:encoding = (l:encoding ==# 'utf-8') ? '' : l:encoding . ' '
     let l:bomb     = &bomb ? g:lightline_symbols.bomb . ' ' : ''
@@ -73,11 +73,7 @@ function! lightline_settings#parts#FileType(...) abort
 endfunction
 
 function! lightline_settings#parts#FileInfo(...) abort
-    let parts = [
-                \ lightline_settings#parts#FileEncodindAndFormat(),
-                \ lightline_settings#parts#FileType(),
-                \ ]
-    return join(filter(copy(parts), 'v:val !=# ""'), ' ')
+    return lightline_settings#parts#FileType()
 endfunction
 
 " Alternate status dictionaries
