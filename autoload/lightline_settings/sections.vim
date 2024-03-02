@@ -85,7 +85,10 @@ function!  lightline_settings#sections#Buffer(...) abort
     if len(l:mode)
         return get(l:mode, 'buffer', '')
     endif
-    return lightline_settings#parts#Indentation(lightline_settings#IsCompact())
+    return lightline#concatenate([
+                \ lightline_settings#parts#Indentation(lightline_settings#IsCompact()),
+                \ lightline_settings#parts#FileEncodingAndFormat(),
+                \ ], 1)
 endfunction
 
 function!  lightline_settings#sections#InactiveMode(...) abort
