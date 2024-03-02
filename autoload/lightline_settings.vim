@@ -41,8 +41,16 @@ function! lightline_settings#IsClipboardEnabled() abort
     return match(&clipboard, 'unnamed') > -1
 endfunction
 
-function! lightline_settings#IsCompact() abort
-    return winwidth(0) <= g:lightline_winwidth_config.compact || count([lightline_settings#IsClipboardEnabled(), &paste, &spell], 1) > 1
+function! lightline_settings#IsCompact(...) abort
+    let l:winnr = get(a:, 1, 0)
+    return winwidth(l:winnr) <= g:lightline_winwidth_config.compact ||
+                \ count([
+                \   lightline_settings#IsClipboardEnabled(),
+                \   &paste,
+                \   &spell,
+                \   &bomb,
+                \   !&eol,
+                \ ], 1) > 1
 endfunction
 
 function! lightline_settings#BufferType() abort
