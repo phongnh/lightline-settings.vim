@@ -17,9 +17,8 @@ function! lightline_settings#sections#Plugin(...) abort
     if len(l:mode)
         if has_key(l:mode, 'link')
             call lightline#link(l:mode['link'])
-        else
-            return get(l:mode, 'plugin', '')
         endif
+        return get(l:mode, 'plugin', '')
     endif
     return call('s:RenderPluginSection', a:000)
 endfunction
