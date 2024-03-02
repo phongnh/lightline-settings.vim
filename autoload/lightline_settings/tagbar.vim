@@ -11,20 +11,13 @@ endfunction
 
 function! lightline_settings#tagbar#Mode(...) abort
     if empty(s:lightline_tagbar.flags)
-        let plugin_status = lightline#concatenate([
-                    \ s:lightline_tagbar.sort,
-                    \ s:lightline_tagbar.fname,
-                    \ ], 0)
+        let flags = ''
     else
-        let plugin_status = lightline#concatenate([
-                    \ s:lightline_tagbar.sort,
-                    \ s:lightline_tagbar.fname,
-                    \ join(s:lightline_tagbar.flags, ''),
-                    \ ], 0)
+        let flags = printf('[%s]', join(s:lightline_tagbar.flags, ''))
     endif
 
     return {
-                \ 'name': 'Tagbar',
-                \ 'plugin': plugin_status,
+                \ 'name': s:lightline_tagbar.sort,
+                \ 'plugin': lightline#concatenate([s:lightline_tagbar.fname, flags], 0),
                 \ }
 endfunction

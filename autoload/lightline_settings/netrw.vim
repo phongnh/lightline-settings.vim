@@ -1,6 +1,6 @@
 function! lightline_settings#netrw#Mode(...) abort
     let result = {
-                \ 'plugin_extra': printf('%s [%s]', get(g:, 'netrw_sort_by', ''), get(g:, 'netrw_sort_direction', 'n') =~ 'n' ? '+' : '-'),
+                \ 'buffer': printf('%s [%s]', get(g:, 'netrw_sort_by', ''), get(g:, 'netrw_sort_direction', 'n') =~ 'n' ? '+' : '-'),
                 \ }
 
     if exists('b:netrw_curdir')

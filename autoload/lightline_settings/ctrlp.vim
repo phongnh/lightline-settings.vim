@@ -32,7 +32,7 @@ endfunction
 function! lightline_settings#ctrlp#Mode(...) abort
     let result = {
                 \ 'name': 'CtrlP',
-                \ 'plugin_extra': s:lightline_ctrlp.dir,
+                \ 'buffer': s:lightline_ctrlp.dir,
                 \ }
 
     if s:lightline_ctrlp.main
@@ -50,7 +50,7 @@ function! lightline_settings#ctrlp#Mode(...) abort
         call extend(result, {
                     \ 'link': 'nR'[s:lightline_ctrlp.regex],
                     \ 'plugin': plugin_status,
-                    \ 'buffer': buffer_status,
+                    \ 'settings': buffer_status,
                     \ })
     else
         call extend(result, {

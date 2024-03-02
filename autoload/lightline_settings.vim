@@ -144,15 +144,17 @@ function! lightline_settings#Setup() abort
                 \ 'active': {
                 \   'left':  [
                 \       ['mode'],
-                \       ['plugin'] + (g:lightline_show_git_branch ? ['branch'] : []) + ['filename'],
+                \       (g:lightline_show_git_branch ? ['branch'] : []) + ['plugin'],
+                \       ['filename'],
                 \   ],
                 \   'right': [
-                \       ['filetype'] + (g:lightline_show_linenr ? ['lineinfo'] : []) + ['plugin_extra'],
                 \       ['buffer'],
+                \       ['settings'],
+                \       g:lightline_show_linenr ? ['info'] : [],
                 \   ]
                 \ },
                 \ 'inactive': {
-                \   'left':  [['inactive']],
+                \   'left':  [['inactive_mode']],
                 \   'right': []
                 \ },
                 \ 'component': {
@@ -160,15 +162,14 @@ function! lightline_settings#Setup() abort
                 \   'bufferlabel': 'Buffers',
                 \ },
                 \ 'component_function': {
-                \   'mode':         'lightline_settings#sections#Mode',
-                \   'plugin':       'lightline_settings#sections#Plugin',
-                \   'branch':       'lightline_settings#sections#GitBranch',
-                \   'filename':     'lightline_settings#sections#FileName',
-                \   'filetype':     'lightline_settings#sections#FileType',
-                \   'lineinfo':     'lightline_settings#sections#LineInfo',
-                \   'plugin_extra': 'lightline_settings#sections#PluginExtra',
-                \   'buffer':       'lightline_settings#sections#Buffer',
-                \   'inactive':     'lightline_settings#sections#InactiveMode',
+                \   'mode':          'lightline_settings#sections#Mode',
+                \   'plugin':        'lightline_settings#sections#Plugin',
+                \   'branch':        'lightline_settings#sections#GitBranch',
+                \   'filename':      'lightline_settings#sections#FileName',
+                \   'buffer':        'lightline_settings#sections#Buffer',
+                \   'settings':      'lightline_settings#sections#Settings',
+                \   'info':          'lightline_settings#sections#Info',
+                \   'inactive_mode': 'lightline_settings#sections#InactiveMode',
                 \ },
                 \ 'tab_component_function': {
                 \   'tabname': 'lightline_settings#tab#Name',

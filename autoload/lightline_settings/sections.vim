@@ -24,7 +24,7 @@ function! lightline_settings#sections#Plugin(...) abort
 endfunction
 
 function! s:RenderPluginSection(...) abort
-    return ''
+    return lightline_settings#parts#FileName()
 endfunction
 
 function! lightline_settings#sections#GitBranch(...) abort
@@ -49,34 +49,6 @@ function! lightline_settings#sections#FileName(...) abort
 endfunction
 
 function! s:RenderFileNameSection(...) abort
-    return lightline_settings#parts#FileName()
-endfunction
-
-function! lightline_settings#sections#FileType(...) abort
-    let l:mode = lightline_settings#parts#Integration()
-    if len(l:mode)
-        return ''
-    endif
-    return call('s:RenderFileTypeSection', a:000)
-endfunction
-
-function! s:RenderFileTypeSection(...) abort
-    return lightline_settings#parts#FileType()
-endfunction
-
-function! lightline_settings#sections#LineInfo(...) abort
-    let l:mode = lightline_settings#parts#Integration()
-    if len(l:mode)
-        return ''
-    endif
-    return lightline_settings#parts#SimpleLineInfo()
-endfunction
-
-function!  lightline_settings#sections#PluginExtra(...) abort
-    let l:mode = lightline_settings#parts#Integration()
-    if len(l:mode)
-        return get(l:mode, 'plugin_extra', '')
-    endif
     return ''
 endfunction
 
@@ -85,23 +57,61 @@ function!  lightline_settings#sections#Buffer(...) abort
     if len(l:mode)
         return get(l:mode, 'buffer', '')
     endif
+    return call('s:RenderBufferSection', a:000)
+endfunction
+
+function! s:RenderBufferSection(...) abort
+    return lightline_settings#parts#FileType()
+endfunction
+
+function!  lightline_settings#sections#Settings(...) abort
+    let l:mode = lightline_settings#parts#Integration()
+    if len(l:mode)
+        return get(l:mode, 'settings', '')
+    endif
+    return call('s:RenderSettingsSection', a:000)
+endfunction
+
+function! s:RenderSettingsSection(...) abort
     return lightline#concatenate([
                 \ lightline_settings#parts#Indentation(lightline_settings#IsCompact()),
                 \ lightline_settings#parts#FileEncodingAndFormat(),
                 \ ], 1)
 endfunction
 
+function! lightline_settings#sections#Info(...) abort
+    let l:mode = lightline_settings#parts#Integration()
+    if len(l:mode)
+        return get(l:mode, 'info', '')
+    endif
+    return call('s:RenderInfoSection', a:000)
+endfunction
+
+function! s:RenderInfoSection(...) abort
+    if winwidth(0) < g:lightline_winwidth_config.compact
+        return ''
+    endif
+    if g:lightline_show_linenr > 1
+        return lightline_settings#parts#LineInfo()
+    elseif g:lightline_show_linenr > 0
+        return lightline_settings#parts#SimpleLineInfo()
+    endif
+    return '%<'
+endfunction
+
 function!  lightline_settings#sections#InactiveMode(...) abort
     let l:mode = lightline_settings#parts#Integration()
     if len(l:mode)
-        if has_key(l:mode, 'plugin_inactive')
-            return lightline#concatenate(
-                        \ [
-                        \   l:mode['name'],
-                        \   get(l:mode, 'plugin_inactive', '')
-                        \ ], 0)
-        endif
-        return l:mode['name']
+        return lightline#concatenate([
+                    \ l:mode['name'],
+                    \ get(l:mode, 'plugin', ''),
+                    \ get(l:mode, 'filename', ''),
+                    \ ], 0)
     endif
+    return call('s:RenderInactiveModeSection', a:000)
+endfunction
+
+function! s:RenderInactiveModeSection(...) abort
+    " plugin/statusline.vim[+]
     return lightline_settings#parts#InactiveFileName()
 endfunction

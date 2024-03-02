@@ -6,11 +6,9 @@ function! lightline_settings#oil#Mode(...) abort
     if l:oil_dir =~# '^oil://'
         let l:oil_dir = substitute(l:oil_dir, '^oil://', '', '')
         let result['plugin'] = fnamemodify(l:oil_dir, ':p:~:.:h')
+    elseif exists('b:oil_ready') && b:oil_ready
+        let result['plugin'] = fnamemodify(luaeval('require("oil").get_current_dir()'), ':p:~:.:h')
     endif
-
-    " if exists('b:oil_ready') && b:oil_ready
-    "     let result['plugin'] = fnamemodify(luaeval('require("oil").get_current_dir()'), ':p:~:.:h')
-    " endif
 
     return result
 endfunction
