@@ -202,12 +202,6 @@ function! lightline_settings#Setup() abort
                     \ 'unix':  "\ue712",
                     \ })
         let g:lightline_symbols.unix = '[unix]'
-        " call extend(g:lightline_symbols, {
-        "           \ 'dos':  'CRLF',
-        "           \ 'mac':  'CR',
-        "           \ 'unix': 'LF',
-        "           \ })
-        " let g:lightline_symbols.bomb = "\uf1e2 " " 󰚑
     endif
 
     if g:lightline_show_devicons && g:lightline_show_vim_logo
