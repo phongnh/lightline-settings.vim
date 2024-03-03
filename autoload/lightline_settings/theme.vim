@@ -1,72 +1,48 @@
-function! s:FindLightlineThemes() abort
-    if exists('s:lightline_colorschemes')
-        return s:lightline_colorschemes
-    endif
-    let s:lightline_colorschemes = map(split(globpath(&rtp, 'autoload/lightline/colorscheme/*.vim')), "fnamemodify(v:val, ':t:r')")
-    let s:lightline_colorschemes_completion = join(s:lightline_colorschemes, "\n")
-endfunction
-
-function! lightline_settings#theme#ListColorschemes(...) abort
-    return s:lightline_colorschemes_completion
-endfunction
-
-let g:lightline_colorscheme_mappings = get(g:, 'lightline_colorscheme_mappings', {})
-
-function! s:DetectLightlineTheme() abort
-    let l:original_colorscheme = get(g:, 'colors_name', '')
-
-    if has('vim_starting') && exists('g:lightline_theme')
-        let l:original_colorscheme = g:lightline_theme
-    endif
-
-    if l:original_colorscheme =~ 'solarized\|soluarized\|flattened'
-        let l:original_colorscheme = 'solarized'
-    endif
-
-    let l:colorscheme = l:original_colorscheme
-    if index(s:lightline_colorschemes, l:colorscheme) > -1
-        return l:colorscheme
-    endif
-
-    let l:colorscheme = tolower(l:original_colorscheme)
-    if index(s:lightline_colorschemes, l:colorscheme) > -1
-        return l:colorscheme
-    endif
-
-    for l:alternative_colorscheme in get(g:lightline_colorscheme_mappings, l:colorscheme, [])
-        if index(s:lightline_colorschemes, l:alternative_colorscheme) > -1
-            return l:alternative_colorscheme
-        endif
-    endfor
-
-    let l:colorscheme = substitute(l:original_colorscheme, '-', '_', 'g')
-    if index(s:lightline_colorschemes, l:colorscheme) > -1
-        return l:colorscheme
-    endif
-
-    return substitute(l:original_colorscheme, '-', '', 'g')
-endfunction
-
-function! lightline_settings#theme#Set(colorscheme) abort
-    if index(s:lightline_colorschemes, a:colorscheme) < 0
+function! s:FindTheme() abort
+    let g:lightline_theme = substitute(g:colors_name, '[ -]', '_', 'g')
+    if index(s:lightline_themes, g:lightline_theme) > -1
         return
     endif
 
-    " Reload palette
-    let l:colorscheme_path = findfile(printf('autoload/lightline/colorscheme/%s.vim', a:colorscheme), &rtp)
-    if !empty(l:colorscheme_path) && filereadable(l:colorscheme_path)
-        execute 'source ' . l:colorscheme_path
+    let g:lightline_theme = g:lightline_theme . (&background == 'light' ? '_light' : '_dark')
+    if index(s:lightline_themes, g:lightline_theme) > -1
+        return
     endif
 
-    let g:lightline.colorscheme = a:colorscheme
-    call lightline_settings#Reload()
+    for [l:pattern, l:theme] in items(g:lightline_theme_mappings)
+        if match(g:lightline_theme, l:pattern) > -1 && index(s:lightline_themes, l:theme) > -1
+            let g:lightline_theme = l:theme
+            return
+        endif
+    endfor
+
+    let g:lightline_theme = 'default'
 endfunction
 
+function! lightline_settings#theme#List(...) abort
+    return join(s:lightline_themes, "\n")
+endfunction
 
-function! lightline_settings#theme#Reload() abort
-    call s:FindLightlineThemes()
+function! lightline_settings#theme#Set(theme) abort
+    let g:lightline_theme = a:theme
+    let g:lightline.colorscheme = g:lightline_theme
+    call lightline_settings#ReloadLightline()
+endfunction
 
-    let l:colorscheme = s:DetectLightlineTheme()
+function! lightline_settings#theme#Apply() abort
+    call s:FindTheme()
+    call lightline_settings#theme#Set(g:lightline_theme)
+endfunction
 
-    call lightline_settings#theme#Set(l:colorscheme)
+function! lightline_settings#theme#Init() abort
+    if !exists('s:lightline_themes')
+        let s:lightline_themes = map(split(globpath(&rtp, 'autoload/lightline/colorscheme/*.vim')), "fnamemodify(v:val, ':t:r')")
+    endif
+
+    if !exists('g:lightline_theme')
+        call s:FindTheme()
+        if g:lightline_theme !=# 'default'
+            call lightline_settings#theme#Set(g:lightline_theme)
+        endif
+    endif
 endfunction

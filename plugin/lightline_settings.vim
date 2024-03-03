@@ -13,14 +13,14 @@ set cpo&vim
 
 call lightline_settings#Setup()
 
-command! LightlineReload call lightline_settings#Reload()
-command! -nargs=1 -complete=custom,lightline_settings#theme#ListColorschemes LightlineTheme call lightline_settings#theme#Set(<f-args>)
+command! LightlineReload call lightline_settings#ReloadLightline()
+command! -nargs=1 -complete=custom,lightline_settings#theme#List LightlineTheme call lightline_settings#theme#Set(<f-args>)
 
 augroup LightlineSettings
     autocmd!
     autocmd VimEnter * call lightline_settings#Init()
-    autocmd VimEnter * call lightline_settings#theme#Reload()
-    autocmd ColorScheme * call lightline_settings#theme#Reload()
+    autocmd ColorScheme * call lightline_settings#theme#Apply()
+    autocmd OptionSet background call lightline_settings#theme#Apply()
 augroup END
 
 let &cpo = s:save_cpo

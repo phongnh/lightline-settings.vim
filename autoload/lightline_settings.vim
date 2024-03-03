@@ -62,7 +62,7 @@ function! lightline_settings#FileName() abort
     return strlen(fname) ? fnamemodify(fname, ':~:.') : '[No Name]'
 endfunction
 
-function! lightline_settings#Reload() abort
+function! lightline_settings#ReloadLightline() abort
     call lightline#init()
     call lightline#colorscheme()
     call lightline#update()
@@ -74,7 +74,6 @@ function! lightline_settings#Setup() abort
 
     " Settings
     let g:lightline_powerline_fonts = get(g:, 'lightline_powerline_fonts', 0)
-    let g:lightline_theme           = get(g:, 'lightline_theme', 'solarized')
     let g:lightline_shorten_path    = get(g:, 'lightline_shorten_path', 0)
     let g:lightline_show_short_mode = get(g:, 'lightline_show_short_mode', 0)
     let g:lightline_show_linenr     = get(g:, 'lightline_show_linenr', 0)
@@ -96,6 +95,11 @@ function! lightline_settings#Setup() abort
                 \ "\<C-s>": 'S-B',
                 \ 't':      'T',
                 \ }
+
+    let g:lightline_theme_mappings = extend({
+                \ '^\(solarized\|soluarized\|flattened\)': 'solarized',
+                \ '^gruvbox': 'gruvbox',
+                \ }, get(g:, 'lightline_theme_mappings', {}))
 
     " Window width
     let g:lightline_winwidth_config = extend({
@@ -120,7 +124,6 @@ function! lightline_settings#Setup() abort
                 \ }
 
     let g:lightline = {
-                \ 'colorscheme': g:lightline_theme,
                 \ 'enable': {
                 \   'statusline': 1,
                 \   'tabline':    1,
@@ -218,6 +221,8 @@ endfunction
 " Copied from https://github.com/itchyny/lightline-powerful/blob/master/autoload/lightline_powerful.vim
 function! lightline_settings#Init() abort
     setglobal noshowmode
+
+    call lightline_settings#theme#Init()
 
     " CtrlP Integration
     let g:ctrlp_status_func = {
