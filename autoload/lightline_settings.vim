@@ -98,7 +98,8 @@ function! lightline_settings#Setup() abort
 
     let g:lightline_theme_mappings = extend({
                 \ '^\(solarized\|soluarized\|flattened\)': 'solarized',
-                \ '^gruvbox': 'gruvbox',
+                \ '^gruvbox$': 'gruvbox_material',
+                \ '^gruvbox': 'gruvbox8',
                 \ }, get(g:, 'lightline_theme_mappings', {}))
 
     " Window width
