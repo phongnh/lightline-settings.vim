@@ -33,7 +33,7 @@ function! lightline_settings#sections#GitBranch(...) abort
         return ''
     endif
 
-    if winwidth(0) >= g:lightline_winwidth_config.small
+    if winwidth(0) >= g:lightline_winwidth_config.default
         return lightline_settings#git#Branch()
     endif
 
@@ -88,7 +88,7 @@ function! lightline_settings#sections#Info(...) abort
 endfunction
 
 function! s:RenderInfoSection(...) abort
-    if winwidth(0) < g:lightline_winwidth_config.compact
+    if winwidth(0) <= g:lightline_winwidth_config.compact
         return ''
     endif
     if g:lightline_show_linenr > 1

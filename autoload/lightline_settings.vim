@@ -80,7 +80,7 @@ function! lightline_settings#Setup() abort
     " Window width
     let g:lightline_winwidth_config = extend({
                 \ 'compact': 60,
-                \ 'small':   80,
+                \ 'default': 90,
                 \ 'normal':  120,
                 \ }, get(g:, 'lightline_winwidth_config', {}))
 
