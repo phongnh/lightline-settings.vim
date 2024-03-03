@@ -151,7 +151,8 @@ function! lightline_settings#Setup() abort
                 \   'inactive_mode': 'lightline_settings#sections#InactiveMode',
                 \ },
                 \ 'tab_component_function': {
-                \   'tabname': 'lightline_settings#tab#Name',
+                \   'tabname':  'lightline_settings#tab#Name',
+                \   'modified': 'lightline_settings#tab#Modified',
                 \ },
                 \ }
 
