@@ -37,31 +37,6 @@ function! lightline_settings#FormatFileName(fname, ...) abort
     return l:path
 endfunction
 
-function! lightline_settings#IsClipboardEnabled() abort
-    return match(&clipboard, 'unnamed') > -1
-endfunction
-
-function! lightline_settings#IsCompact(...) abort
-    let l:winnr = get(a:, 1, 0)
-    return winwidth(l:winnr) <= g:lightline_winwidth_config.compact ||
-                \ count([
-                \   lightline_settings#IsClipboardEnabled(),
-                \   &paste,
-                \   &spell,
-                \   &bomb,
-                \   !&eol,
-                \ ], 1) > 1
-endfunction
-
-function! lightline_settings#BufferType() abort
-    return strlen(&filetype) ? &filetype : &buftype
-endfunction
-
-function! lightline_settings#FileName() abort
-    let fname = expand('%')
-    return strlen(fname) ? fnamemodify(fname, ':~:.') : '[No Name]'
-endfunction
-
 function! lightline_settings#ReloadLightline() abort
     call lightline#init()
     call lightline#colorscheme()

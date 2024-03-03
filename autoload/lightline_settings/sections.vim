@@ -74,7 +74,7 @@ endfunction
 
 function! s:RenderSettingsSection(...) abort
     return lightline#concatenate([
-                \ lightline_settings#parts#Indentation(lightline_settings#IsCompact()),
+                \ lightline_settings#parts#Indentation(),
                 \ lightline_settings#parts#FileEncodingAndFormat(),
                 \ ], 1)
 endfunction

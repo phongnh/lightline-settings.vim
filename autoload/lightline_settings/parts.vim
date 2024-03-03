@@ -1,5 +1,30 @@
+function! s:BufferType() abort
+    return strlen(&filetype) ? &filetype : &buftype
+endfunction
+
+function! s:FileName() abort
+    let fname = expand('%')
+    return strlen(fname) ? fnamemodify(fname, ':~:.') : '[No Name]'
+endfunction
+
+function! s:IsClipboardEnabled() abort
+    return match(&clipboard, 'unnamed') > -1
+endfunction
+
+function! s:IsCompact(...) abort
+    let l:winnr = get(a:, 1, 0)
+    return winwidth(l:winnr) <= g:lightline_winwidth_config.compact ||
+                \ count([
+                \   s:IsClipboardEnabled(),
+                \   &paste,
+                \   &spell,
+                \   &bomb,
+                \   !&eol,
+                \ ], 1) > 1
+endfunction
+
 function! lightline_settings#parts#Mode() abort
-    if lightline_settings#IsCompact()
+    if s:IsCompact()
         return get(g:lightline_short_mode_map, mode(), '')
     else
         return lightline#mode()
@@ -7,7 +32,7 @@ function! lightline_settings#parts#Mode() abort
 endfunction
 
 function! lightline_settings#parts#Clipboard() abort
-    return lightline_settings#IsClipboardEnabled() ? g:lightline_symbols.clipboard : ''
+    return s:IsClipboardEnabled() ? g:lightline_symbols.clipboard : ''
 endfunction
 
 function! lightline_settings#parts#Paste() abort
@@ -20,7 +45,7 @@ endfunction
 
 function! lightline_settings#parts#Indentation(...) abort
     let l:shiftwidth = exists('*shiftwidth') ? shiftwidth() : &shiftwidth
-    let compact = get(a:, 1, 0)
+    let compact = get(a:, 1, s:IsCompact())
     if compact
         return printf(&expandtab ? 'SPC: %d' : 'TAB: %d', l:shiftwidth)
     else
@@ -69,15 +94,15 @@ function! lightline_settings#parts#FileEncodingAndFormat() abort
 endfunction
 
 function! lightline_settings#parts#FileType(...) abort
-    return lightline_settings#BufferType() . lightline_settings#devicons#FileType(expand('%'))
+    return s:BufferType() . lightline_settings#devicons#FileType(expand('%'))
 endfunction
 
 function! lightline_settings#parts#FileName(...) abort
-    return lightline_settings#parts#Readonly() . lightline_settings#FormatFileName(lightline_settings#FileName()) . lightline_settings#parts#Modified()
+    return lightline_settings#parts#Readonly() . lightline_settings#FormatFileName(s:FileName()) . lightline_settings#parts#Modified()
 endfunction
 
 function! lightline_settings#parts#InactiveFileName(...) abort
-    return lightline_settings#parts#Readonly() . lightline_settings#FileName() . lightline_settings#parts#Modified()
+    return lightline_settings#parts#Readonly() . s:FileName() . lightline_settings#parts#Modified()
 endfunction
 
 " Alternate status dictionaries
@@ -175,7 +200,7 @@ function! lightline_settings#parts#Integration() abort
         return lightline_settings#nrrwrgn#Mode()
     endif
 
-    let ft = lightline_settings#BufferType()
+    let ft = s:BufferType()
     if has_key(g:lightline_filetype_modes, ft)
         let result = { 'name': g:lightline_filetype_modes[ft] }
 
