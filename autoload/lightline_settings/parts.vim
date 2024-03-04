@@ -194,6 +194,8 @@ function! lightline_settings#parts#Integration() abort
         if has_key(l:plugin_modes, fname)
             return extend(result, function(l:plugin_modes[fname])())
         endif
+
+        return result
     endif
 
     if fname =~# '^NrrwRgn_\zs.*\ze_\d\+$'
