@@ -160,7 +160,9 @@ function! lightline_settings#Setup() abort
         let g:lightline.mode_map = copy(g:lightline_short_mode_map)
     endif
 
-    if g:lightline_powerline_fonts
+    let g:lightline_show_devicons = g:lightline_show_devicons && lightline_settings#devicons#Detect()
+
+    if g:lightline_powerline_fonts || g:lightline_show_devicons
         call extend(g:lightline_symbols, {
                     \ 'linenr':   "\ue0a1",
                     \ 'branch':   "\ue0a0",
@@ -169,9 +171,6 @@ function! lightline_settings#Setup() abort
 
         call lightline_settings#powerline#SetSeparators(get(g:, 'lightline_powerline_style', 'default'))
     endif
-
-    let g:lightline_show_devicons = g:lightline_show_devicons && lightline_settings#devicons#Detect()
-
 
     if g:lightline_show_devicons
         call extend(g:lightline_symbols, {
