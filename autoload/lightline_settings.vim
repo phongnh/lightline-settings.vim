@@ -201,27 +201,33 @@ function! lightline_settings#Init() abort
     call lightline_settings#theme#Init()
 
     " CtrlP Integration
-    let g:ctrlp_status_func = {
-                \ 'main': 'lightline_settings#ctrlp#MainStatus',
-                \ 'prog': 'lightline_settings#ctrlp#ProgressStatus',
-                \ }
-
-    " Tagbar Integration
-    let g:tagbar_status_func = 'lightline_settings#tagbar#Status'
-
-    " ZoomWin Integration
-    let g:lightline_zoomwin_funcref = []
-
-    if exists('g:ZoomWin_funcref')
-        if type(g:ZoomWin_funcref) == v:t_func
-            let g:lightline_zoomwin_funcref = [g:ZoomWin_funcref]
-        elseif type(g:ZoomWin_funcref) == v:t_func
-            let g:lightline_zoomwin_funcref = g:ZoomWin_funcref
-        endif
-        let g:lightline_zoomwin_funcref = uniq(copy(g:lightline_zoomwin_funcref))
+    if exists(':CtrlP') == 2
+        let g:ctrlp_status_func = {
+                    \ 'main': 'lightline_settings#ctrlp#MainStatus',
+                    \ 'prog': 'lightline_settings#ctrlp#ProgressStatus',
+                    \ }
     endif
 
-    let g:ZoomWin_funcref = function('lightline_settings#zoomwin#Status')
+    " Tagbar Integration
+    if exists(':Tagbar') == 2
+        let g:tagbar_status_func = 'lightline_settings#tagbar#Status'
+    endif
+
+    " ZoomWin Integration
+    if exists(':ZoomWin') == 2
+        let g:lightline_zoomwin_funcref = []
+
+        if exists('g:ZoomWin_funcref')
+            if type(g:ZoomWin_funcref) == v:t_func
+                let g:lightline_zoomwin_funcref = [g:ZoomWin_funcref]
+            elseif type(g:ZoomWin_funcref) == v:t_func
+                let g:lightline_zoomwin_funcref = g:ZoomWin_funcref
+            endif
+            let g:lightline_zoomwin_funcref = uniq(copy(g:lightline_zoomwin_funcref))
+        endif
+
+        let g:ZoomWin_funcref = function('lightline_settings#zoomwin#Status')
+    endif
 
     let g:lightline_buffer_count_by_basename = {}
 
