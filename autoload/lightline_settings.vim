@@ -52,8 +52,8 @@ function! lightline_settings#Setup() abort
     let g:lightline_shorten_path    = get(g:, 'lightline_shorten_path', 0)
     let g:lightline_show_short_mode = get(g:, 'lightline_show_short_mode', 0)
     let g:lightline_show_linenr     = get(g:, 'lightline_show_linenr', 0)
-    let g:lightline_show_git_branch = get(g:, 'lightline_show_git_branch', 1)
-    let g:lightline_show_devicons   = get(g:, 'lightline_show_devicons', 1)
+    let g:lightline_show_git_branch = get(g:, 'lightline_show_git_branch', 0)
+    let g:lightline_show_devicons   = get(g:, 'lightline_show_devicons', 0)
     let g:lightline_show_vim_logo   = get(g:, 'lightline_show_vim_logo', 1)
 
     " Short Modes
