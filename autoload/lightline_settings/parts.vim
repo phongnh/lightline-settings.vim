@@ -65,11 +65,11 @@ function! lightline_settings#parts#Modified(...) abort
     endif
 endfunction
 
-function! lightline_settings#parts#SimpleLineInfo(...) abort
+function! s:SimpleLineInfo(...) abort
     return printf('%3d:%-3d', line('.'), col('.'))
 endfunction
 
-function! lightline_settings#parts#LineInfo(...) abort
+function! s:FullLineInfo(...) abort
     if line('w0') == 1 && line('w$') == line('$')
         let l:percent = 'All'
     elseif line('w0') == 1
@@ -81,6 +81,10 @@ function! lightline_settings#parts#LineInfo(...) abort
     endif
 
     return printf('%4d:%-3d %3s', line('.'), col('.'), l:percent)
+endfunction
+
+function! lightline_settings#parts#LineInfo(...) abort
+    return ''
 endfunction
 
 function! lightline_settings#parts#FileEncodingAndFormat() abort
@@ -218,4 +222,26 @@ function! lightline_settings#parts#Integration() abort
     endif
 
     return {}
+endfunction
+
+function! lightline_settings#parts#GitBranch(...) abort
+    return ''
+endfunction
+
+function! lightline_settings#parts#Init() abort
+    if g:lightline_show_git_branch > 0
+        function! lightline_settings#parts#GitBranch(...) abort
+            return lightline_settings#git#Branch()
+        endfunction
+    endif
+
+    if g:lightline_show_linenr > 1
+        function! lightline_settings#parts#LineInfo(...) abort
+            return call('s:FullLineInfo', a:000) . ' '
+        endfunction
+    elseif g:lightline_show_linenr > 0
+        function! lightline_settings#parts#LineInfo(...) abort
+            return call('s:SimpleLineInfo', a:000) . ' '
+        endfunction
+    endif
 endfunction

@@ -198,6 +198,7 @@ endfunction
 function! lightline_settings#Init() abort
     setglobal noshowmode
 
+    call lightline_settings#parts#Init()
     call lightline_settings#theme#Init()
 
     " CtrlP Integration
