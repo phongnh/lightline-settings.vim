@@ -110,6 +110,7 @@ let g:lightline_filename_modes = {
             \ 'ControlP':             'CtrlP',
             \ '__CtrlSF__':           'CtrlSF',
             \ '__CtrlSFPreview__':    'Preview',
+            \ '__flygrep__':          'FlyGrep',
             \ '__Tagbar__':           'Tagbar',
             \ '__Gundo__':            'Gundo',
             \ '__Gundo_Preview__':    'Gundo Preview',
@@ -157,6 +158,7 @@ let g:lightline_filetype_modes = {
             \ 'agit':              'Agit',
             \ 'agit_diff':         'Agit Diff',
             \ 'agit_stat':         'Agit Stat',
+            \ 'SpaceVimFlyGrep':   'FlyGrep',
             \ }
 
 let g:lightline_plugin_modes = {
@@ -176,6 +178,7 @@ let g:lightline_plugin_modes = {
             \ 'terminal':        'lightline_settings#terminal#Mode',
             \ 'help':            'lightline_settings#help#Mode',
             \ 'qf':              'lightline_settings#quickfix#Mode',
+            \ 'SpaceVimFlyGrep': 'lightline_settings#flygrep#Mode',
             \ }
 
 function! lightline_settings#parts#Integration() abort
@@ -186,9 +189,10 @@ function! lightline_settings#parts#Integration() abort
 
         let l:plugin_modes = {
                     \ 'ControlP':          'lightline_settings#ctrlp#Mode',
-                    \ '__Tagbar__':        'lightline_settings#tagbar#Mode',
                     \ '__CtrlSF__':        'lightline_settings#ctrlsf#Mode',
                     \ '__CtrlSFPreview__': 'lightline_settings#ctrlsf#PreviewMode',
+                    \ '__flygrep__':       'lightline_settings#flygrep#Mode',
+                    \ '__Tagbar__':        'lightline_settings#tagbar#Mode',
                     \ }
 
         if has_key(l:plugin_modes, fname)
