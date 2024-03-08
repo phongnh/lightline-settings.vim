@@ -53,8 +53,7 @@ function! lightline_settings#Setup() abort
     let g:lightline_show_short_mode = get(g:, 'lightline_show_short_mode', 0)
     let g:lightline_show_linenr     = get(g:, 'lightline_show_linenr', 0)
     let g:lightline_show_git_branch = get(g:, 'lightline_show_git_branch', 0)
-    let g:lightline_show_devicons   = get(g:, 'lightline_show_devicons', 0)
-    let g:lightline_show_vim_logo   = get(g:, 'lightline_show_vim_logo', 1)
+    let g:lightline_show_devicons   = get(g:, 'lightline_show_devicons', 0) && lightline_settings#devicons#Detect()
 
     " Short Modes
     let g:lightline_short_mode_map = {
@@ -160,8 +159,6 @@ function! lightline_settings#Setup() abort
         let g:lightline.mode_map = copy(g:lightline_short_mode_map)
     endif
 
-    let g:lightline_show_devicons = g:lightline_show_devicons && lightline_settings#devicons#Detect()
-
     if g:lightline_powerline_fonts || g:lightline_show_devicons
         call extend(g:lightline_symbols, {
                     \ 'linenr':   "\ue0a1",
@@ -183,7 +180,7 @@ function! lightline_settings#Setup() abort
         let g:lightline_symbols.unix = '[unix]'
     endif
 
-    if g:lightline_show_devicons && g:lightline_show_vim_logo
+    if g:lightline_show_devicons
         " Show Vim Logo in Tabline
         let g:lightline.component.tablabel    = "\ue7c5 "
         let g:lightline.component.bufferlabel = "\ue7c5 "
