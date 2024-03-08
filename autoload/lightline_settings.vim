@@ -191,6 +191,90 @@ function! lightline_settings#Setup() abort
     endif
 
     let g:lightline_buffer_count_by_basename = {}
+
+    " Alternate status dictionaries
+    let g:lightline_filename_modes = {
+                \ 'ControlP':             'CtrlP',
+                \ '__CtrlSF__':           'CtrlSF',
+                \ '__CtrlSFPreview__':    'Preview',
+                \ '__flygrep__':          'FlyGrep',
+                \ '__Tagbar__':           'Tagbar',
+                \ '__Gundo__':            'Gundo',
+                \ '__Gundo_Preview__':    'Gundo Preview',
+                \ '__Mundo__':            'Mundo',
+                \ '__Mundo_Preview__':    'Mundo Preview',
+                \ '[BufExplorer]':        'BufExplorer',
+                \ '[Command Line]':       'Command Line',
+                \ '[Plugins]':            'Plugins',
+                \ '__committia_status__': 'Committia Status',
+                \ '__committia_diff__':   'Committia Diff',
+                \ '__doc__':              'Document',
+                \ '__LSP_SETTINGS__':     'LSP Settings',
+                \ }
+
+    let g:lightline_filetype_modes = {
+                \ 'netrw':             'Netrw',
+                \ 'molder':            'Molder',
+                \ 'dirvish':           'Dirvish',
+                \ 'vaffle':            'Vaffle',
+                \ 'nerdtree':          'NERDTree',
+                \ 'fern':              'Fern',
+                \ 'neo-tree':          'NeoTree',
+                \ 'carbon.explorer':   'Carbon',
+                \ 'oil':               'Oil',
+                \ 'NvimTree':          'NvimTree',
+                \ 'CHADTree':          'CHADTree',
+                \ 'LuaTree':           'LuaTree',
+                \ 'Mundo':             'Mundo',
+                \ 'MundoDiff':         'Mundo Preview',
+                \ 'startify':          'Startify',
+                \ 'alpha':             'Alpha',
+                \ 'tagbar':            'Tagbar',
+                \ 'vista':             'Vista',
+                \ 'vista_kind':        'Vista',
+                \ 'vim-plug':          'Plugins',
+                \ 'terminal':          'TERMINAL',
+                \ 'help':              'HELP',
+                \ 'qf':                'Quickfix',
+                \ 'godoc':             'GoDoc',
+                \ 'gedoc':             'GeDoc',
+                \ 'gitcommit':         'Commit Message',
+                \ 'fugitiveblame':     'FugitiveBlame',
+                \ 'gitmessengerpopup': 'Git Messenger',
+                \ 'GV':                'GV',
+                \ 'agit':              'Agit',
+                \ 'agit_diff':         'Agit Diff',
+                \ 'agit_stat':         'Agit Stat',
+                \ 'SpaceVimFlyGrep':   'FlyGrep',
+                \ }
+
+    let g:lightline_filename_integrations = {
+                \ 'ControlP':          'lightline_settings#ctrlp#Mode',
+                \ '__CtrlSF__':        'lightline_settings#ctrlsf#Mode',
+                \ '__CtrlSFPreview__': 'lightline_settings#ctrlsf#PreviewMode',
+                \ '__flygrep__':       'lightline_settings#flygrep#Mode',
+                \ '__Tagbar__':        'lightline_settings#tagbar#Mode',
+                \ }
+
+    let g:lightline_filetype_integrations = {
+                \ 'ctrlp':           'lightline_settings#ctrlp#Mode',
+                \ 'netrw':           'lightline_settings#netrw#Mode',
+                \ 'dirvish':         'lightline_settings#dirvish#Mode',
+                \ 'molder':          'lightline_settings#molder#Mode',
+                \ 'vaffle':          'lightline_settings#vaffle#Mode',
+                \ 'fern':            'lightline_settings#fern#Mode',
+                \ 'carbon.explorer': 'lightline_settings#carbon#Mode',
+                \ 'neo-tree':        'lightline_settings#neotree#Mode',
+                \ 'oil':             'lightline_settings#oil#Mode',
+                \ 'tagbar':          'lightline_settings#tagbar#Mode',
+                \ 'vista_kind':      'lightline_settings#vista#Mode',
+                \ 'vista':           'lightline_settings#vista#Mode',
+                \ 'gitcommit':       'lightline_settings#gitcommit#Mode',
+                \ 'terminal':        'lightline_settings#terminal#Mode',
+                \ 'help':            'lightline_settings#help#Mode',
+                \ 'qf':              'lightline_settings#quickfix#Mode',
+                \ 'SpaceVimFlyGrep': 'lightline_settings#flygrep#Mode',
+                \ }
 endfunction
 
 " Copied from https://github.com/itchyny/lightline-powerful/blob/master/autoload/lightline_powerful.vim
