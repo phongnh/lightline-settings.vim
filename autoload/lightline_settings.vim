@@ -178,9 +178,6 @@ function! lightline_settings#Setup() abort
                     \ 'unix':  "\ue712",
                     \ })
         let g:lightline_symbols.unix = '[unix]'
-    endif
-
-    if g:lightline_show_devicons
         " Show Vim Logo in Tabline
         let g:lightline.component.tablabel    = "\ue7c5 "
         let g:lightline.component.bufferlabel = "\ue7c5 "
