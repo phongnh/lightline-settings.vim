@@ -192,6 +192,8 @@ function! lightline_settings#Setup() abort
     if get(g:, 'lightline_bufferline', 0)
         call lightline_settings#bufferline#Init()
     endif
+
+    let g:lightline_buffer_count_by_basename = {}
 endfunction
 
 " Copied from https://github.com/itchyny/lightline-powerful/blob/master/autoload/lightline_powerful.vim
@@ -229,8 +231,6 @@ function! lightline_settings#Init() abort
 
         let g:ZoomWin_funcref = function('lightline_settings#zoomwin#Status')
     endif
-
-    let g:lightline_buffer_count_by_basename = {}
 
     function! s:UpdateBufferCount() abort
         let g:lightline_buffer_count_by_basename = {}
