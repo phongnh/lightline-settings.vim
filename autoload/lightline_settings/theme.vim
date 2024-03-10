@@ -1,5 +1,5 @@
 function! s:FindTheme() abort
-    let g:lightline_theme = substitute(g:colors_name, '[ -]', '_', 'g')
+    let g:lightline_theme = substitute(get(g:, 'colors_name', 'default'), '[ -]', '_', 'g')
     if index(s:lightline_themes, g:lightline_theme) > -1
         return
     endif
