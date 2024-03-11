@@ -210,6 +210,7 @@ function! lightline_settings#Setup() abort
                 \ }
 
     let g:lightline_filetype_modes = {
+                \ 'simplebuffer':      'SimpleBuffer',
                 \ 'netrw':             'Netrw',
                 \ 'molder':            'Molder',
                 \ 'dirvish':           'Dirvish',
