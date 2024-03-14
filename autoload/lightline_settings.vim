@@ -71,7 +71,7 @@ function! lightline_settings#Setup() abort
                 \ }
 
     let g:lightline_theme_mappings = extend({
-                \ '^\(solarized\|soluarized\|flattened\)': 'solarized',
+                \ '^\(solarized\|soluarized\|flattened\|neosolarized\)': 'solarized',
                 \ '^gruvbox$': 'gruvbox_material',
                 \ '^gruvbox': 'gruvbox8',
                 \ }, get(g:, 'lightline_theme_mappings', {}))
