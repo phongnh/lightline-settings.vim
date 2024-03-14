@@ -4,8 +4,9 @@ function! s:FindTheme() abort
         return
     endif
 
-    let g:lightline_theme = g:lightline_theme . (&background == 'light' ? '_light' : '_dark')
-    if index(s:lightline_themes, g:lightline_theme) > -1
+    let l:lightline_theme = g:lightline_theme . (&background == 'light' ? '_light' : '_dark')
+    if index(s:lightline_themes, l:lightline_theme) > -1
+        let g:lightline_theme = l:lightline_theme
         return
     endif
 
