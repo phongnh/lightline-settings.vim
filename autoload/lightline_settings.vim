@@ -74,6 +74,8 @@ function! lightline_settings#Setup() abort
                 \ '^\(solarized\|soluarized\|flattened\|neosolarized\)': 'solarized',
                 \ '^gruvbox$': 'gruvbox_material',
                 \ '^gruvbox': 'gruvbox8',
+                \ '^retrobox$': 'gruvbox8',
+                \ '^habamax$': 'deus',
                 \ }, get(g:, 'lightline_theme_mappings', {}))
 
     " Window width
