@@ -26,6 +26,11 @@ endfunction
 function! lightline_settings#theme#Set(theme) abort
     let g:lightline_theme = a:theme
     let g:lightline.colorscheme = g:lightline_theme
+    " Reload palette
+    let l:colorscheme_path = findfile(printf('autoload/lightline/colorscheme/%s.vim', g:lightline_theme), &rtp)
+    if !empty(l:colorscheme_path) && filereadable(l:colorscheme_path)
+        execute 'source' l:colorscheme_path
+    endif
     call lightline_settings#ReloadLightline()
 endfunction
 
