@@ -127,6 +127,15 @@ function! lightline_settings#parts#Integration() abort
     endif
 
     let ft = s:BufferType()
+
+    if ft ==# 'undotree' && exists('*t:undotree.GetStatusLine')
+        return lightline_settings#undotree#Mode()
+    endif
+
+    if ft ==# 'diff' && exists('*t:diffpanel.GetStatusLine')
+        return lightline_settings#undotree#DiffStatus()
+    endif
+
     if has_key(g:lightline_filetype_modes, ft)
         let result = { 'name': g:lightline_filetype_modes[ft] }
 
