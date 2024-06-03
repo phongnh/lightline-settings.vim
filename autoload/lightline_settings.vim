@@ -233,6 +233,7 @@ function! lightline_settings#Setup() abort
                 \ 'diff':              'Diff',
                 \ 'startify':          'Startify',
                 \ 'alpha':             'Alpha',
+                \ 'dashboard':         'Dashboard',
                 \ 'tagbar':            'Tagbar',
                 \ 'vista':             'Vista',
                 \ 'vista_kind':        'Vista',
