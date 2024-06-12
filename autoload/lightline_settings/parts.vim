@@ -65,6 +65,10 @@ function! lightline_settings#parts#Modified(...) abort
     endif
 endfunction
 
+function! lightline_settings#parts#Zoomed(...) abort
+    return g:lightline_zoomed ? '[Z]' : ''
+endfunction
+
 function! s:SimpleLineInfo(...) abort
     return printf('%3d:%-3d', line('.'), col('.'))
 endfunction
@@ -102,7 +106,7 @@ function! lightline_settings#parts#FileType(...) abort
 endfunction
 
 function! lightline_settings#parts#FileName(...) abort
-    return lightline_settings#parts#Readonly() . lightline_settings#FormatFileName(s:FileName()) . lightline_settings#parts#Modified()
+    return lightline_settings#parts#Readonly() . lightline_settings#FormatFileName(s:FileName()) . lightline_settings#parts#Modified() . lightline_settings#parts#Zoomed()
 endfunction
 
 function! lightline_settings#parts#InactiveFileName(...) abort

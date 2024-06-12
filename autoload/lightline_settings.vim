@@ -303,6 +303,8 @@ function! lightline_settings#Init() abort
     endif
 
     " ZoomWin Integration
+    let g:lightline_zoomed = 0
+
     if exists(':ZoomWin') == 2
         let g:lightline_zoomwin_funcref = []
 
