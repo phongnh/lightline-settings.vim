@@ -234,6 +234,7 @@ function! lightline_settings#Setup() abort
                 \ 'startify':          'Startify',
                 \ 'alpha':             'Alpha',
                 \ 'dashboard':         'Dashboard',
+                \ 'ministarter':       'Starter',
                 \ 'tagbar':            'Tagbar',
                 \ 'vista':             'Vista',
                 \ 'vista_kind':        'Vista',
