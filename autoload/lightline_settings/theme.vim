@@ -36,6 +36,9 @@ function! lightline_settings#theme#Set(theme) abort
 endfunction
 
 function! lightline_settings#theme#Apply() abort
+    if !exists('s:lightline_themes')
+        let s:lightline_themes = map(split(globpath(&rtp, 'autoload/lightline/colorscheme/*.vim')), "fnamemodify(v:val, ':t:r')")
+    endif
     call s:FindTheme()
     call lightline_settings#theme#Set(g:lightline_theme)
 endfunction

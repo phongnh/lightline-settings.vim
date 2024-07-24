@@ -284,7 +284,7 @@ endfunction
 
 " Copied from https://github.com/itchyny/lightline-powerful/blob/master/autoload/lightline_powerful.vim
 function! lightline_settings#Init() abort
-    setglobal noshowmode
+    setglobal noshowmode laststatus=2
 
     call lightline_settings#parts#Init()
     call lightline_settings#theme#Init()

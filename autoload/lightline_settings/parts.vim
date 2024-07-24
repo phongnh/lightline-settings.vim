@@ -66,7 +66,7 @@ function! lightline_settings#parts#Modified(...) abort
 endfunction
 
 function! lightline_settings#parts#Zoomed(...) abort
-    return g:lightline_zoomed ? '[Z]' : ''
+    return get(g:, 'lightline_zoomed', 0) ? '[Z]' : ''
 endfunction
 
 function! s:SimpleLineInfo(...) abort
