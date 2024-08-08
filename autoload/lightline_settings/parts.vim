@@ -1,3 +1,93 @@
+" Alternate status dictionaries
+let s:lightline_filename_modes = {
+            \ 'ControlP':             'CtrlP',
+            \ '__CtrlSF__':           'CtrlSF',
+            \ '__CtrlSFPreview__':    'Preview',
+            \ '__flygrep__':          'FlyGrep',
+            \ '__Tagbar__':           'Tagbar',
+            \ '__Gundo__':            'Gundo',
+            \ '__Gundo_Preview__':    'Gundo Preview',
+            \ '__Mundo__':            'Mundo',
+            \ '__Mundo_Preview__':    'Mundo Preview',
+            \ '[BufExplorer]':        'BufExplorer',
+            \ '[Command Line]':       'Command Line',
+            \ '[Plugins]':            'Plugins',
+            \ '__committia_status__': 'Committia Status',
+            \ '__committia_diff__':   'Committia Diff',
+            \ '__doc__':              'Document',
+            \ '__LSP_SETTINGS__':     'LSP Settings',
+            \ }
+
+let g:lightline_filetype_modes = {
+            \ 'simplebuffer':      'SimpleBuffer',
+            \ 'netrw':             'Netrw',
+            \ 'molder':            'Molder',
+            \ 'dirvish':           'Dirvish',
+            \ 'vaffle':            'Vaffle',
+            \ 'nerdtree':          'NERDTree',
+            \ 'fern':              'Fern',
+            \ 'neo-tree':          'NeoTree',
+            \ 'carbon.explorer':   'Carbon',
+            \ 'oil':               'Oil',
+            \ 'NvimTree':          'NvimTree',
+            \ 'CHADTree':          'CHADTree',
+            \ 'LuaTree':           'LuaTree',
+            \ 'Mundo':             'Mundo',
+            \ 'MundoDiff':         'Mundo Preview',
+            \ 'undotree':          'Undo',
+            \ 'diff':              'Diff',
+            \ 'startify':          'Startify',
+            \ 'alpha':             'Alpha',
+            \ 'dashboard':         'Dashboard',
+            \ 'ministarter':       'Starter',
+            \ 'tagbar':            'Tagbar',
+            \ 'vista':             'Vista',
+            \ 'vista_kind':        'Vista',
+            \ 'vim-plug':          'Plugins',
+            \ 'terminal':          'TERMINAL',
+            \ 'help':              'HELP',
+            \ 'qf':                'Quickfix',
+            \ 'godoc':             'GoDoc',
+            \ 'gedoc':             'GeDoc',
+            \ 'gitcommit':         'Commit Message',
+            \ 'fugitiveblame':     'FugitiveBlame',
+            \ 'gitmessengerpopup': 'Git Messenger',
+            \ 'GV':                'GV',
+            \ 'agit':              'Agit',
+            \ 'agit_diff':         'Agit Diff',
+            \ 'agit_stat':         'Agit Stat',
+            \ 'SpaceVimFlyGrep':   'FlyGrep',
+            \ 'startuptime':       'StartupTime',
+            \ }
+
+let s:lightline_filename_integrations = {
+            \ 'ControlP':          'lightline_settings#ctrlp#Mode',
+            \ '__CtrlSF__':        'lightline_settings#ctrlsf#Mode',
+            \ '__CtrlSFPreview__': 'lightline_settings#ctrlsf#PreviewMode',
+            \ '__flygrep__':       'lightline_settings#flygrep#Mode',
+            \ '__Tagbar__':        'lightline_settings#tagbar#Mode',
+            \ }
+
+let s:lightline_filetype_integrations = {
+            \ 'ctrlp':           'lightline_settings#ctrlp#Mode',
+            \ 'netrw':           'lightline_settings#netrw#Mode',
+            \ 'dirvish':         'lightline_settings#dirvish#Mode',
+            \ 'molder':          'lightline_settings#molder#Mode',
+            \ 'vaffle':          'lightline_settings#vaffle#Mode',
+            \ 'fern':            'lightline_settings#fern#Mode',
+            \ 'carbon.explorer': 'lightline_settings#carbon#Mode',
+            \ 'neo-tree':        'lightline_settings#neotree#Mode',
+            \ 'oil':             'lightline_settings#oil#Mode',
+            \ 'tagbar':          'lightline_settings#tagbar#Mode',
+            \ 'vista_kind':      'lightline_settings#vista#Mode',
+            \ 'vista':           'lightline_settings#vista#Mode',
+            \ 'gitcommit':       'lightline_settings#gitcommit#Mode',
+            \ 'terminal':        'lightline_settings#terminal#Mode',
+            \ 'help':            'lightline_settings#help#Mode',
+            \ 'qf':              'lightline_settings#quickfix#Mode',
+            \ 'SpaceVimFlyGrep': 'lightline_settings#flygrep#Mode',
+            \ }
+
 function! s:BufferType() abort
     return strlen(&filetype) ? &filetype : &buftype
 endfunction
@@ -65,7 +155,7 @@ function! lightline_settings#parts#Modified(...) abort
     endif
 endfunction
 
-function! lightline_settings#parts#Zoomed(...) abort
+function! s:ZoomStatus(...) abort
     return get(g:, 'lightline_zoomed', 0) ? '[Z]' : ''
 endfunction
 
@@ -91,6 +181,16 @@ function! lightline_settings#parts#LineInfo(...) abort
     return ''
 endfunction
 
+if g:lightline_show_linenr > 1
+    function! lightline_settings#parts#LineInfo(...) abort
+        return call('s:FullLineInfo', a:000) . ' '
+    endfunction
+elseif g:lightline_show_linenr > 0
+    function! lightline_settings#parts#LineInfo(...) abort
+        return call('s:SimpleLineInfo', a:000) . ' '
+    endfunction
+endif
+
 function! lightline_settings#parts#FileEncodingAndFormat() abort
     let l:encoding = strlen(&fileencoding) ? &fileencoding : &encoding
     let l:encoding = (l:encoding ==# 'utf-8') ? '' : l:encoding . ' '
@@ -106,7 +206,7 @@ function! lightline_settings#parts#FileType(...) abort
 endfunction
 
 function! lightline_settings#parts#FileName(...) abort
-    return lightline_settings#parts#Readonly() . lightline_settings#FormatFileName(s:FileName()) . lightline_settings#parts#Modified() . lightline_settings#parts#Zoomed()
+    return lightline_settings#parts#Readonly() . lightline_settings#FormatFileName(s:FileName()) . lightline_settings#parts#Modified() . s:ZoomStatus()
 endfunction
 
 function! lightline_settings#parts#InactiveFileName(...) abort
@@ -116,11 +216,11 @@ endfunction
 function! lightline_settings#parts#Integration() abort
     let fname = expand('%:t')
 
-    if has_key(g:lightline_filename_modes, fname)
-        let result = { 'name': g:lightline_filename_modes[fname] }
+    if has_key(s:lightline_filename_modes, fname)
+        let result = { 'name': s:lightline_filename_modes[fname] }
 
-        if has_key(g:lightline_filename_integrations, fname)
-            return extend(result, function(g:lightline_filename_integrations[fname])())
+        if has_key(s:lightline_filename_integrations, fname)
+            return extend(result, function(s:lightline_filename_integrations[fname])())
         endif
 
         return result
@@ -143,8 +243,8 @@ function! lightline_settings#parts#Integration() abort
     if has_key(g:lightline_filetype_modes, ft)
         let result = { 'name': g:lightline_filetype_modes[ft] }
 
-        if has_key(g:lightline_filetype_integrations, ft)
-            return extend(result, function(g:lightline_filetype_integrations[ft])())
+        if has_key(s:lightline_filetype_integrations, ft)
+            return extend(result, function(s:lightline_filetype_integrations[ft])())
         endif
 
         return result
@@ -157,20 +257,8 @@ function! lightline_settings#parts#GitBranch(...) abort
     return ''
 endfunction
 
-function! lightline_settings#parts#Init() abort
-    if g:lightline_show_git_branch > 0
-        function! lightline_settings#parts#GitBranch(...) abort
-            return lightline_settings#git#Branch()
-        endfunction
-    endif
-
-    if g:lightline_show_linenr > 1
-        function! lightline_settings#parts#LineInfo(...) abort
-            return call('s:FullLineInfo', a:000) . ' '
-        endfunction
-    elseif g:lightline_show_linenr > 0
-        function! lightline_settings#parts#LineInfo(...) abort
-            return call('s:SimpleLineInfo', a:000) . ' '
-        endfunction
-    endif
-endfunction
+if g:lightline_show_git_branch > 0
+    function! lightline_settings#parts#GitBranch(...) abort
+        return lightline_settings#git#Branch()
+    endfunction
+endif

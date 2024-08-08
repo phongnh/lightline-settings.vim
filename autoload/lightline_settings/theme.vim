@@ -1,3 +1,14 @@
+" Theme mappings
+let s:lightline_theme_mappings = extend({
+            \ '^\(solarized\|soluarized\|flattened\|neosolarized\)': 'solarized',
+            \ '^gruvbox$': 'gruvbox_material',
+            \ '^gruvbox-baby$': 'gruvbox_material',
+            \ '^gruvbox-baby': 'gruvbox',
+            \ '^gruvbox': 'gruvbox',
+            \ '^retrobox$': 'gruvbox',
+            \ '^habamax$': 'deus',
+            \ }, get(g:, 'lightline_theme_mappings', {}))
+
 function! s:FindTheme() abort
     let g:lightline_theme = substitute(get(g:, 'colors_name', 'default'), '[ -]', '_', 'g')
     if index(s:lightline_themes, g:lightline_theme) > -1
@@ -10,7 +21,7 @@ function! s:FindTheme() abort
         return
     endif
 
-    for [l:pattern, l:theme] in items(g:lightline_theme_mappings)
+    for [l:pattern, l:theme] in items(s:lightline_theme_mappings)
         if match(g:lightline_theme, l:pattern) > -1 && index(s:lightline_themes, l:theme) > -1
             let g:lightline_theme = l:theme
             return
@@ -41,17 +52,4 @@ function! lightline_settings#theme#Apply() abort
     endif
     call s:FindTheme()
     call lightline_settings#theme#Set(g:lightline_theme)
-endfunction
-
-function! lightline_settings#theme#Init() abort
-    if !exists('s:lightline_themes')
-        let s:lightline_themes = map(split(globpath(&rtp, 'autoload/lightline/colorscheme/*.vim')), "fnamemodify(v:val, ':t:r')")
-    endif
-
-    if !exists('g:lightline_theme')
-        call s:FindTheme()
-        if g:lightline_theme !=# 'default'
-            call lightline_settings#theme#Set(g:lightline_theme)
-        endif
-    endif
 endfunction
