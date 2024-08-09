@@ -60,4 +60,4 @@ let s:p.tabline.right   = [[s:bg0, s:orange]]
 let s:p.normal.error    = [[s:bg0, s:red]]
 let s:p.normal.warning  = [[s:bg0, s:yellow]]
 
-let g:lightline#colorscheme#gruvbox#palette = lightline#colorscheme#flatten(s:p)
+let g:lightline#colorscheme#gruvbox_community#palette = lightline#colorscheme#flatten(s:p)

@@ -47,7 +47,7 @@ if &background ==# 'dark'
   let s:p.normal.error   = [ [ s:bg0, s:orange ] ]
   let s:p.normal.warning = [ [ s:bg2, s:yellow ] ]
 
-  let g:lightline#colorscheme#gruvbox8#palette = lightline#colorscheme#flatten(s:p)
+  let g:lightline#colorscheme#gruvbox#palette = lightline#colorscheme#flatten(s:p)
 endif
 
 if &background ==# 'light'
@@ -99,6 +99,6 @@ if &background ==# 'light'
   let s:p.normal.error   = [ [ s:bg0, s:orange ] ]
   let s:p.normal.warning = [ [ s:bg2, s:yellow ] ]
 
-  let g:lightline#colorscheme#gruvbox8#palette = lightline#colorscheme#flatten(s:p)
+  let g:lightline#colorscheme#gruvbox#palette = lightline#colorscheme#flatten(s:p)
 endif
 

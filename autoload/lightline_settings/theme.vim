@@ -9,6 +9,12 @@ let s:lightline_theme_mappings = extend({
             \ '^habamax$': 'deus',
             \ }, get(g:, 'lightline_theme_mappings', {}))
 
+function! s:LoadThemes() abort
+    if !exists('s:lightline_themes')
+        let s:lightline_themes = map(split(globpath(&rtp, 'autoload/lightline/colorscheme/*.vim')), "fnamemodify(v:val, ':t:r')")
+    endif
+endfunction
+
 function! s:FindTheme() abort
     let g:lightline_theme = substitute(get(g:, 'colors_name', 'default'), '[ -]', '_', 'g')
     if index(s:lightline_themes, g:lightline_theme) > -1
@@ -47,9 +53,19 @@ function! lightline_settings#theme#Set(theme) abort
 endfunction
 
 function! lightline_settings#theme#Apply() abort
-    if !exists('s:lightline_themes')
-        let s:lightline_themes = map(split(globpath(&rtp, 'autoload/lightline/colorscheme/*.vim')), "fnamemodify(v:val, ':t:r')")
-    endif
+    call s:LoadThemes()
     call s:FindTheme()
     call lightline_settings#theme#Set(g:lightline_theme)
+endfunction
+
+function! lightline_settings#theme#Detect() abort
+    if has('vim_starting') && exists('g:lightline_theme') && g:lightline_theme ==# 'default'
+        call s:LoadThemes()
+        call s:FindTheme()
+        if g:lightline_theme !=# 'default'
+            call lightline_settings#theme#Set(g:lightline_theme)
+        endif
+    elseif !exists('g:lightline_theme')
+        call lightline_settings#theme#Apply()
+    endif
 endfunction

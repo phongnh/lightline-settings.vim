@@ -162,8 +162,8 @@ endfunction
 
 augroup LightlineSettings
     autocmd!
-    autocmd VimEnter * call lightline_settings#Init()
-    autocmd VimEnter,ColorScheme * call lightline_settings#theme#Apply()
+    autocmd VimEnter * call lightline_settings#Init() | call lightline_settings#theme#Detect()
+    autocmd ColorScheme * call lightline_settings#theme#Apply()
     autocmd OptionSet background call lightline_settings#theme#Apply()
     autocmd BufEnter,WinEnter,WinLeave * call s:UpdateBufferCount()
 augroup END
