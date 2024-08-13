@@ -1,5 +1,5 @@
 " Alternate status dictionaries
-let s:lightline_filename_modes = {
+let g:lightline_filename_modes = {
             \ 'ControlP':             'CtrlP',
             \ '__CtrlSF__':           'CtrlSF',
             \ '__CtrlSFPreview__':    'Preview',
@@ -216,8 +216,8 @@ endfunction
 function! lightline_settings#parts#Integration() abort
     let fname = expand('%:t')
 
-    if has_key(s:lightline_filename_modes, fname)
-        let result = { 'name': s:lightline_filename_modes[fname] }
+    if has_key(g:lightline_filename_modes, fname)
+        let result = { 'name': g:lightline_filename_modes[fname] }
 
         if has_key(s:lightline_filename_integrations, fname)
             return extend(result, function(s:lightline_filename_integrations[fname])())
