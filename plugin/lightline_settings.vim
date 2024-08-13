@@ -150,14 +150,14 @@ command! LightlineReload call lightline_settings#ReloadLightline()
 command! -nargs=1 -complete=custom,lightline_settings#theme#List LightlineTheme call lightline_settings#theme#Set(<f-args>)
 
 " Copied from https://github.com/itchyny/lightline-powerful/blob/master/autoload/lightline_powerful.vim
-let s:lightline_buffer_count_by_basename = {}
+let g:lightline_buffer_count_by_basename = {}
 
 function! s:UpdateBufferCount() abort
-    let s:lightline_buffer_count_by_basename = {}
+    let g:lightline_buffer_count_by_basename = {}
     let bufnrs = filter(range(1, bufnr('$')), 'buflisted(v:val) && bufexists(v:val) && len(bufname(v:val))')
     for name in map(bufnrs, 'expand("#" . v:val . ":t")')
         if name !=# ''
-            let s:lightline_buffer_count_by_basename[name] = get(s:lightline_buffer_count_by_basename, name) + 1
+            let g:lightline_buffer_count_by_basename[name] = get(g:lightline_buffer_count_by_basename, name) + 1
         endif
     endfor
 endfunction
