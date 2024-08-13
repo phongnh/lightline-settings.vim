@@ -85,20 +85,22 @@ let g:lightline = {
             \ }
 
 " Short Modes
+let g:lightline_short_mode_map = {
+            \ 'n':      'N',
+            \ 'i':      'I',
+            \ 'R':      'R',
+            \ 'v':      'V',
+            \ 'V':      'V-L',
+            \ "\<C-v>": 'V-B',
+            \ 'c':      'C',
+            \ 's':      'S',
+            \ 'S':      'S-L',
+            \ "\<C-s>": 'S-B',
+            \ 't':      'T',
+            \ }
+
 if g:lightline_show_short_mode
-    let g:lightline.mode_map = {
-                \ 'n':      'N',
-                \ 'i':      'I',
-                \ 'R':      'R',
-                \ 'v':      'V',
-                \ 'V':      'V-L',
-                \ "\<C-v>": 'V-B',
-                \ 'c':      'C',
-                \ 's':      'S',
-                \ 'S':      'S-L',
-                \ "\<C-s>": 'S-B',
-                \ 't':      'T',
-                \ }
+    let g:lightline.mode_map = copy(g:lightline_short_mode_map)
 endif
 
 " Symbols: https://en.wikipedia.org/wiki/Enclosed_Alphanumerics
