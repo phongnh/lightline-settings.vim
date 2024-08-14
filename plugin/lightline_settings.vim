@@ -28,6 +28,7 @@ let g:lightline_winwidth_config = extend({
 
 " Lightline components
 let g:lightline = {
+            \ 'colorscheme': 'default',
             \ 'enable': {
             \   'statusline': 1,
             \   'tabline':    1,
