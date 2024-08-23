@@ -29,7 +29,7 @@ function! s:InitPowerlineStyles() abort
                 \ '>\': { 'left': "\ue0b1", 'right': "\ue0b9" },
                 \ '>/': { 'left': "\ue0b1", 'right': "\ue0bb" },
                 \ ')(': { 'left': "\ue0b5", 'right': "\ue0b7" },
-                \ ')<': { 'left': "\ue0b5", 'right': "\ue0b1" },
+                \ ')<': { 'left': "\ue0b5", 'right': "\ue0b3" },
                 \ ')\': { 'left': "\ue0b5", 'right': "\ue0b9" },
                 \ ')/': { 'left': "\ue0b5", 'right': "\ue0bb" },
                 \ '\\': { 'left': "\ue0b9", 'right': "\ue0b9" },
