@@ -82,6 +82,7 @@ let s:lightline_filetype_integrations = {
             \ 'vista_kind':      'lightline_settings#vista#Mode',
             \ 'vista':           'lightline_settings#vista#Mode',
             \ 'gitcommit':       'lightline_settings#gitcommit#Mode',
+            \ 'GV':              'lightline_settings#gv#Mode',
             \ 'terminal':        'lightline_settings#terminal#Mode',
             \ 'help':            'lightline_settings#help#Mode',
             \ 'qf':              'lightline_settings#quickfix#Mode',
