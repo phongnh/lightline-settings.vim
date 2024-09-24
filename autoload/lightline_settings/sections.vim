@@ -43,7 +43,7 @@ endfunction
 function! lightline_settings#sections#FileName(...) abort
     let l:mode = lightline_settings#parts#Integration()
     if len(l:mode)
-        return ''
+        return get(l:mode, 'filename', '')
     endif
     return call('s:RenderFileNameSection', a:000)
 endfunction
