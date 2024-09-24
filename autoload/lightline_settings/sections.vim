@@ -88,7 +88,7 @@ function! lightline_settings#sections#Info(...) abort
 endfunction
 
 function! s:RenderInfoSection(...) abort
-    if winwidth(0) <= g:lightline_winwidth_config.compact || g:lightline_show_linenr < 1
+    if winwidth(0) <= g:lightline_winwidth_config.compact
         return ''
     endif
     return lightline_settings#parts#LineInfo()
