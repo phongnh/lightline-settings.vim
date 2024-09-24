@@ -4,7 +4,7 @@ function! lightline_settings#ctrlsf#Mode(...) abort
 
     return {
                 \ 'plugin':   pattern,
-                \ 'filename': fnamemodify(ctrlsf#utils#SectionC(), ':~:.'),
+                \ 'filename': fnamemodify(ctrlsf#utils#SectionC(), ':p:~:.'),
                 \ 'buffer':   ctrlsf#utils#SectionX(),
                 \ }
 endfunction
