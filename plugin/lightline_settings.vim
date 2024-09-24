@@ -58,7 +58,7 @@ let g:lightline = {
             \   'right': [
             \       ['buffer'],
             \       ['settings'],
-            \       g:lightline_show_linenr ? ['info'] : [],
+            \       ['info'],
             \   ]
             \ },
             \ 'inactive': {
