@@ -1,10 +1,10 @@
 " https://github.com/ctrlpvim/ctrlp.vim
 let s:lightline_ctrlp = {}
 
-" TODO: Move these variables and functions to autload and reuse them
 function! s:GetCurrentDir() abort
     let dir = fnamemodify(getcwd(), ':~:.')
-    return empty(dir) ? getcwd() : dir
+    let dir = empty(dir) ? getcwd() : dir
+    return strlen(dir) > 30 ? lightline_settings#ShortenPath(dir) : dir
 endfunction
 
 function! lightline_settings#ctrlp#MainStatus(focus, byfname, regex, prev, item, next, marked) abort
@@ -38,7 +38,7 @@ function! lightline_settings#ctrlp#Mode(...) abort
     if s:lightline_ctrlp.main
         let plugin_status = lightline#concatenate([
                     \ s:lightline_ctrlp.prev,
-                    \ printf(' %s %s %s ', '«', s:lightline_ctrlp.item, '»'),
+                    \ printf('%s %s %s', '«', s:lightline_ctrlp.item, '»'),
                     \ s:lightline_ctrlp.next,
                     \ ], 0)
 
@@ -54,7 +54,7 @@ function! lightline_settings#ctrlp#Mode(...) abort
                     \ })
     else
         call extend(result, {
-                    \ 'plugin': s:lightline_ctrlp.len,
+                    \ 'settings': s:lightline_ctrlp.len,
                     \ })
     endif
 
