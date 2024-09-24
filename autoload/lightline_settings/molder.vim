@@ -1,10 +1,4 @@
 " https://github.com/mattn/vim-molder
 function! lightline_settings#molder#Mode(...) abort
-    let result = {}
-
-    if exists('b:molder_dir')
-        let result['plugin'] = fnamemodify(b:molder_dir, ':p:~:h')
-    endif
-
-    return result
+    return { 'plugin': exists('b:molder_dir') ? fnamemodify(b:molder_dir, ':p:~:.:h') : '' }
 endfunction

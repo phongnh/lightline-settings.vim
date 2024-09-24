@@ -1,11 +1,5 @@
 " https://github.com/nvim-neo-tree/neo-tree.nvim
 function! lightline_settings#neotree#Mode(...) abort
-    let result = {}
-
-    if exists('b:neo_tree_source')
-        let result['plugin'] = b:neo_tree_source
-    endif
-
-    return result
+    return { 'plugin': exists('b:neo_tree_source') ? b:neo_tree_source : '' }
 endfunction
 
