@@ -57,6 +57,7 @@ let g:lightline_filetype_modes = {
             \ 'agit':              'Agit',
             \ 'agit_diff':         'Agit Diff',
             \ 'agit_stat':         'Agit Stat',
+            \ 'GrepperSide':       'GrepperSide',
             \ 'SpaceVimFlyGrep':   'FlyGrep',
             \ 'startuptime':       'StartupTime',
             \ }
@@ -88,6 +89,7 @@ let s:lightline_filetype_integrations = {
             \ 'terminal':        'lightline_settings#terminal#Mode',
             \ 'help':            'lightline_settings#help#Mode',
             \ 'qf':              'lightline_settings#quickfix#Mode',
+            \ 'GrepperSide':     'lightline_settings#grepper#Mode',
             \ 'SpaceVimFlyGrep': 'lightline_settings#flygrep#Mode',
             \ }
 
