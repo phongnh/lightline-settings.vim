@@ -93,6 +93,32 @@ let s:lightline_filetype_integrations = {
             \ 'SpaceVimFlyGrep': 'lightline_settings#flygrep#Mode',
             \ }
 
+" Cache window width to avoid repeated winwidth() calls
+let s:cached_winwidth = 0
+let s:cached_winwidth_nr = 0
+
+function! s:GetWinWidth(...) abort
+    let l:winnr = get(a:, 1, 0)
+    " Cache is only valid for current window in current update
+    if l:winnr == s:cached_winwidth_nr && s:cached_winwidth > 0
+        return s:cached_winwidth
+    endif
+    let s:cached_winwidth = winwidth(l:winnr)
+    let s:cached_winwidth_nr = l:winnr
+    return s:cached_winwidth
+endfunction
+
+" Expose for use in other modules
+function! lightline_settings#parts#GetWinWidth(...) abort
+    return call('s:GetWinWidth', a:000)
+endfunction
+
+" Clear width cache (called by lightline on update)
+function! lightline_settings#parts#ClearWidthCache() abort
+    let s:cached_winwidth = 0
+    let s:cached_winwidth_nr = 0
+endfunction
+
 function! s:BufferType() abort
     return strlen(&filetype) ? &filetype : &buftype
 endfunction
@@ -108,7 +134,7 @@ endfunction
 
 function! s:IsCompact(...) abort
     let l:winnr = get(a:, 1, 0)
-    return winwidth(l:winnr) <= g:lightline_winwidth_config.compact ||
+    return s:GetWinWidth(l:winnr) <= g:lightline_winwidth_config.compact ||
                 \ count([
                 \   s:IsClipboardEnabled(),
                 \   &paste,
@@ -179,6 +205,11 @@ elseif g:lightline_show_linenr > 0
 endif
 
 function! lightline_settings#parts#FileEncodingAndFormat() abort
+    " Skip encoding check if it's utf-8 and format is unix (common case)
+    if &fileencoding ==# 'utf-8' && &fileformat ==# 'unix' && !&bomb && &eol
+        return ''
+    endif
+
     let l:encoding = strlen(&fileencoding) ? &fileencoding : &encoding
     let l:encoding = (l:encoding ==# 'utf-8') ? '' : l:encoding .. ' '
     let l:bomb     = &bomb ? g:lightline_symbols.bomb .. ' ' : ''
@@ -200,44 +231,69 @@ function! lightline_settings#parts#InactiveFileName(...) abort
     return lightline_settings#parts#Readonly() .. s:FileName() .. lightline_settings#parts#Modified()
 endfunction
 
+" Cache for integration lookups - invalidated on BufEnter
+let s:integration_cache = {}
+let s:integration_cache_bufnr = -1
+
 function! lightline_settings#parts#Integration() abort
+    " Return cached result if buffer hasn't changed
+    let l:bufnr = bufnr('%')
+    if s:integration_cache_bufnr == l:bufnr && !empty(s:integration_cache)
+        return s:integration_cache
+    endif
+
+    " Update cache buffer number
+    let s:integration_cache_bufnr = l:bufnr
+
     let l:fname = expand('%:t')
 
     if has_key(g:lightline_filename_modes, l:fname)
         let l:result = { 'name': g:lightline_filename_modes[l:fname] }
 
         if has_key(s:lightline_filename_integrations, l:fname)
-            return extend(l:result, function(s:lightline_filename_integrations[l:fname])())
+            let l:result = extend(l:result, function(s:lightline_filename_integrations[l:fname])())
         endif
 
+        let s:integration_cache = l:result
         return l:result
     endif
 
     if l:fname =~# '^NrrwRgn_\zs.*\ze_\d\+$'
-        return lightline_settings#nrrwrgn#Mode()
+        let s:integration_cache = lightline_settings#nrrwrgn#Mode()
+        return s:integration_cache
     endif
 
     let l:ft = s:BufferType()
 
     if l:ft ==# 'undotree' && exists('*t:undotree.GetStatusLine')
-        return lightline_settings#undotree#Mode()
+        let s:integration_cache = lightline_settings#undotree#Mode()
+        return s:integration_cache
     endif
 
     if l:ft ==# 'diff' && exists('*t:diffpanel.GetStatusLine')
-        return lightline_settings#undotree#DiffStatus()
+        let s:integration_cache = lightline_settings#undotree#DiffStatus()
+        return s:integration_cache
     endif
 
     if has_key(g:lightline_filetype_modes, l:ft)
         let l:result = { 'name': g:lightline_filetype_modes[l:ft] }
 
         if has_key(s:lightline_filetype_integrations, l:ft)
-            return extend(l:result, function(s:lightline_filetype_integrations[l:ft])())
+            let l:result = extend(l:result, function(s:lightline_filetype_integrations[l:ft])())
         endif
 
+        let s:integration_cache = l:result
         return l:result
     endif
 
+    let s:integration_cache = {}
     return {}
+endfunction
+
+" Clear cache on buffer change
+function! lightline_settings#parts#ClearIntegrationCache() abort
+    let s:integration_cache = {}
+    let s:integration_cache_bufnr = -1
 endfunction
 
 function! lightline_settings#parts#GitBranch(...) abort

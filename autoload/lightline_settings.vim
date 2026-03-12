@@ -22,7 +22,12 @@ function! lightline_settings#FormatFileName(fname, ...) abort
     let l:path = a:fname
     let l:maxlen = get(a:, 1, 50)
 
-    if winwidth(0) <= g:lightline_winwidth_config.compact
+    " Use cached window width if available
+    let l:winwidth = exists('*lightline_settings#parts#GetWinWidth') 
+                \ ? lightline_settings#parts#GetWinWidth(0)
+                \ : winwidth(0)
+
+    if l:winwidth <= g:lightline_winwidth_config.compact
         return fnamemodify(l:path, ':t')
     endif
 

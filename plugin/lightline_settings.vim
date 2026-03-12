@@ -153,7 +153,18 @@ command! -nargs=1 -complete=custom,lightline_settings#theme#List LightlineTheme 
 " Copied from https://github.com/itchyny/lightline-powerful/blob/master/autoload/lightline_powerful.vim
 let g:lightline_buffer_count_by_basename = {}
 
+" Throttle buffer count updates to avoid expensive operations on every event
+let s:last_buffer_update = 0
+let s:buffer_update_interval = 100  " milliseconds
+
 function! s:UpdateBufferCount() abort
+    " Throttle updates - only run if enough time has passed
+    let l:now = reltime()
+    if s:last_buffer_update && reltimefloat(reltime(s:last_buffer_update)) * 1000 < s:buffer_update_interval
+        return
+    endif
+    let s:last_buffer_update = l:now
+
     let g:lightline_buffer_count_by_basename = {}
     let l:bufnrs = filter(range(1, bufnr('$')), 'buflisted(v:val) && bufexists(v:val) && len(bufname(v:val))')
     for l:name in map(l:bufnrs, 'expand("#" .. v:val .. ":t")')
@@ -167,7 +178,12 @@ augroup LightlineSettings
     autocmd!
     autocmd ColorScheme * call lightline_settings#theme#Apply()
     autocmd OptionSet background call lightline_settings#theme#Apply()
-    autocmd BufEnter,WinEnter,WinLeave * call s:UpdateBufferCount()
+    " Only update on BufAdd/BufDelete for better performance
+    autocmd BufAdd,BufDelete,BufFilePost * call s:UpdateBufferCount()
+    " Clear integration cache on buffer changes
+    autocmd BufEnter,FileType * call lightline_settings#parts#ClearIntegrationCache()
+    " Clear all caches before statusline update (CursorMoved triggers lightline update)
+    autocmd CursorMoved,CursorMovedI,WinEnter * call lightline_settings#sections#ClearCache()
 augroup END
 
 let &cpo = s:save_cpo

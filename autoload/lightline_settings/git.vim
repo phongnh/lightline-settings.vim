@@ -22,7 +22,11 @@ function! s:ShortenBranch(branch, length) abort
 endfunction
 
 function! s:FormatBranch(branch) abort
-    if winwidth(0) >= g:lightline_winwidth_config.normal
+    let l:winwidth = exists('*lightline_settings#parts#GetWinWidth') 
+                \ ? lightline_settings#parts#GetWinWidth(0)
+                \ : winwidth(0)
+
+    if l:winwidth >= g:lightline_winwidth_config.normal
         return s:ShortenBranch(a:branch, 50)
     endif
 
