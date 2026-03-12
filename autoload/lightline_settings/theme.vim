@@ -21,7 +21,7 @@ function! s:FindTheme() abort
         return
     endif
 
-    let l:lightline_theme = g:lightline_theme . (&background == 'light' ? '_light' : '_dark')
+    let l:lightline_theme = g:lightline_theme .. (&background == 'light' ? '_light' : '_dark')
     if index(s:lightline_themes, l:lightline_theme) > -1
         let g:lightline_theme = l:lightline_theme
         return

@@ -3,22 +3,22 @@ let s:lightline_time_threshold = 0.50
 let s:lightline_last_finding_branch_time = reltime()
 
 function! s:ShortenBranch(branch, length) abort
-    let branch = a:branch
+    let l:branch = a:branch
 
-    if strlen(branch) > a:length && g:lightline_shorten_path
-        let branch = lightline_settings#ShortenPath(branch)
+    if strlen(l:branch) > a:length && g:lightline_shorten_path
+        let l:branch = lightline_settings#ShortenPath(l:branch)
     endif
 
-    if strlen(branch) > a:length
-        let branch = fnamemodify(branch, ':t')
+    if strlen(l:branch) > a:length
+        let l:branch = fnamemodify(l:branch, ':t')
     endif
 
-    if strlen(branch) > a:length
+    if strlen(l:branch) > a:length
         " Show only JIRA ticket prefix
-        let branch = substitute(branch, '^\([A-Z]\{3,}-\d\{1,}\)-.\+', '\1', '')
+        let l:branch = substitute(l:branch, '^\([A-Z]\{3,}-\d\{1,}\)-.\+', '\1', '')
     endif
 
-    return branch
+    return l:branch
 endfunction
 
 function! s:FormatBranch(branch) abort
@@ -26,13 +26,13 @@ function! s:FormatBranch(branch) abort
         return s:ShortenBranch(a:branch, 50)
     endif
 
-    let branch = s:ShortenBranch(a:branch, 30)
+    let l:branch = s:ShortenBranch(a:branch, 30)
 
-    if strlen(branch) > 30
-        let branch = strcharpart(branch, 0, 29) . g:lightline_symbols.ellipsis
+    if strlen(l:branch) > 30
+        let l:branch = strcharpart(l:branch, 0, 29) .. g:lightline_symbols.ellipsis
     endif
 
-    return branch
+    return l:branch
 endfunction
 
 function! s:GetGitBranch() abort
@@ -41,39 +41,39 @@ function! s:GetGitBranch() abort
         return b:lightline_git_branch
     endif
 
-    let branch = ''
+    let l:branch = ''
 
     if exists('*FugitiveHead')
-        let branch = FugitiveHead()
+        let l:branch = FugitiveHead()
 
-        if empty(branch) && exists('*FugitiveDetect') && !exists('b:git_dir')
+        if empty(l:branch) && exists('*FugitiveDetect') && !exists('b:git_dir')
             call FugitiveDetect(getcwd())
-            let branch = FugitiveHead()
+            let l:branch = FugitiveHead()
         endif
     elseif exists('*fugitive#head')
-        let branch = fugitive#head()
+        let l:branch = fugitive#head()
 
-        if empty(branch) && exists('*fugitive#detect') && !exists('b:git_dir')
+        if empty(l:branch) && exists('*fugitive#detect') && !exists('b:git_dir')
             call fugitive#detect(getcwd())
-            let branch = fugitive#head()
+            let l:branch = fugitive#head()
         endif
     elseif exists(':Gina') == 2
-        let branch = gina#component#repo#branch()
+        let l:branch = gina#component#repo#branch()
     endif
 
     " Caching
-    let b:lightline_git_branch = branch
+    let b:lightline_git_branch = l:branch
     let s:lightline_last_finding_branch_time = reltime()
 
-    return branch
+    return l:branch
 endfunction
 
 function! lightline_settings#git#Branch(...) abort
-    let branch = s:FormatBranch(s:GetGitBranch())
+    let l:branch = s:FormatBranch(s:GetGitBranch())
 
-    if strlen(branch)
-        return g:lightline_symbols.branch . ' ' . branch
+    if strlen(l:branch)
+        return g:lightline_symbols.branch .. ' ' .. l:branch
     endif
 
-    return branch
+    return l:branch
 endfunction

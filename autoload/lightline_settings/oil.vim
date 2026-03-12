@@ -1,12 +1,12 @@
 " https://github.com/stevearc/oil.nvim
 function! s:GetCurrentDir(bufname) abort
-    let dir = ''
+    let l:dir = ''
     if a:bufname =~# '^oil://'
-        let dir = substitute(a:bufname, '^oil://', '', '')
+        let l:dir = substitute(a:bufname, '^oil://', '', '')
     elseif exists('b:oil_ready') && b:oil_ready
-        let dir = luaeval('require("oil").get_current_dir()')
+        let l:dir = luaeval('require("oil").get_current_dir()')
     endif
-    return strlen(dir) ? fnamemodify(dir, ':p:~:.:h') : ''
+    return strlen(l:dir) ? fnamemodify(l:dir, ':p:~:.:h') : ''
 endfunction
 
 function! lightline_settings#oil#Mode(...) abort

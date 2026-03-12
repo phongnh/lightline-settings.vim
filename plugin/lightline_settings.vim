@@ -155,10 +155,10 @@ let g:lightline_buffer_count_by_basename = {}
 
 function! s:UpdateBufferCount() abort
     let g:lightline_buffer_count_by_basename = {}
-    let bufnrs = filter(range(1, bufnr('$')), 'buflisted(v:val) && bufexists(v:val) && len(bufname(v:val))')
-    for name in map(bufnrs, 'expand("#" . v:val . ":t")')
-        if name !=# ''
-            let g:lightline_buffer_count_by_basename[name] = get(g:lightline_buffer_count_by_basename, name) + 1
+    let l:bufnrs = filter(range(1, bufnr('$')), 'buflisted(v:val) && bufexists(v:val) && len(bufname(v:val))')
+    for l:name in map(l:bufnrs, 'expand("#" .. v:val .. ":t")')
+        if !empty(l:name)
+            let g:lightline_buffer_count_by_basename[l:name] = get(g:lightline_buffer_count_by_basename, l:name) + 1
         endif
     endfor
 endfunction

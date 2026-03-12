@@ -2,9 +2,9 @@
 let s:lightline_ctrlp = {}
 
 function! s:GetCurrentDir() abort
-    let dir = fnamemodify(getcwd(), ':~:.')
-    let dir = empty(dir) ? getcwd() : dir
-    return strlen(dir) > 30 ? lightline_settings#ShortenPath(dir) : dir
+    let l:dir = fnamemodify(getcwd(), ':~:.')
+    let l:dir = empty(l:dir) ? getcwd() : l:dir
+    return strlen(l:dir) > 30 ? lightline_settings#ShortenPath(l:dir) : l:dir
 endfunction
 
 function! lightline_settings#ctrlp#MainStatus(focus, byfname, regex, prev, item, next, marked) abort
@@ -30,33 +30,33 @@ function! lightline_settings#ctrlp#ProgressStatus(len) abort
 endfunction
 
 function! lightline_settings#ctrlp#Mode(...) abort
-    let result = {
+    let l:result = {
                 \ 'name': 'CtrlP',
                 \ 'buffer': s:lightline_ctrlp.dir,
                 \ }
 
     if s:lightline_ctrlp.main
-        let plugin_status = lightline#concatenate([
+        let l:plugin_status = lightline#concatenate([
                     \ s:lightline_ctrlp.prev,
                     \ printf('%s %s %s', '«', s:lightline_ctrlp.item, '»'),
                     \ s:lightline_ctrlp.next,
                     \ ], 0)
 
-        let buffer_status = lightline#concatenate([
+        let l:buffer_status = lightline#concatenate([
                     \ s:lightline_ctrlp.focus,
                     \ s:lightline_ctrlp.byfname,
                     \ ], 1)
 
-        call extend(result, {
+        call extend(l:result, {
                     \ 'link': 'nR'[s:lightline_ctrlp.regex],
-                    \ 'plugin': plugin_status,
-                    \ 'settings': buffer_status,
+                    \ 'plugin': l:plugin_status,
+                    \ 'settings': l:buffer_status,
                     \ })
     else
-        call extend(result, {
+        call extend(l:result, {
                     \ 'settings': s:lightline_ctrlp.len,
                     \ })
     endif
 
-    return result
+    return l:result
 endfunction

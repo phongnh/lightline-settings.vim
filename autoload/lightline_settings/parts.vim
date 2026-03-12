@@ -98,8 +98,8 @@ function! s:BufferType() abort
 endfunction
 
 function! s:FileName() abort
-    let fname = expand('%')
-    return strlen(fname) ? fnamemodify(fname, ':~:.') : '[No Name]'
+    let l:fname = expand('%')
+    return strlen(l:fname) ? fnamemodify(l:fname, ':~:.') : '[No Name]'
 endfunction
 
 function! s:IsClipboardEnabled() abort
@@ -140,8 +140,8 @@ endfunction
 
 function! lightline_settings#parts#Indentation(...) abort
     let l:shiftwidth = exists('*shiftwidth') ? shiftwidth() : &shiftwidth
-    let compact = get(a:, 1, s:IsCompact())
-    if compact
+    let l:compact = get(a:, 1, s:IsCompact())
+    if l:compact
         return printf(&expandtab ? 'SPC: %d' : 'TAB: %d', l:shiftwidth)
     else
         return printf(&expandtab ? 'Spaces: %d' : 'Tab Size: %d', l:shiftwidth)
@@ -149,7 +149,7 @@ function! lightline_settings#parts#Indentation(...) abort
 endfunction
 
 function! lightline_settings#parts#Readonly(...) abort
-    return &readonly ? g:lightline_symbols.readonly . ' ' : ''
+    return &readonly ? g:lightline_symbols.readonly .. ' ' : ''
 endfunction
 
 function! lightline_settings#parts#Modified(...) abort
@@ -170,71 +170,71 @@ endfunction
 
 if g:lightline_show_linenr > 1
     function! lightline_settings#parts#LineInfo(...) abort
-        return call('lightline_settings#lineinfo#Full', a:000) . ' '
+        return call('lightline_settings#lineinfo#Full', a:000) .. ' '
     endfunction
 elseif g:lightline_show_linenr > 0
     function! lightline_settings#parts#LineInfo(...) abort
-        return call('lightline_settings#lineinfo#Simple', a:000) . ' '
+        return call('lightline_settings#lineinfo#Simple', a:000) .. ' '
     endfunction
 endif
 
 function! lightline_settings#parts#FileEncodingAndFormat() abort
     let l:encoding = strlen(&fileencoding) ? &fileencoding : &encoding
-    let l:encoding = (l:encoding ==# 'utf-8') ? '' : l:encoding . ' '
-    let l:bomb     = &bomb ? g:lightline_symbols.bomb . ' ' : ''
-    let l:noeol    = &eol ? '' : g:lightline_symbols.noeol . ' '
+    let l:encoding = (l:encoding ==# 'utf-8') ? '' : l:encoding .. ' '
+    let l:bomb     = &bomb ? g:lightline_symbols.bomb .. ' ' : ''
+    let l:noeol    = &eol ? '' : g:lightline_symbols.noeol .. ' '
     let l:format   = get(g:lightline_symbols, &fileformat, '[empty]')
-    let l:format   = (l:format ==# '[unix]') ? '' : l:format . ' '
-    return l:encoding . l:bomb . l:noeol . l:format
+    let l:format   = (l:format ==# '[unix]') ? '' : l:format .. ' '
+    return l:encoding .. l:bomb .. l:noeol .. l:format
 endfunction
 
 function! lightline_settings#parts#FileType(...) abort
-    return s:BufferType() . lightline_settings#devicons#FileType(expand('%'))
+    return s:BufferType() .. lightline_settings#devicons#FileType(expand('%'))
 endfunction
 
 function! lightline_settings#parts#FileName(...) abort
-    return lightline_settings#parts#Readonly() . lightline_settings#FormatFileName(s:FileName()) . lightline_settings#parts#Modified() . s:ZoomStatus()
+    return lightline_settings#parts#Readonly() .. lightline_settings#FormatFileName(s:FileName()) .. lightline_settings#parts#Modified() .. s:ZoomStatus()
 endfunction
 
 function! lightline_settings#parts#InactiveFileName(...) abort
-    return lightline_settings#parts#Readonly() . s:FileName() . lightline_settings#parts#Modified()
+    return lightline_settings#parts#Readonly() .. s:FileName() .. lightline_settings#parts#Modified()
 endfunction
 
 function! lightline_settings#parts#Integration() abort
-    let fname = expand('%:t')
+    let l:fname = expand('%:t')
 
-    if has_key(g:lightline_filename_modes, fname)
-        let result = { 'name': g:lightline_filename_modes[fname] }
+    if has_key(g:lightline_filename_modes, l:fname)
+        let l:result = { 'name': g:lightline_filename_modes[l:fname] }
 
-        if has_key(s:lightline_filename_integrations, fname)
-            return extend(result, function(s:lightline_filename_integrations[fname])())
+        if has_key(s:lightline_filename_integrations, l:fname)
+            return extend(l:result, function(s:lightline_filename_integrations[l:fname])())
         endif
 
-        return result
+        return l:result
     endif
 
-    if fname =~# '^NrrwRgn_\zs.*\ze_\d\+$'
+    if l:fname =~# '^NrrwRgn_\zs.*\ze_\d\+$'
         return lightline_settings#nrrwrgn#Mode()
     endif
 
-    let ft = s:BufferType()
+    let l:ft = s:BufferType()
 
-    if ft ==# 'undotree' && exists('*t:undotree.GetStatusLine')
+    if l:ft ==# 'undotree' && exists('*t:undotree.GetStatusLine')
         return lightline_settings#undotree#Mode()
     endif
 
-    if ft ==# 'diff' && exists('*t:diffpanel.GetStatusLine')
+    if l:ft ==# 'diff' && exists('*t:diffpanel.GetStatusLine')
         return lightline_settings#undotree#DiffStatus()
     endif
 
-    if has_key(g:lightline_filetype_modes, ft)
-        let result = { 'name': g:lightline_filetype_modes[ft] }
+    if has_key(g:lightline_filetype_modes, l:ft)
+        let l:result = { 'name': g:lightline_filetype_modes[l:ft] }
 
-        if has_key(s:lightline_filetype_integrations, ft)
-            return extend(result, function(s:lightline_filetype_integrations[ft])())
+        if has_key(s:lightline_filetype_integrations, l:ft)
+            return extend(l:result, function(s:lightline_filetype_integrations[l:ft])())
         endif
 
-        return result
+        return l:result
     endif
 
     return {}

@@ -11,13 +11,13 @@ endfunction
 
 function! lightline_settings#tagbar#Mode(...) abort
     if empty(s:lightline_tagbar.flags)
-        let flags = ''
+        let l:flags = ''
     else
-        let flags = printf('[%s]', join(s:lightline_tagbar.flags, ''))
+        let l:flags = printf('[%s]', join(s:lightline_tagbar.flags, ''))
     endif
 
     return {
                 \ 'name': s:lightline_tagbar.sort,
-                \ 'plugin': lightline#concatenate([s:lightline_tagbar.fname, flags], 0),
+                \ 'plugin': lightline#concatenate([s:lightline_tagbar.fname, l:flags], 0),
                 \ }
 endfunction
