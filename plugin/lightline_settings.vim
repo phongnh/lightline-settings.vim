@@ -154,13 +154,13 @@ command! -nargs=1 -complete=custom,lightline_settings#theme#List LightlineTheme 
 let g:lightline_buffer_count_by_basename = {}
 
 " Throttle buffer count updates to avoid expensive operations on every event
-let s:last_buffer_update = 0
+let s:last_buffer_update = []
 let s:buffer_update_interval = 100  " milliseconds
 
 function! s:UpdateBufferCount() abort
     " Throttle updates - only run if enough time has passed
     let l:now = reltime()
-    if s:last_buffer_update && reltimefloat(reltime(s:last_buffer_update)) * 1000 < s:buffer_update_interval
+    if !empty(s:last_buffer_update) && reltimefloat(reltime(s:last_buffer_update)) * 1000 < s:buffer_update_interval
         return
     endif
     let s:last_buffer_update = l:now
