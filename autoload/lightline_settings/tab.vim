@@ -1,5 +1,5 @@
 function! s:TabNumber(n) abort
-    return printf('%d: ', a:n)
+    return a:n .. ': '
 endfunction
 
 function! s:TabBufferType(n) abort

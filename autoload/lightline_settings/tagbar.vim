@@ -13,7 +13,7 @@ function! lightline_settings#tagbar#Mode(...) abort
     if empty(s:lightline_tagbar.flags)
         let l:flags = ''
     else
-        let l:flags = printf('[%s]', join(s:lightline_tagbar.flags, ''))
+        let l:flags = '[' .. join(s:lightline_tagbar.flags, '') .. ']'
     endif
 
     return {

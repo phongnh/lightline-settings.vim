@@ -168,9 +168,9 @@ function! lightline_settings#parts#Indentation(...) abort
     let l:shiftwidth = exists('*shiftwidth') ? shiftwidth() : &shiftwidth
     let l:compact = get(a:, 1, s:IsCompact())
     if l:compact
-        return printf(&expandtab ? 'SPC: %d' : 'TAB: %d', l:shiftwidth)
+        return (&expandtab ? 'SPC' : 'TAB') .. ': ' .. l:shiftwidth
     else
-        return printf(&expandtab ? 'Spaces: %d' : 'Tab Size: %d', l:shiftwidth)
+        return (&expandtab ? 'Spaces' : 'Tab Size') .. ': ' .. l:shiftwidth
     endif
 endfunction
 
@@ -210,13 +210,21 @@ function! lightline_settings#parts#FileEncodingAndFormat() abort
         return ''
     endif
 
-    let l:encoding = !empty(&fileencoding) ? &fileencoding : &encoding
-    let l:encoding = (l:encoding ==# 'utf-8') ? '' : l:encoding .. ' '
-    let l:bomb     = &bomb ? g:lightline_symbols.bomb .. ' ' : ''
-    let l:noeol    = &eol ? '' : g:lightline_symbols.noeol .. ' '
-    let l:format   = get(g:lightline_symbols, &fileformat, '[empty]')
-    let l:format   = (l:format ==# '[unix]') ? '' : l:format .. ' '
-    return l:encoding .. l:bomb .. l:noeol .. l:format
+    let l:parts = []
+
+    let l:encoding = empty(&fileencoding) ? &encoding : &fileencoding
+    if !empty(l:encoding) && l:encoding !=# 'utf-8'
+        call add(l:parts, l:encoding)
+    endif
+
+    if &bomb | call add(l:parts, g:lightline_symbols.bomb) | endif
+    if !&eol | call add(l:parts, g:lightline_symbols.noeol) | endif
+
+    if !empty(&fileformat) && &fileformat !=# 'unix'
+        call add(l:parts, get(g:crystalline_symbols, &fileformat, '[empty]'))
+    endif
+
+    return join(l:parts, ' ')
 endfunction
 
 function! lightline_settings#parts#FileType(...) abort

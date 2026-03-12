@@ -23,7 +23,7 @@ function! lightline_settings#FormatFileName(fname, ...) abort
     let l:maxlen = get(a:, 1, 50)
 
     " Use cached window width if available
-    let l:winwidth = exists('*lightline_settings#parts#GetWinWidth') 
+    let l:winwidth = exists('*lightline_settings#parts#GetWinWidth')
                 \ ? lightline_settings#parts#GetWinWidth(0)
                 \ : winwidth(0)
 

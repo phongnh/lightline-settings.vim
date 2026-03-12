@@ -4,7 +4,7 @@ function! lightline_settings#nrrwrgn#Mode(...) abort
 
     if exists(':WR') == 2 || exists(':WidenRegion') == 2
         if exists('b:nrrw_instn')
-            let l:result['name'] = printf('%s#%d', 'NrrwRgn', b:nrrw_instn)
+            let l:result['name'] = 'NrrwRgn#' .. b:nrrw_instn
         else
             let l:result['name'] = substitute(bufname('%'), '^NrrwRgn_\zs.*\ze_\d\+$', submatch(0), '')
             let l:result['name'] = substitute(l:result['name'], '__', '#', '')

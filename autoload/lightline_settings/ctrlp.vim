@@ -39,7 +39,7 @@ function! lightline_settings#ctrlp#Mode(...) abort
     if s:lightline_ctrlp.main
         let l:plugin_status = lightline#concatenate([
                     \ s:lightline_ctrlp.prev,
-                    \ printf('%s %s %s', '«', s:lightline_ctrlp.item, '»'),
+                    \ '« ' .. s:lightline_ctrlp.item .. ' »',
                     \ s:lightline_ctrlp.next,
                     \ ], 0)
 

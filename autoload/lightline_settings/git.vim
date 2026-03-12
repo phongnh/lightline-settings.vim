@@ -22,7 +22,7 @@ function! s:ShortenBranch(branch, length) abort
 endfunction
 
 function! s:FormatBranch(branch) abort
-    let l:winwidth = exists('*lightline_settings#parts#GetWinWidth') 
+    let l:winwidth = exists('*lightline_settings#parts#GetWinWidth')
                 \ ? lightline_settings#parts#GetWinWidth(0)
                 \ : winwidth(0)
 

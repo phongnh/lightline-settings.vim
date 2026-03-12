@@ -10,7 +10,7 @@ function! lightline_settings#lineinfo#Full(...) abort
     elseif line('w$') == line('$')
         let l:percent = 'Bot'
     else
-        let l:percent = printf('%d%%', line('.') * 100 / line('$'))
+        let l:percent = (line('.') * 100 / line('$')) .. '%'
     endif
 
     return printf('%4d:%-3d %3s', line('.'), col('.'), l:percent)
