@@ -2,9 +2,10 @@
 let s:lightline_ctrlp = {}
 
 function! s:GetCurrentDir() abort
-    let l:dir = fnamemodify(getcwd(), ':~:.')
-    let l:dir = empty(l:dir) ? getcwd() : l:dir
-    return strlen(l:dir) > 30 ? lightline_settings#ShortenPath(l:dir) : l:dir
+    let l:cwd = getcwd()
+    let l:dir = fnamemodify(l:cwd, ':~:.')
+    let l:dir = empty(l:dir) ? l:cwd : l:dir
+    return len(l:dir) > 30 ? lightline_settings#ShortenPath(l:dir) : l:dir
 endfunction
 
 function! lightline_settings#ctrlp#MainStatus(focus, byfname, regex, prev, item, next, marked) abort

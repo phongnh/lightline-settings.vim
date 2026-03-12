@@ -4,7 +4,7 @@ endfunction
 
 function! s:TabBufferType(n) abort
     let l:ft = gettabwinvar(a:n, tabpagewinnr(a:n), '&filetype')
-    return strlen(l:ft) ? l:ft : gettabwinvar(a:n, tabpagewinnr(a:n), '&buftype')
+    return !empty(l:ft) ? l:ft : gettabwinvar(a:n, tabpagewinnr(a:n), '&buftype')
 endfunction
 
 function! s:TabBufferName(n) abort
@@ -14,7 +14,7 @@ function! s:TabBufferName(n) abort
     endif
     let l:bufnr = tabpagebuflist(a:n)[tabpagewinnr(a:n) - 1]
     let l:bufname = expand('#' .. l:bufnr .. ':t')
-    if get(g:lightline_buffer_count_by_basename, l:bufname) > 1
+    if get(g:lightline_buffer_count_by_basename, l:bufname, 0) > 1
         let l:fname = substitute(expand('#' .. l:bufnr .. ':p'), '.*/\([^/]\+/\)', '\1', '')
     else
         let l:fname = l:bufname

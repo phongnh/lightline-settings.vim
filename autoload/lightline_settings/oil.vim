@@ -6,7 +6,7 @@ function! s:GetCurrentDir(bufname) abort
     elseif exists('b:oil_ready') && b:oil_ready
         let l:dir = luaeval('require("oil").get_current_dir()')
     endif
-    return strlen(l:dir) ? fnamemodify(l:dir, ':p:~:.:h') : ''
+    return !empty(l:dir) ? fnamemodify(l:dir, ':p:~:.:h') : ''
 endfunction
 
 function! lightline_settings#oil#Mode(...) abort

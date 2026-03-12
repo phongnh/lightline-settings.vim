@@ -7,7 +7,7 @@ function! lightline_settings#fern#Mode(...) abort
 
     if len(l:data)
         let l:fern_mode = get(l:data, 1, '')
-        if match(l:fern_mode, 'drawer') > -1
+        if stridx(l:fern_mode, 'drawer') > -1
             let l:result['name'] = 'Drawer'
         endif
 

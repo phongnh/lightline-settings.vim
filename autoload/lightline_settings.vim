@@ -31,11 +31,11 @@ function! lightline_settings#FormatFileName(fname, ...) abort
         return fnamemodify(l:path, ':t')
     endif
 
-    if strlen(l:path) > l:maxlen && g:lightline_shorten_path
+    if len(l:path) > l:maxlen && g:lightline_shorten_path
         let l:path = lightline_settings#ShortenPath(l:path)
     endif
 
-    if strlen(l:path) > l:maxlen
+    if len(l:path) > l:maxlen
         let l:path = fnamemodify(l:path, ':t')
     endif
 
@@ -73,7 +73,7 @@ function! lightline_settings#Init() abort
         if exists('g:ZoomWin_funcref')
             if type(g:ZoomWin_funcref) == v:t_func
                 let g:lightline_zoomwin_funcref = [g:ZoomWin_funcref]
-            elseif type(g:ZoomWin_funcref) == v:t_func
+            elseif type(g:ZoomWin_funcref) == v:t_list
                 let g:lightline_zoomwin_funcref = g:ZoomWin_funcref
             endif
             let g:lightline_zoomwin_funcref = uniq(copy(g:lightline_zoomwin_funcref))

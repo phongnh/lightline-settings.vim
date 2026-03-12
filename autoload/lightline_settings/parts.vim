@@ -120,16 +120,16 @@ function! lightline_settings#parts#ClearWidthCache() abort
 endfunction
 
 function! s:BufferType() abort
-    return strlen(&filetype) ? &filetype : &buftype
+    return !empty(&filetype) ? &filetype : &buftype
 endfunction
 
 function! s:FileName() abort
     let l:fname = expand('%')
-    return strlen(l:fname) ? fnamemodify(l:fname, ':~:.') : '[No Name]'
+    return !empty(l:fname) ? fnamemodify(l:fname, ':~:.') : '[No Name]'
 endfunction
 
 function! s:IsClipboardEnabled() abort
-    return match(&clipboard, 'unnamed') > -1
+    return stridx(&clipboard, 'unnamed') > -1
 endfunction
 
 function! s:IsCompact(...) abort
@@ -161,7 +161,7 @@ function! lightline_settings#parts#Paste() abort
 endfunction
 
 function! lightline_settings#parts#Spell() abort
-    return &spell ? toupper(substitute(&spelllang, ',', '/', 'g')) : ''
+    return &spell ? toupper(tr(&spelllang, ',', '/')) : ''
 endfunction
 
 function! lightline_settings#parts#Indentation(...) abort
@@ -210,7 +210,7 @@ function! lightline_settings#parts#FileEncodingAndFormat() abort
         return ''
     endif
 
-    let l:encoding = strlen(&fileencoding) ? &fileencoding : &encoding
+    let l:encoding = !empty(&fileencoding) ? &fileencoding : &encoding
     let l:encoding = (l:encoding ==# 'utf-8') ? '' : l:encoding .. ' '
     let l:bomb     = &bomb ? g:lightline_symbols.bomb .. ' ' : ''
     let l:noeol    = &eol ? '' : g:lightline_symbols.noeol .. ' '

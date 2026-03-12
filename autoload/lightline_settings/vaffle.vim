@@ -2,5 +2,5 @@
 function! lightline_settings#vaffle#Mode(...) abort
     let l:bufname = get(a:, 1, expand('%'))
     let l:dir = get(matchlist(l:bufname, '^vaffle://\(\d\+\)/\(.\+\)$'), 2, '')
-    return { 'plugin': strlen(l:dir) ? fnamemodify(l:dir, ':p:~:.:h') : '' }
+    return { 'plugin': !empty(l:dir) ? fnamemodify(l:dir, ':p:~:.:h') : '' }
 endfunction
