@@ -231,69 +231,44 @@ function! lightline_settings#parts#InactiveFileName(...) abort
     return lightline_settings#parts#Readonly() .. s:FileName() .. lightline_settings#parts#Modified()
 endfunction
 
-" Cache for integration lookups - invalidated on BufEnter
-let s:integration_cache = {}
-let s:integration_cache_bufnr = -1
-
 function! lightline_settings#parts#Integration() abort
-    " Return cached result if buffer hasn't changed
-    let l:bufnr = bufnr('%')
-    if s:integration_cache_bufnr == l:bufnr && !empty(s:integration_cache)
-        return s:integration_cache
-    endif
-
-    " Update cache buffer number
-    let s:integration_cache_bufnr = l:bufnr
-
     let l:fname = expand('%:t')
 
     if has_key(g:lightline_filename_modes, l:fname)
         let l:result = { 'name': g:lightline_filename_modes[l:fname] }
 
         if has_key(s:lightline_filename_integrations, l:fname)
-            let l:result = extend(l:result, function(s:lightline_filename_integrations[l:fname])())
+            return extend(l:result, function(s:lightline_filename_integrations[l:fname])())
         endif
 
-        let s:integration_cache = l:result
         return l:result
     endif
 
     if l:fname =~# '^NrrwRgn_\zs.*\ze_\d\+$'
-        let s:integration_cache = lightline_settings#nrrwrgn#Mode()
-        return s:integration_cache
+        return lightline_settings#nrrwrgn#Mode()
     endif
 
     let l:ft = s:BufferType()
 
     if l:ft ==# 'undotree' && exists('*t:undotree.GetStatusLine')
-        let s:integration_cache = lightline_settings#undotree#Mode()
-        return s:integration_cache
+        return lightline_settings#undotree#Mode()
     endif
 
     if l:ft ==# 'diff' && exists('*t:diffpanel.GetStatusLine')
-        let s:integration_cache = lightline_settings#undotree#DiffStatus()
-        return s:integration_cache
+        return lightline_settings#undotree#DiffStatus()
     endif
 
     if has_key(g:lightline_filetype_modes, l:ft)
         let l:result = { 'name': g:lightline_filetype_modes[l:ft] }
 
         if has_key(s:lightline_filetype_integrations, l:ft)
-            let l:result = extend(l:result, function(s:lightline_filetype_integrations[l:ft])())
+            return extend(l:result, function(s:lightline_filetype_integrations[l:ft])())
         endif
 
-        let s:integration_cache = l:result
         return l:result
     endif
 
-    let s:integration_cache = {}
     return {}
-endfunction
-
-" Clear cache on buffer change
-function! lightline_settings#parts#ClearIntegrationCache() abort
-    let s:integration_cache = {}
-    let s:integration_cache_bufnr = -1
 endfunction
 
 function! lightline_settings#parts#GitBranch(...) abort

@@ -1,23 +1,5 @@
-" Store integration result once per statusline update
-let s:current_integration = {}
-let s:integration_loaded = 0
-
-function! s:GetIntegration() abort
-    if !s:integration_loaded
-        let s:current_integration = lightline_settings#parts#Integration()
-        let s:integration_loaded = 1
-    endif
-    return s:current_integration
-endfunction
-
-function! lightline_settings#sections#ClearCache() abort
-    let s:current_integration = {}
-    let s:integration_loaded = 0
-    call lightline_settings#parts#ClearWidthCache()
-endfunction
-
 function! lightline_settings#sections#Mode(...) abort
-    let l:mode = s:GetIntegration()
+    let l:mode = lightline_settings#parts#Integration()
     if len(l:mode)
         return l:mode['name']
     endif
@@ -31,7 +13,7 @@ function! lightline_settings#sections#Mode(...) abort
 endfunction
 
 function! lightline_settings#sections#Plugin(...) abort
-    let l:mode = s:GetIntegration()
+    let l:mode = lightline_settings#parts#Integration()
     if len(l:mode)
         if has_key(l:mode, 'link')
             call lightline#link(l:mode['link'])
@@ -46,7 +28,7 @@ function! s:RenderPluginSection(...) abort
 endfunction
 
 function! lightline_settings#sections#GitBranch(...) abort
-    let l:mode = s:GetIntegration()
+    let l:mode = lightline_settings#parts#Integration()
     if len(l:mode)
         return ''
     endif
@@ -59,7 +41,7 @@ function! lightline_settings#sections#GitBranch(...) abort
 endfunction
 
 function! lightline_settings#sections#FileName(...) abort
-    let l:mode = s:GetIntegration()
+    let l:mode = lightline_settings#parts#Integration()
     if len(l:mode)
         return get(l:mode, 'filename', '')
     endif
@@ -71,7 +53,7 @@ function! s:RenderFileNameSection(...) abort
 endfunction
 
 function!  lightline_settings#sections#Buffer(...) abort
-    let l:mode = s:GetIntegration()
+    let l:mode = lightline_settings#parts#Integration()
     if len(l:mode)
         return get(l:mode, 'buffer', '')
     endif
@@ -83,7 +65,7 @@ function! s:RenderBufferSection(...) abort
 endfunction
 
 function!  lightline_settings#sections#Settings(...) abort
-    let l:mode = s:GetIntegration()
+    let l:mode = lightline_settings#parts#Integration()
     if len(l:mode)
         return get(l:mode, 'settings', '')
     endif
@@ -98,7 +80,7 @@ function! s:RenderSettingsSection(...) abort
 endfunction
 
 function! lightline_settings#sections#Info(...) abort
-    let l:mode = s:GetIntegration()
+    let l:mode = lightline_settings#parts#Integration()
     if len(l:mode)
         return get(l:mode, 'info', '')
     endif
@@ -113,7 +95,7 @@ function! s:RenderInfoSection(...) abort
 endfunction
 
 function!  lightline_settings#sections#InactiveMode(...) abort
-    let l:mode = s:GetIntegration()
+    let l:mode = lightline_settings#parts#Integration()
     if len(l:mode)
         return lightline#concatenate([
                     \ l:mode['name'],

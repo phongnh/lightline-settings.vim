@@ -180,10 +180,6 @@ augroup LightlineSettings
     autocmd OptionSet background call lightline_settings#theme#Apply()
     " Only update on BufAdd/BufDelete for better performance
     autocmd BufAdd,BufDelete,BufFilePost * call s:UpdateBufferCount()
-    " Clear integration cache on buffer changes
-    autocmd BufEnter,FileType * call lightline_settings#parts#ClearIntegrationCache()
-    " Clear all caches before statusline update (CursorMoved triggers lightline update)
-    autocmd CursorMoved,CursorMovedI,WinEnter * call lightline_settings#sections#ClearCache()
 augroup END
 
 let &cpo = s:save_cpo
