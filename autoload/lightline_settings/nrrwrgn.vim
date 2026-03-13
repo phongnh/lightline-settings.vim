@@ -13,7 +13,7 @@ function! lightline_settings#nrrwrgn#Mode(...) abort
         let l:dict = exists('*nrrwrgn#NrrwRgnStatus()') ? nrrwrgn#NrrwRgnStatus() : {}
 
         if len(l:dict)
-            let l:vmode = { '': '', 'v': ' [C]', 'V': '', '': ' [B]' }
+            let l:vmode = { 'v': ' [C]', 'V': '', '': ' [B]' }
             let l:result['name'] = (l:dict.multi ? 'Multi' : '') .. l:result['name'] .. l:vmode[l:dict.visual ? l:dict.visual : 'V']
             let l:result['plugin'] = fnamemodify(l:dict.fullname, ':~:.') .. (l:dict.multi ? '' : printf(' [%d-%d]', l:dict.start[1], l:dict.end[1]))
         elseif get(b:, 'orig_buf', 0)
