@@ -1,6 +1,7 @@
 " https://github.com/junegunn/gv.vim
 function! lightline_settings#gv#Mode(...) abort
     return {
+                \ 'name': 'GV',
                 \ 'plugin': lightline#concatenate(
                 \   [
                 \       'o: open split',

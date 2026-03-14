@@ -10,5 +10,5 @@ function! s:GetCurrentDir(bufname) abort
 endfunction
 
 function! lightline_settings#oil#Mode(...) abort
-    return { 'plugin': s:GetCurrentDir(get(a:, 1, expand('%'))) }
+    return { 'name': 'Oil', 'plugin': s:GetCurrentDir(get(a:, 1, expand('%'))) }
 endfunction

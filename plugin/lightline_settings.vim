@@ -180,6 +180,7 @@ augroup LightlineSettings
     autocmd OptionSet background call lightline_settings#theme#Apply()
     " Only update on BufAdd/BufDelete for better performance
     autocmd BufAdd,BufDelete,BufFilePost * call s:UpdateBufferCount()
+    autocmd CmdwinEnter * set filetype=cmdline syntax=vim
 augroup END
 
 let &cpo = s:save_cpo
