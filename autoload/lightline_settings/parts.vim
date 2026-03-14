@@ -12,13 +12,14 @@ let g:lightline_filename_modes = {
             \ '[BufExplorer]':        'BufExplorer',
             \ '[Command Line]':       'Command Line',
             \ '[Plugins]':            'Plugins',
-            \ '__committia_status__': 'Committia Status',
-            \ '__committia_diff__':   'Committia Diff',
+            \ '__committia_status__': 'Git Status',
+            \ '__committia_diff__':   'Git Diff',
             \ '__doc__':              'Document',
             \ '__LSP_SETTINGS__':     'LSP Settings',
             \ }
 
 let g:lightline_filetype_modes = {
+            \ 'bufexplorer':       'BufExplorer',
             \ 'simplebuffer':      'SimpleBuffer',
             \ 'netrw':             'Netrw',
             \ 'molder':            'Molder',
@@ -36,6 +37,7 @@ let g:lightline_filetype_modes = {
             \ 'MundoDiff':         'Mundo Preview',
             \ 'undotree':          'Undo',
             \ 'diff':              'Diff',
+            \ 'gundo':             'Gundo',
             \ 'startify':          'Startify',
             \ 'alpha':             'Alpha',
             \ 'dashboard':         'Dashboard',
@@ -55,8 +57,8 @@ let g:lightline_filetype_modes = {
             \ 'gitmessengerpopup': 'Git Messenger',
             \ 'GV':                'GV',
             \ 'agit':              'Agit',
-            \ 'agit_diff':         'Agit Diff',
-            \ 'agit_stat':         'Agit Stat',
+            \ 'agit_diff':         'Git Diff',
+            \ 'agit_stat':         'Git Stat',
             \ 'GrepperSide':       'GrepperSide',
             \ 'SpaceVimFlyGrep':   'FlyGrep',
             \ 'startuptime':       'StartupTime',
@@ -71,6 +73,7 @@ let s:lightline_filename_integrations = {
             \ }
 
 let s:lightline_filetype_integrations = {
+            \ 'cmdline':         'lightline_settings#cmdline#Mode',
             \ 'ctrlp':           'lightline_settings#ctrlp#Mode',
             \ 'netrw':           'lightline_settings#netrw#Mode',
             \ 'dirvish':         'lightline_settings#dirvish#Mode',
@@ -80,15 +83,19 @@ let s:lightline_filetype_integrations = {
             \ 'carbon.explorer': 'lightline_settings#carbon#Mode',
             \ 'neo-tree':        'lightline_settings#neotree#Mode',
             \ 'oil':             'lightline_settings#oil#Mode',
+            \ 'undotree':        'lightline_settings#undotree#Mode',
+            \ 'diff':            'lightline_settings#diff#Mode',
             \ 'tagbar':          'lightline_settings#tagbar#Mode',
             \ 'vista_kind':      'lightline_settings#vista#Mode',
             \ 'vista':           'lightline_settings#vista#Mode',
+            \ 'NrrwRgn':         'lightline_settings#nrrwrgn#Mode',
             \ 'gitcommit':       'lightline_settings#gitcommit#Mode',
             \ 'fugitive':        'lightline_settings#fugitive#Mode',
             \ 'GV':              'lightline_settings#gv#Mode',
             \ 'terminal':        'lightline_settings#terminal#Mode',
             \ 'help':            'lightline_settings#help#Mode',
             \ 'qf':              'lightline_settings#quickfix#Mode',
+            \ 'ctrlsf':          'lightline_settings#ctrlsf#Mode',
             \ 'GrepperSide':     'lightline_settings#grepper#Mode',
             \ 'SpaceVimFlyGrep': 'lightline_settings#flygrep#Mode',
             \ }
@@ -240,40 +247,27 @@ function! lightline_settings#parts#InactiveFileName(...) abort
 endfunction
 
 function! lightline_settings#parts#Integration() abort
-    let l:fname = expand('%:t')
+    let l:ft = s:BufferType()
 
-    if has_key(g:lightline_filename_modes, l:fname)
-        let l:result = { 'name': g:lightline_filename_modes[l:fname] }
-
-        if has_key(s:lightline_filename_integrations, l:fname)
-            return extend(l:result, function(s:lightline_filename_integrations[l:fname])())
-        endif
-
-        return l:result
+    if has_key(s:lightline_filetype_integrations, l:ft)
+        return function(s:lightline_filetype_integrations[l:ft])()
     endif
 
-    if l:fname =~# '^NrrwRgn_\zs.*\ze_\d\+$'
+    let l:fname = expand('%:t')
+
+    if has_key(s:lightline_filename_integrations, l:fname)
+        return function(s:lightline_filename_integrations[l:fname])()
+    elseif l:fname =~# '^NrrwRgn_\zs.*\ze_\d\+$'
+        " Fallback to filename check if NrrwRgn buffer's filetype is not set
         return lightline_settings#nrrwrgn#Mode()
     endif
 
-    let l:ft = s:BufferType()
-
-    if l:ft ==# 'undotree' && exists('*t:undotree.GetStatusLine')
-        return lightline_settings#undotree#Mode()
-    endif
-
-    if l:ft ==# 'diff' && exists('*t:diffpanel.GetStatusLine')
-        return lightline_settings#undotree#DiffStatus()
-    endif
-
     if has_key(g:lightline_filetype_modes, l:ft)
-        let l:result = { 'name': g:lightline_filetype_modes[l:ft] }
+        return { 'name': g:lightline_filetype_modes[l:ft] }
+    endif
 
-        if has_key(s:lightline_filetype_integrations, l:ft)
-            return extend(l:result, function(s:lightline_filetype_integrations[l:ft])())
-        endif
-
-        return l:result
+    if has_key(g:lightline_filename_modes, l:fname)
+        return { 'name': g:lightline_filename_modes[l:fname] }
     endif
 
     return {}
