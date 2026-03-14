@@ -2,15 +2,12 @@
 function! lightline_settings#gv#Mode(...) abort
     return {
                 \ 'name': 'GV',
-                \ 'plugin': lightline#concatenate(
-                \   [
-                \       'o: open split',
-                \       'O: open tab',
-                \       'gb: GBrowse',
-                \       'q: quit',
-                \   ],
-                \   0
-                \ ),
+                \ 'plugin': lightline#concatenate([
+                \   'o: open split',
+                \   'O: open tab',
+                \   'gb: GBrowse',
+                \   'q: quit',
+                \ ], 0),
                 \ 'info': lightline_settings#lineinfo#Simple(),
                 \ }
 endfunction

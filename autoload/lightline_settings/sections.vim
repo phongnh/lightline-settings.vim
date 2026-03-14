@@ -5,10 +5,10 @@ function! lightline_settings#sections#Mode(...) abort
     endif
 
     return lightline#concatenate([
-                \ lightline_settings#parts#Mode(),
-                \ lightline_settings#parts#Clipboard(),
-                \ lightline_settings#parts#Paste(),
-                \ lightline_settings#parts#Spell(),
+                \   lightline_settings#parts#Mode(),
+                \   lightline_settings#parts#Clipboard(),
+                \   lightline_settings#parts#Paste(),
+                \   lightline_settings#parts#Spell(),
                 \ ], 0)
 endfunction
 
@@ -74,8 +74,8 @@ endfunction
 
 function! s:RenderSettingsSection(...) abort
     return lightline#concatenate([
-                \ lightline_settings#parts#Indentation(),
-                \ lightline_settings#parts#FileEncodingAndFormat(),
+                \   lightline_settings#parts#Indentation(),
+                \   lightline_settings#parts#FileEncodingAndFormat(),
                 \ ], 1)
 endfunction
 
@@ -98,9 +98,9 @@ function!  lightline_settings#sections#InactiveMode(...) abort
     let l:mode = lightline_settings#parts#Integration()
     if len(l:mode)
         return lightline#concatenate([
-                    \ l:mode['name'],
-                    \ get(l:mode, 'plugin', ''),
-                    \ get(l:mode, 'filename', ''),
+                    \   l:mode['name'],
+                    \   get(l:mode, 'plugin', ''),
+                    \   get(l:mode, 'filename', ''),
                     \ ], 0)
     endif
     return call('s:RenderInactiveModeSection', a:000)

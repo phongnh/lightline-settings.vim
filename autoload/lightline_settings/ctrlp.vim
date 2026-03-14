@@ -38,14 +38,14 @@ function! lightline_settings#ctrlp#Mode(...) abort
 
     if s:lightline_ctrlp.main
         let l:plugin_status = lightline#concatenate([
-                    \ s:lightline_ctrlp.prev,
-                    \ '« ' .. s:lightline_ctrlp.item .. ' »',
-                    \ s:lightline_ctrlp.next,
+                    \   s:lightline_ctrlp.prev,
+                    \   '« ' .. s:lightline_ctrlp.item .. ' »',
+                    \   s:lightline_ctrlp.next,
                     \ ], 0)
 
         let l:buffer_status = lightline#concatenate([
-                    \ s:lightline_ctrlp.focus,
-                    \ s:lightline_ctrlp.byfname,
+                    \   s:lightline_ctrlp.focus,
+                    \   s:lightline_ctrlp.byfname,
                     \ ], 1)
 
         call extend(l:result, {
