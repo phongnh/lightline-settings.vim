@@ -65,13 +65,6 @@ function! s:GetGitBranch() abort
             call FugitiveDetect(getcwd())
             let l:branch = FugitiveHead()
         endif
-    elseif exists('*fugitive#head')
-        let l:branch = fugitive#head()
-
-        if empty(l:branch) && exists('*fugitive#detect') && !exists('b:git_dir')
-            call fugitive#detect(getcwd())
-            let l:branch = fugitive#head()
-        endif
     endif
 
     " Caching
