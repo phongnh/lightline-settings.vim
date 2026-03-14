@@ -1,6 +1,7 @@
-" Caching
-let s:lightline_time_threshold = 0.50
-let s:lightline_last_finding_branch_time = reltime()
+" Caching - increased threshold for better performance
+let s:lightline_time_threshold = 2.0
+let s:lightline_cache = {}
+let s:lightline_fugitive_detected = {}
 
 function! s:ShortenBranch(branch, length) abort
     let l:len = strlen(a:branch)
@@ -51,34 +52,43 @@ function! s:FormatBranch(branch) abort
 endfunction
 
 function! s:GetGitBranch() abort
-    " Get branch from caching if it is available
-    if has_key(b:, 'lightline_git_branch') && reltimefloat(reltime(s:lightline_last_finding_branch_time)) < s:lightline_time_threshold
-        return b:lightline_git_branch
+    let l:bufnr = bufnr('%')
+    let l:cwd = getcwd()
+    let l:cache_key = l:bufnr . ':' . l:cwd
+    
+    " Check cache with timestamp
+    if has_key(s:lightline_cache, l:cache_key)
+        let l:cache_entry = s:lightline_cache[l:cache_key]
+        if reltimefloat(reltime(l:cache_entry.time)) < s:lightline_time_threshold
+            return l:cache_entry.branch
+        endif
     endif
 
     let l:branch = ''
 
     if exists('*FugitiveHead')
+        " Only detect once per buffer+cwd combination
+        if !get(s:lightline_fugitive_detected, l:cache_key, 0) && !exists('b:git_dir')
+            call FugitiveDetect(l:cwd)
+            let s:lightline_fugitive_detected[l:cache_key] = 1
+        endif
         let l:branch = FugitiveHead()
-
-        if empty(l:branch) && exists('*FugitiveDetect') && !exists('b:git_dir')
-            call FugitiveDetect(getcwd())
-            let l:branch = FugitiveHead()
-        endif
     elseif exists('*fugitive#head')
-        let l:branch = fugitive#head()
-
-        if empty(l:branch) && exists('*fugitive#detect') && !exists('b:git_dir')
-            call fugitive#detect(getcwd())
-            let l:branch = fugitive#head()
+        " Only detect once per buffer+cwd combination
+        if !get(s:lightline_fugitive_detected, l:cache_key, 0) && !exists('b:git_dir')
+            call fugitive#detect(l:cwd)
+            let s:lightline_fugitive_detected[l:cache_key] = 1
         endif
+        let l:branch = fugitive#head()
     elseif exists(':Gina') == 2
         let l:branch = gina#component#repo#branch()
     endif
 
-    " Caching
-    let b:lightline_git_branch = l:branch
-    let s:lightline_last_finding_branch_time = reltime()
+    " Update cache
+    let s:lightline_cache[l:cache_key] = {
+                \ 'branch': l:branch,
+                \ 'time': reltime()
+                \ }
 
     return l:branch
 endfunction
@@ -92,3 +102,14 @@ function! lightline_settings#git#Branch(...) abort
 
     return l:branch
 endfunction
+
+" Clear cache on buffer events to ensure fresh data on branch changes
+function! lightline_settings#git#ClearCache() abort
+    let s:lightline_cache = {}
+    let s:lightline_fugitive_detected = {}
+endfunction
+
+" Optionally set up autocmds to clear cache on git operations
+" Users can add to their vimrc:
+" autocmd User FugitiveChanged call lightline_settings#git#ClearCache()
+" autocmd BufWritePost * call lightline_settings#git#ClearCache()
