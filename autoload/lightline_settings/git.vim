@@ -3,21 +3,32 @@ let s:lightline_time_threshold = 0.50
 let s:lightline_last_finding_branch_time = reltime()
 
 function! s:ShortenBranch(branch, length) abort
+    let l:len = strlen(a:branch)
+    
+    " Early exit if already short enough
+    if l:len <= a:length
+        return a:branch
+    endif
+
     let l:branch = a:branch
-
-    if strlen(l:branch) > a:length && g:lightline_shorten_path
+    if g:lightline_shorten_path
         let l:branch = lightline_settings#ShortenPath(l:branch)
+        let l:len = strlen(l:branch)
+        
+        if l:len <= a:length
+            return l:branch
+        endif
     endif
 
-    if strlen(l:branch) > a:length
-        let l:branch = fnamemodify(l:branch, ':t')
+    let l:branch = fnamemodify(l:branch, ':t')
+    let l:len = strlen(l:branch)
+
+    if l:len <= a:length
+        return l:branch
     endif
 
-    if strlen(l:branch) > a:length
-        " Show only JIRA ticket prefix
-        let l:branch = substitute(l:branch, '^\([A-Z]\{3,}-\d\{1,}\)-.\+', '\1', '')
-    endif
-
+    " Show only JIRA ticket prefix
+    let l:branch = substitute(l:branch, '^\([A-Z]\{3,}-\d\{1,}\)-.\+', '\1', '')
     return l:branch
 endfunction
 
