@@ -10,12 +10,16 @@ function! lightline_settings#nrrwrgn#Mode(...) abort
             let l:result['name'] = substitute(l:result['name'], '__', '#', '')
         endif
 
-        let l:dict = exists('*nrrwrgn#NrrwRgnStatus()') ? nrrwrgn#NrrwRgnStatus() : {}
+        let l:status = exists('*nrrwrgn#NrrwRgnStatus()') ? nrrwrgn#NrrwRgnStatus() : {}
 
-        if len(l:dict)
-            let l:vmode = { 'v': ' [C]', 'V': '', '': ' [B]' }
-            let l:result['name'] = (l:dict.multi ? 'Multi' : '') .. l:result['name'] .. l:vmode[l:dict.visual ? l:dict.visual : 'V']
-            let l:result['plugin'] = fnamemodify(l:dict.fullname, ':~:.') .. (l:dict.multi ? '' : printf(' [%d-%d]', l:dict.start[1], l:dict.end[1]))
+        if len(l:status)
+            let l:result['name'] ..= { 'v': ' [C]', 'V': '', '': ' [B]' }[l:status.visual ? l:status.visual : 'V']
+            let l:result['plugin'] = fnamemodify(l:status.fullname, ':~:.')
+            if l:status.multi
+                let l:result['name'] = 'Multi' .. l:result['name']
+            else
+                let l:result['plugin'] ..= ' [' .. l:status.start[1] .. '-' .. l:status.end[1] .. ']'
+            endif
         elseif get(b:, 'orig_buf', 0)
             let l:result['plugin'] = bufname(b:orig_buf)
         endif
