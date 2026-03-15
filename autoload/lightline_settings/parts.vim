@@ -196,7 +196,7 @@ function! lightline_settings#parts#Modified(...) abort
 endfunction
 
 function! s:ZoomStatus(...) abort
-    return get(g:, 'lightline_zoomed', 0) ? '[Z]' : ''
+    return get(b:, 'lightline_zoomstate', 0) ? '[Z]' : ''
 endfunction
 
 function! lightline_settings#parts#LineInfo(...) abort
