@@ -82,3 +82,15 @@ function! lightline_settings#git#Branch(...) abort
 
     return l:branch
 endfunction
+
+function! lightline_settings#git#Mode(...) abort
+    let l:result = { 'name': 'Git', 'info': lightline_settings#lineinfo#Simple() }
+    if exists('b:fugitive_type') && b:fugitive_type ==# 'commit'
+        if lightline_settings#parts#GetWinWidth(0) >= g:lightline_winwidth_config.compact
+            let l:result['plugin'] = expand('%:t')
+        else
+            let l:result['plugin'] = expand('%:t')[0:8]
+        endif
+    endif
+    return l:result
+endfunction

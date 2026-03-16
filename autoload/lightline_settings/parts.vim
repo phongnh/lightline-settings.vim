@@ -90,6 +90,7 @@ let s:lightline_filetype_integrations = {
             \ 'vista_kind':      'lightline_settings#vista#Mode',
             \ 'vista':           'lightline_settings#vista#Mode',
             \ 'NrrwRgn':         'lightline_settings#nrrwrgn#Mode',
+            \ 'git':             'lightline_settings#git#Mode',
             \ 'gitcommit':       'lightline_settings#gitcommit#Mode',
             \ 'gitrebase':       'lightline_settings#gitrebase#Mode',
             \ 'fugitive':        'lightline_settings#fugitive#Mode',
