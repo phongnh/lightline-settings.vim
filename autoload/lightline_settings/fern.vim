@@ -1,22 +1,18 @@
 " https://github.com/lambdalisue/fern.vim
 function! lightline_settings#fern#Mode(...) abort
-    let l:result = { 'name': 'Fern' }
-
     let l:bufname = get(a:, 1, expand('%'))
     let l:data = matchlist(l:bufname, '^fern://\(.\+\)/file://\(.\+\)\$')
 
-    if len(l:data)
-        let l:fern_mode = get(l:data, 1, '')
-        if stridx(l:fern_mode, 'drawer') > -1
-            let l:result['name'] = 'Drawer'
-        endif
-
-        let l:fern_folder = get(l:data, 2, '')
-        let l:fern_folder = substitute(l:fern_folder, ';\?\(#.\+\)\?\$\?$', '', '')
-        let l:fern_folder = fnamemodify(l:fern_folder, ':p:~:.:h')
-
-        let l:result['plugin'] = l:fern_folder
+    if empty(l:data)
+        return { 'name': 'Fern' }
     endif
 
-    return l:result
+    let l:name = get(l:data, 1, '')
+    let l:name = stridx(l:name, 'drawer') > -1 ? 'Drawer' : 'Fern'
+
+    let l:folder = get(l:data, 2, '')
+    let l:folder = substitute(l:folder, ';\?\(#.\+\)\?\$\?$', '', '')
+    let l:folder = fnamemodify(l:folder, ':p:~:.:h')
+
+    return { 'name': l:name, 'plugin': l:folder }
 endfunction
