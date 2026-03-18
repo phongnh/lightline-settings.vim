@@ -175,13 +175,16 @@ function! lightline_settings#parts#Spell() abort
     return &spell ? toupper(tr(&spelllang, ',', '/')) : ''
 endfunction
 
+function! s:Shiftwidth() abort
+    return exists('*shiftwidth') ? shiftwidth() : &shiftwidth
+endfunction
+
 function! lightline_settings#parts#Indentation(...) abort
-    let l:shiftwidth = exists('*shiftwidth') ? shiftwidth() : &shiftwidth
     let l:compact = get(a:, 1, s:IsCompact())
-    if l:compact
-        return (&expandtab ? 'SPC' : 'TAB') .. ': ' .. l:shiftwidth
+    if &expandtab
+        return (l:compact ? 'SPC' : 'Spaces') .. ': ' .. s:Shiftwidth()
     else
-        return (&expandtab ? 'Spaces' : 'Tab Size') .. ': ' .. l:shiftwidth
+        return (l:compact ? 'TAB' : 'Tab Size') .. ': ' .. &tabstop
     endif
 endfunction
 
