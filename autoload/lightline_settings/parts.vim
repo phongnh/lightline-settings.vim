@@ -76,6 +76,7 @@ let s:lightline_filename_integrations = {
 let s:lightline_filetype_integrations = {
             \ 'cmdline':         'lightline_settings#cmdline#Mode',
             \ 'ctrlp':           'lightline_settings#ctrlp#Mode',
+            \ 'nerdtree':        'lightline_settings#nerdtree#Mode',
             \ 'netrw':           'lightline_settings#netrw#Mode',
             \ 'dirvish':         'lightline_settings#dirvish#Mode',
             \ 'molder':          'lightline_settings#molder#Mode',
