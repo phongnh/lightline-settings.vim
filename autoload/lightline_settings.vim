@@ -51,6 +51,9 @@ endfunction
 function! lightline_settings#Init() abort
     setglobal noshowmode laststatus=2
 
+    " Disable Vim Quickfix's statusline
+    let g:qf_disable_statusline = 1
+
     " Disable NERDTree statusline
     let g:NERDTreeStatusline = -1
 
