@@ -8,7 +8,6 @@ function! lightline_settings#sections#Mode(...) abort
                 \   lightline_settings#parts#Mode(),
                 \   lightline_settings#parts#Clipboard(),
                 \   lightline_settings#parts#Paste(),
-                \   lightline_settings#parts#Spell(),
                 \ ], 0)
 endfunction
 
@@ -74,6 +73,7 @@ endfunction
 
 function! s:RenderSettingsSection(...) abort
     return lightline#concatenate([
+                \   lightline_settings#parts#Spell(),
                 \   lightline_settings#parts#Indentation(),
                 \   lightline_settings#parts#FileEncodingAndFormat(),
                 \ ], 1)
