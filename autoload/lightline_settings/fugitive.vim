@@ -13,7 +13,7 @@ endfunction
 function! lightline_settings#fugitive#Mode(...) abort
     return {
                 \ 'section_a': 'Fugitive',
-                \ 'section_b': lightline_settings#git#Branch(),
+                \ 'section_b': lightline_settings#gitbranch#Name(),
                 \ 'section_c': lightline#concatenate(s:FugitiveStatus(), 0),
                 \ }
 endfunction

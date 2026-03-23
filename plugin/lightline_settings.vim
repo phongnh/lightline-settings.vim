@@ -52,7 +52,7 @@ let g:lightline = {
             \ 'active': {
             \   'left':  [
             \       ['section_a'],
-            \       (g:lightline_show_git_branch ? ['branch'] : []) + ['section_b'],
+            \       ['section_b'],
             \       ['section_c'],
             \   ],
             \   'right': [
@@ -77,7 +77,6 @@ let g:lightline = {
             \   'section_y':          'lightline_settings#sections#SectionY',
             \   'section_z':          'lightline_settings#sections#SectionZ',
             \   'inactive_section_a': 'lightline_settings#sections#InactiveSectionA',
-            \   'branch':             'lightline_settings#sections#GitBranch',
             \ },
             \ 'tab_component_function': {
             \   'tabname':  'lightline_settings#tab#Name',

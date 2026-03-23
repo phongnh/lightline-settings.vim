@@ -1,7 +1,7 @@
 function! lightline_settings#gitcommit#Mode(...) abort
     return {
                 \ 'section_a': 'Commit Message',
-                \ 'section_b': lightline_settings#git#Branch(),
+                \ 'section_b': lightline_settings#gitbranch#Name(),
                 \ 'section_x': lightline_settings#lineinfo#Simple(),
                 \ 'section_y': lightline_settings#parts#Spell(),
                 \ }

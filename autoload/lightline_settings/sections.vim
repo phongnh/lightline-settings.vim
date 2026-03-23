@@ -14,10 +14,11 @@ endfunction
 function! lightline_settings#sections#SectionB(...) abort
     let l:integration = lightline_settings#parts#Integration()
     if len(l:integration)
-        if has_key(l:integration, 'link')
-            call lightline#link(l:integration['link'])
-        endif
         return get(l:integration, 'section_b', '')
+    endif
+
+    if lightline_settings#GetWinWidth(0) >= g:lightline_winwidth_config.default
+        return lightline_settings#parts#GitBranch()
     endif
 
     return ''
@@ -78,17 +79,4 @@ function!  lightline_settings#sections#InactiveSectionA(...) abort
 
     " plugin/statusline.vim[+]
     return lightline_settings#parts#InactiveFileName()
-endfunction
-
-function! lightline_settings#sections#GitBranch(...) abort
-    let l:integration = lightline_settings#parts#Integration()
-    if len(l:integration)
-        return ''
-    endif
-
-    if lightline_settings#GetWinWidth(0) >= g:lightline_winwidth_config.default
-        return lightline_settings#parts#GitBranch()
-    endif
-
-    return ''
 endfunction

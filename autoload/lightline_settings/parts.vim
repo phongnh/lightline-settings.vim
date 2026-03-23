@@ -260,6 +260,6 @@ endfunction
 
 if g:lightline_show_git_branch > 0
     function! lightline_settings#parts#GitBranch(...) abort
-        return lightline_settings#git#Branch()
+        return lightline_settings#gitbranch#Name()
     endfunction
 endif
