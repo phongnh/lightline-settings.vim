@@ -3,7 +3,7 @@ let s:lightline_time_threshold = 2.0
 
 function! s:ShortenBranch(branch, length) abort
     let l:len = strlen(a:branch)
-    
+
     " Early exit if already short enough
     if l:len <= a:length
         return a:branch
@@ -13,7 +13,7 @@ function! s:ShortenBranch(branch, length) abort
     if g:lightline_shorten_path
         let l:branch = lightline_settings#ShortenPath(l:branch)
         let l:len = strlen(l:branch)
-        
+
         if l:len <= a:length
             return l:branch
         endif
@@ -84,9 +84,9 @@ function! lightline_settings#git#Branch(...) abort
 endfunction
 
 function! lightline_settings#git#Mode(...) abort
-    let l:result = { 'name': 'Git', 'info': lightline_settings#lineinfo#Simple() }
-    if expand('%:t')->len() >= 7
-        let l:result['plugin'] = expand('%:t')
-    endif
-    return l:result
+    return {
+                \ 'name': 'Git',
+                \ 'plugin': expand('%:t'),
+                \ 'info': lightline_settings#lineinfo#Simple(),
+                \ }
 endfunction
