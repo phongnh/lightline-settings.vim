@@ -14,5 +14,5 @@ function! lightline_settings#fern#Mode(...) abort
     let l:folder = substitute(l:folder, ';\?\(#.\+\)\?\$\?$', '', '')
     let l:folder = fnamemodify(l:folder, ':p:~:.:h')
 
-    return { 'section_a': l:name, 'section_b': l:folder }
+    return { 'section_a': l:name, 'section_c': l:folder }
 endfunction

@@ -18,6 +18,7 @@ function! lightline_settings#tagbar#Mode(...) abort
 
     return {
                 \ 'section_a': s:lightline_tagbar.sort,
-                \ 'section_b': lightline#concatenate([s:lightline_tagbar.fname, l:flags], 0),
+                \ 'section_b': l:flags,
+                \ 'section_c': s:lightline_tagbar.fname,
                 \ }
 endfunction

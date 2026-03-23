@@ -10,5 +10,5 @@ function! s:GetCurrentDir(bufname) abort
 endfunction
 
 function! lightline_settings#oil#Mode(...) abort
-    return { 'section_a': 'Oil', 'section_b': s:GetCurrentDir(get(a:, 1, expand('%'))) }
+    return { 'section_a': 'Oil', 'section_c': s:GetCurrentDir(get(a:, 1, expand('%'))) }
 endfunction
