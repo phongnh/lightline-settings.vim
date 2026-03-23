@@ -1,6 +1,6 @@
 function! lightline_settings#cmdline#Mode(...) abort
     return {
-                \ 'section_a':   'Command Line',
+                \ 'section_a': 'Command Line',
                 \ 'section_b': lightline#concatenate([
                 \   '<C-C>: edit',
                 \   '<CR>: execute',
