@@ -6,6 +6,6 @@ function! lightline_settings#zoomwin#Status(zoomstate) abort
             call l:F(a:zoomstate)
         endif
     endfor
-    let b:lightline_zoomstate = a:zoomstate
+    let g:lightline_zoomstate = a:zoomstate
     call lightline#update()
 endfunction

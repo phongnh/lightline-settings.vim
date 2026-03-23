@@ -175,7 +175,7 @@ function! lightline_settings#parts#Modified(...) abort
 endfunction
 
 function! s:ZoomStatus(...) abort
-    return get(b:, 'lightline_zoomstate', 0) ? '[Z]' : ''
+    return get(g:, 'lightline_zoomstate', 0) ? '[Z]' : ''
 endfunction
 
 function! lightline_settings#parts#LineInfo(...) abort
@@ -220,7 +220,7 @@ function! lightline_settings#parts#FileType(...) abort
 endfunction
 
 function! lightline_settings#parts#FileName(...) abort
-    return lightline_settings#parts#Readonly() .. lightline_settings#FormatFileName(s:FileName()) .. lightline_settings#parts#Modified() .. s:ZoomStatus()
+    return lightline_settings#parts#Readonly() .. lightline_settings#FormatFileName(s:FileName()) .. s:ZoomStatus() .. lightline_settings#parts#Modified()
 endfunction
 
 function! lightline_settings#parts#InactiveFileName(...) abort
