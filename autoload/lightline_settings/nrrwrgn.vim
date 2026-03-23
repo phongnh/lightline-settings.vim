@@ -15,7 +15,7 @@ endfunction
 
 function! s:GetBufName() abort
     let l:status = nrrwrgn#NrrwRgnStatus()
-    let l:bufname = !empty(status) ? l:status.fullname : bufname(get(b:, 'orig_buf', '%'))
+    let l:bufname = !empty(l:status) ? l:status.fullname : bufname(get(b:, 'orig_buf', '%'))
     let l:bufname = fnamemodify(l:bufname, ':~:.')
     if !empty(l:status) && !l:status.multi
         let l:bufname = l:bufname .. printf(' [%d-%d]', l:status.start[1], l:status.end[1])
