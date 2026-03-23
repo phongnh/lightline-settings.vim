@@ -1,35 +1,31 @@
 " https://github.com/chrisbra/NrrwRgn
-let s:visual_mode_indicators = { 'v': ' [C]', 'V': '', '': ' [B]' }
+let s:visual_mode_indicators = { '': '', 'v': ' [C]', 'V': '', '': ' [B]', '\<C-V>': ' [B]' }
 
-function! s:GetName() abort
-    if exists('b:nrrw_instn')
-        return 'NrrwRgn#' .. b:nrrw_instn
+function! s:GetMode() abort
+    let l:name = exists('b:nrrw_instn') ? 'NrrwRgn#' .. b:nrrw_instn : 'NrrwRgn'
+    let l:prefix = stridx(bufname('%'), 'NrrwRgn_multi') == 0 ? 'Multi' : ''
+    let l:visual = ''
+    let l:status = nrrwrgn#NrrwRgnStatus()
+    if !empty(l:status)
+        let l:prefix = l:status.multi ? 'Multi' : ''
+        let l:visual = s:visual_mode_indicators[l:status.visual]
     endif
-    let l:name = substitute(bufname('%'), '^NrrwRgn_\zs.*\ze_\d\+$', submatch(0), '')
-    return = substitute(l:name, '__', '#', '')
+    return '[' .. l:prefix .. l:name .. ']' .. l:visual
+endfunction
+
+function! s:GetBufName() abort
+    let l:status = nrrwrgn#NrrwRgnStatus()
+    let l:bufname = !empty(status) ? l:status.fullname : bufname(get(b:, 'orig_buf', '%'))
+    let l:bufname = fnamemodify(l:bufname, ':~:.')
+    if !empty(l:status) && !l:status.multi
+        let l:bufname = l:bufname .. printf(' [%d-%d]', l:status.start[1], l:status.end[1])
+    endif
+    return l:bufname
 endfunction
 
 function! lightline_settings#nrrwrgn#Mode(...) abort
-    let l:result = { 'name': s:GetName() }
-
-    if exists('*nrrwrgn#NrrwRgnStatus')
-        let l:status = nrrwrgn#NrrwRgnStatus()
-
-        if !empty(l:status)
-            let l:prefix = l:status.multi ? 'Multi' : ''
-            let l:indicator = s:visual_mode_indicators[l:status.visual ? l:status.visual : 'V']
-            let l:result['name'] = l:prefix .. l:result['name'] .. l:indicator
-
-            let l:result['plugin'] = fnamemodify(l:status.fullname, ':~:.')
-            if !l:status.multi
-                let l:result['plugin'] ..= ' [' .. l:status.start[1] .. '-' .. l:status.end[1] .. ']'
-            endif
-        endif
-    endif
-
-    if empty(l:result['plugin']) && get(b:, 'orig_buf', 0)
-        let l:result['plugin'] = bufname(b:orig_buf)
-    endif
-
-    return l:result
+    return {
+                \ 'section_a': s:GetMode(),
+                \ 'section_c': s:GetBufName(),
+                \ }
 endfunction
