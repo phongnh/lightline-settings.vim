@@ -1,13 +1,13 @@
 " https://github.com/junegunn/gv.vim
 function! lightline_settings#gv#Mode(...) abort
     return {
-                \ 'name': 'GV',
-                \ 'plugin': lightline#concatenate([
+                \ 'section_a': 'GV',
+                \ 'section_b': lightline#concatenate([
                 \   'o: open split',
                 \   'O: open tab',
                 \   'gb: GBrowse',
                 \   'q: quit',
                 \ ], 0),
-                \ 'info': lightline_settings#lineinfo#Simple(),
+                \ 'section_x': lightline_settings#lineinfo#Simple(),
                 \ }
 endfunction

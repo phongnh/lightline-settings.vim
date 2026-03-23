@@ -1,10 +1,10 @@
 function! lightline_settings#cmdline#Mode(...) abort
     return {
-                \ 'name':   'Command Line',
-                \ 'plugin': lightline#concatenate([
+                \ 'section_a':   'Command Line',
+                \ 'section_b': lightline#concatenate([
                 \   '<C-C>: edit',
                 \   '<CR>: execute',
                 \ ], 0),
-                \ 'info': lightline_settings#lineinfo#Simple(),
+                \ 'section_x': lightline_settings#lineinfo#Simple(),
                 \ }
 endfunction

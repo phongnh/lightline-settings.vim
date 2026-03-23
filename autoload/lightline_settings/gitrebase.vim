@@ -1,8 +1,8 @@
 function! lightline_settings#gitrebase#Mode(...) abort
     return {
-                \ 'name': 'Git Rebase',
-                \ 'plugin': lightline_settings#git#Branch(),
-                \ 'info': lightline_settings#lineinfo#Simple(),
-                \ 'settings': lightline_settings#parts#Spell(),
+                \ 'section_a': 'Git Rebase',
+                \ 'section_b': lightline_settings#git#Branch(),
+                \ 'section_x': lightline_settings#lineinfo#Simple(),
+                \ 'section_y': lightline_settings#parts#Spell(),
                 \ }
 endfunction

@@ -12,8 +12,8 @@ endfunction
 
 function! lightline_settings#fugitive#Mode(...) abort
     return {
-                \ 'name': 'Fugitive',
-                \ 'plugin': lightline_settings#git#Branch(),
-                \ 'filename': lightline#concatenate(s:FugitiveStatus(), 0),
+                \ 'section_a': 'Fugitive',
+                \ 'section_b': lightline_settings#git#Branch(),
+                \ 'section_c': lightline#concatenate(s:FugitiveStatus(), 0),
                 \ }
 endfunction

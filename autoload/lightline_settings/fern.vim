@@ -4,7 +4,7 @@ function! lightline_settings#fern#Mode(...) abort
     let l:data = matchlist(l:bufname, '^fern://\(.\+\)/file://\(.\+\)\$')
 
     if empty(l:data)
-        return { 'name': 'Fern' }
+        return { 'section_a': 'Fern' }
     endif
 
     let l:name = get(l:data, 1, '')
@@ -14,5 +14,5 @@ function! lightline_settings#fern#Mode(...) abort
     let l:folder = substitute(l:folder, ';\?\(#.\+\)\?\$\?$', '', '')
     let l:folder = fnamemodify(l:folder, ':p:~:.:h')
 
-    return { 'name': l:name, 'plugin': l:folder }
+    return { 'section_a': l:name, 'section_b': l:folder }
 endfunction

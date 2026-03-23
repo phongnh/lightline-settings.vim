@@ -1,7 +1,7 @@
-function! lightline_settings#sections#Mode(...) abort
-    let l:mode = lightline_settings#parts#Integration()
-    if len(l:mode)
-        return l:mode['name']
+function! lightline_settings#sections#SectionA(...) abort
+    let l:integration = lightline_settings#parts#Integration()
+    if len(l:integration)
+        return l:integration['section_a']
     endif
 
     return lightline#concatenate([
@@ -11,67 +11,45 @@ function! lightline_settings#sections#Mode(...) abort
                 \ ], 0)
 endfunction
 
-function! lightline_settings#sections#Plugin(...) abort
-    let l:mode = lightline_settings#parts#Integration()
-    if len(l:mode)
-        if has_key(l:mode, 'link')
-            call lightline#link(l:mode['link'])
+function! lightline_settings#sections#SectionB(...) abort
+    let l:integration = lightline_settings#parts#Integration()
+    if len(l:integration)
+        if has_key(l:integration, 'link')
+            call lightline#link(l:integration['link'])
         endif
-        return get(l:mode, 'plugin', '')
+        return get(l:integration, 'section_b', '')
     endif
-    return call('s:RenderPluginSection', a:000)
+
+    return ''
 endfunction
 
-function! s:RenderPluginSection(...) abort
+function! lightline_settings#sections#SectionC(...) abort
+    let l:integration = lightline_settings#parts#Integration()
+    if len(l:integration)
+        return get(l:integration, 'section_c', '')
+    endif
+
     return lightline_settings#parts#FileName()
 endfunction
 
-function! lightline_settings#sections#GitBranch(...) abort
-    let l:mode = lightline_settings#parts#Integration()
-    if len(l:mode)
+function! lightline_settings#sections#SectionX(...) abort
+    let l:integration = lightline_settings#parts#Integration()
+    if len(l:integration)
+        return get(l:integration, 'section_x', '')
+    endif
+    if lightline_settings#GetWinWidth(0) <= g:lightline_winwidth_config.compact
         return ''
     endif
 
-    if lightline_settings#parts#GetWinWidth(0) >= g:lightline_winwidth_config.default
-        return lightline_settings#parts#GitBranch()
+    return lightline_settings#parts#LineInfo()
+endfunction
+
+function!  lightline_settings#sections#SectionY(...) abort
+    let l:integration = lightline_settings#parts#Integration()
+    if len(l:integration)
+        return get(l:integration, 'section_y', '')
     endif
 
-    return ''
-endfunction
-
-function! lightline_settings#sections#FileName(...) abort
-    let l:mode = lightline_settings#parts#Integration()
-    if len(l:mode)
-        return get(l:mode, 'filename', '')
-    endif
-    return call('s:RenderFileNameSection', a:000)
-endfunction
-
-function! s:RenderFileNameSection(...) abort
-    return ''
-endfunction
-
-function!  lightline_settings#sections#Buffer(...) abort
-    let l:mode = lightline_settings#parts#Integration()
-    if len(l:mode)
-        return get(l:mode, 'buffer', '')
-    endif
-    return call('s:RenderBufferSection', a:000)
-endfunction
-
-function! s:RenderBufferSection(...) abort
-    return lightline_settings#parts#FileType()
-endfunction
-
-function!  lightline_settings#sections#Settings(...) abort
-    let l:mode = lightline_settings#parts#Integration()
-    if len(l:mode)
-        return get(l:mode, 'settings', '')
-    endif
-    return call('s:RenderSettingsSection', a:000)
-endfunction
-
-function! s:RenderSettingsSection(...) abort
     return lightline#concatenate([
                 \   lightline_settings#parts#Spell(),
                 \   lightline_settings#parts#Indentation(),
@@ -79,34 +57,38 @@ function! s:RenderSettingsSection(...) abort
                 \ ], 1)
 endfunction
 
-function! lightline_settings#sections#Info(...) abort
-    let l:mode = lightline_settings#parts#Integration()
-    if len(l:mode)
-        return get(l:mode, 'info', '')
+function!  lightline_settings#sections#SectionZ(...) abort
+    let l:integration = lightline_settings#parts#Integration()
+    if len(l:integration)
+        return get(l:integration, 'section_z', '')
     endif
-    return call('s:RenderInfoSection', a:000)
+
+    return lightline_settings#parts#FileType()
 endfunction
 
-function! s:RenderInfoSection(...) abort
-    if lightline_settings#parts#GetWinWidth(0) <= g:lightline_winwidth_config.compact
-        return ''
-    endif
-    return lightline_settings#parts#LineInfo()
-endfunction
-
-function!  lightline_settings#sections#InactiveMode(...) abort
-    let l:mode = lightline_settings#parts#Integration()
-    if len(l:mode)
+function!  lightline_settings#sections#InactiveSectionA(...) abort
+    let l:integration = lightline_settings#parts#Integration()
+    if len(l:integration)
         return lightline#concatenate([
-                    \   l:mode['name'],
-                    \   get(l:mode, 'plugin', ''),
-                    \   get(l:mode, 'filename', ''),
+                    \   l:integration['section_a'],
+                    \   get(l:integration, 'section_b', ''),
+                    \   get(l:integration, 'section_c', ''),
                     \ ], 0)
     endif
-    return call('s:RenderInactiveModeSection', a:000)
-endfunction
 
-function! s:RenderInactiveModeSection(...) abort
     " plugin/statusline.vim[+]
     return lightline_settings#parts#InactiveFileName()
+endfunction
+
+function! lightline_settings#sections#GitBranch(...) abort
+    let l:integration = lightline_settings#parts#Integration()
+    if len(l:integration)
+        return ''
+    endif
+
+    if lightline_settings#GetWinWidth(0) >= g:lightline_winwidth_config.default
+        return lightline_settings#parts#GitBranch()
+    endif
+
+    return ''
 endfunction

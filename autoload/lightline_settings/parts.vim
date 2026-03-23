@@ -53,7 +53,7 @@ let g:lightline_filetype_modes = {
             \ 'gedoc':             'GeDoc',
             \ 'gitcommit':         'Commit Message',
             \ 'gitrebase':         'Git Rebase',
-            \ 'fugitive':          'Fugitive',
+            \ 'fugitive':          'Git Status',
             \ 'fugitiveblame':     'FugitiveBlame',
             \ 'gitmessengerpopup': 'Git Messenger',
             \ 'GV':                'GV',
@@ -104,32 +104,6 @@ let s:lightline_filetype_integrations = {
             \ 'SpaceVimFlyGrep': 'lightline_settings#flygrep#Mode',
             \ }
 
-" Cache window width to avoid repeated winwidth() calls
-let s:cached_winwidth = 0
-let s:cached_winwidth_nr = 0
-
-function! s:GetWinWidth(...) abort
-    let l:winnr = get(a:, 1, 0)
-    " Cache is only valid for current window in current update
-    if l:winnr == s:cached_winwidth_nr && s:cached_winwidth > 0
-        return s:cached_winwidth
-    endif
-    let s:cached_winwidth = winwidth(l:winnr)
-    let s:cached_winwidth_nr = l:winnr
-    return s:cached_winwidth
-endfunction
-
-" Expose for use in other modules
-function! lightline_settings#parts#GetWinWidth(...) abort
-    return call('s:GetWinWidth', a:000)
-endfunction
-
-" Clear width cache (called by lightline on update)
-function! lightline_settings#parts#ClearWidthCache() abort
-    let s:cached_winwidth = 0
-    let s:cached_winwidth_nr = 0
-endfunction
-
 function! s:BufferType() abort
     return !empty(&filetype) ? &filetype : &buftype
 endfunction
@@ -145,7 +119,7 @@ endfunction
 
 function! s:IsCompact(...) abort
     let l:winnr = get(a:, 1, 0)
-    return s:GetWinWidth(l:winnr) <= g:lightline_winwidth_config.compact ||
+    return lightline_settings#GetWinWidth(l:winnr) <= g:lightline_winwidth_config.compact ||
                 \ count([
                 \   s:IsClipboardEnabled(),
                 \   &paste,
@@ -226,7 +200,7 @@ function! lightline_settings#parts#FileEncodingAndFormat() abort
 
     let l:parts = []
 
-    let l:encoding = empty(&fileencoding) ? &encoding : &fileencoding
+    let l:encoding = !empty(&fileencoding) ? &fileencoding : &encoding
     if !empty(l:encoding) && l:encoding !=# 'utf-8'
         call add(l:parts, l:encoding)
     endif
@@ -235,7 +209,7 @@ function! lightline_settings#parts#FileEncodingAndFormat() abort
     if !&eol | call add(l:parts, g:lightline_symbols.noeol) | endif
 
     if !empty(&fileformat) && &fileformat !=# 'unix'
-        call add(l:parts, get(g:crystalline_symbols, &fileformat, '[empty]'))
+        call add(l:parts, get(g:lightline_symbols, &fileformat, &fileformat))
     endif
 
     return join(l:parts, ' ')
@@ -270,11 +244,11 @@ function! lightline_settings#parts#Integration() abort
     endif
 
     if has_key(g:lightline_filetype_modes, l:ft)
-        return { 'name': g:lightline_filetype_modes[l:ft] }
+        return { 'section_a': g:lightline_filetype_modes[l:ft] }
     endif
 
     if has_key(g:lightline_filename_modes, l:fname)
-        return { 'name': g:lightline_filename_modes[l:fname] }
+        return { 'section_a': g:lightline_filename_modes[l:fname] }
     endif
 
     return {}

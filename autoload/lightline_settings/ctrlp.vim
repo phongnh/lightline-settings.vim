@@ -32,30 +32,27 @@ endfunction
 
 function! lightline_settings#ctrlp#Mode(...) abort
     let l:result = {
-                \ 'name': 'CtrlP',
-                \ 'buffer': s:lightline_ctrlp.dir,
+                \ 'section_a': 'CtrlP',
+                \ 'section_z': s:lightline_ctrlp.dir,
                 \ }
 
     if s:lightline_ctrlp.main
-        let l:plugin_status = lightline#concatenate([
+        call lightline#link('nR'[s:lightline_ctrlp.regex])
+
+        call extend(l:result, {
+                    \ 'section_b': lightline#concatenate([
                     \   s:lightline_ctrlp.prev,
                     \   '« ' .. s:lightline_ctrlp.item .. ' »',
                     \   s:lightline_ctrlp.next,
-                    \ ], 0)
-
-        let l:buffer_status = lightline#concatenate([
+                    \ ], 0),
+                    \ 'section_y': lightline#concatenate([
                     \   s:lightline_ctrlp.focus,
                     \   s:lightline_ctrlp.byfname,
-                    \ ], 1)
-
-        call extend(l:result, {
-                    \ 'link': 'nR'[s:lightline_ctrlp.regex],
-                    \ 'plugin': l:plugin_status,
-                    \ 'settings': l:buffer_status,
+                    \ ], 1),
                     \ })
     else
         call extend(l:result, {
-                    \ 'settings': s:lightline_ctrlp.len,
+                    \ 'section_y': s:lightline_ctrlp.len,
                     \ })
     endif
 

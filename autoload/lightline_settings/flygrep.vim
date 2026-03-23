@@ -1,9 +1,9 @@
 " https://github.com/wsdjeg/FlyGrep.vim
 function! lightline_settings#flygrep#Mode(...) abort
     return {
-                \ 'name':     'FlyGrep',
-                \ 'plugin':   SpaceVim#plugins#flygrep#mode(),
-                \ 'filename': fnamemodify(getcwd(), ':~'),
-                \ 'buffer':   SpaceVim#plugins#flygrep#lineNr(),
+                \ 'section_a': 'FlyGrep',
+                \ 'section_b': SpaceVim#plugins#flygrep#mode(),
+                \ 'section_c': fnamemodify(getcwd(), ':~'),
+                \ 'section_z': SpaceVim#plugins#flygrep#lineNr(),
                 \ }
 endfunction

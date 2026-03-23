@@ -16,5 +16,5 @@ function! s:GrepperSideStatus() abort
 endfunction
 
 function! lightline_settings#grepper#Mode(...) abort
-    return { 'name': 'GrepperSide', 'plugin': s:GrepperSideStatus() }
+    return { 'section_a': 'GrepperSide', 'section_b': s:GrepperSideStatus() }
 endfunction

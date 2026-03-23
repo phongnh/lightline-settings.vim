@@ -51,18 +51,18 @@ let g:lightline = {
             \ },
             \ 'active': {
             \   'left':  [
-            \       ['mode'],
-            \       (g:lightline_show_git_branch ? ['branch'] : []) + ['plugin'],
-            \       ['filename'],
+            \       ['section_a'],
+            \       (g:lightline_show_git_branch ? ['branch'] : []) + ['section_b'],
+            \       ['section_c'],
             \   ],
             \   'right': [
-            \       ['buffer'],
-            \       ['settings'],
-            \       ['info'],
+            \       ['section_z'],
+            \       ['section_y'],
+            \       ['section_x'],
             \   ]
             \ },
             \ 'inactive': {
-            \   'left':  [['inactive_mode']],
+            \   'left':  [['inactive_section_a']],
             \   'right': []
             \ },
             \ 'component': {
@@ -70,14 +70,14 @@ let g:lightline = {
             \   'bufferlabel': 'Buffers',
             \ },
             \ 'component_function': {
-            \   'mode':          'lightline_settings#sections#Mode',
-            \   'plugin':        'lightline_settings#sections#Plugin',
-            \   'branch':        'lightline_settings#sections#GitBranch',
-            \   'filename':      'lightline_settings#sections#FileName',
-            \   'buffer':        'lightline_settings#sections#Buffer',
-            \   'settings':      'lightline_settings#sections#Settings',
-            \   'info':          'lightline_settings#sections#Info',
-            \   'inactive_mode': 'lightline_settings#sections#InactiveMode',
+            \   'section_a':          'lightline_settings#sections#SectionA',
+            \   'section_b':          'lightline_settings#sections#SectionB',
+            \   'section_c':          'lightline_settings#sections#SectionC',
+            \   'section_x':          'lightline_settings#sections#SectionX',
+            \   'section_y':          'lightline_settings#sections#SectionY',
+            \   'section_z':          'lightline_settings#sections#SectionZ',
+            \   'inactive_section_a': 'lightline_settings#sections#InactiveSectionA',
+            \   'branch':             'lightline_settings#sections#GitBranch',
             \ },
             \ 'tab_component_function': {
             \   'tabname':  'lightline_settings#tab#Name',

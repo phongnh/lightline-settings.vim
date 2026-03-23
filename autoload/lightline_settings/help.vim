@@ -1,7 +1,7 @@
 function! lightline_settings#help#Mode(...) abort
     return {
-                \ 'name': 'HELP',
-                \ 'plugin': expand('%:~:.'),
-                \ 'info': lightline_settings#lineinfo#Full(),
+                \ 'section_a': 'HELP',
+                \ 'section_b': expand('%:~:.'),
+                \ 'section_x': lightline_settings#lineinfo#Full(),
                 \ }
 endfunction

@@ -85,8 +85,8 @@ endfunction
 
 function! lightline_settings#git#Mode(...) abort
     return {
-                \ 'name': 'Git',
-                \ 'plugin': expand('%:t'),
-                \ 'info': lightline_settings#lineinfo#Simple(),
+                \ 'section_a': 'Git',
+                \ 'section_b': expand('%:t'),
+                \ 'section_x': lightline_settings#lineinfo#Simple(),
                 \ }
 endfunction

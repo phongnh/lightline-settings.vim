@@ -18,14 +18,38 @@ if exists('*pathshorten')
     endfunction
 endif
 
+" Cache window width to avoid repeated winwidth() calls
+let s:cached_winwidth = 0
+let s:cached_winwidth_nr = 0
+
+function! s:GetWinWidth(...) abort
+    let l:winnr = get(a:, 1, 0)
+    " Cache is only valid for current window in current update
+    if l:winnr == s:cached_winwidth_nr && s:cached_winwidth > 0
+        return s:cached_winwidth
+    endif
+    let s:cached_winwidth = winwidth(l:winnr)
+    let s:cached_winwidth_nr = l:winnr
+    return s:cached_winwidth
+endfunction
+
+" Expose for use in other modules
+function! lightline_settings#GetWinWidth(...) abort
+    return call('s:GetWinWidth', a:000)
+endfunction
+
+" Clear width cache (called by lightline on update)
+function! lightline_settings#ClearWidthCache() abort
+    let s:cached_winwidth = 0
+    let s:cached_winwidth_nr = 0
+endfunction
+
 function! lightline_settings#FormatFileName(fname, ...) abort
     let l:path = a:fname
     let l:maxlen = get(a:, 1, 50)
 
     " Use cached window width if available
-    let l:winwidth = exists('*lightline_settings#parts#GetWinWidth')
-                \ ? lightline_settings#parts#GetWinWidth(0)
-                \ : winwidth(0)
+    let l:winwidth = lightline_settings#GetWinWidth(0)
 
     if l:winwidth <= g:lightline_winwidth_config.compact
         return fnamemodify(l:path, ':t')
