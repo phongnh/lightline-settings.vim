@@ -21,8 +21,8 @@ let g:lightline_show_devicons   = get(g:, 'lightline_show_devicons', 0) && light
 
 " Window width
 let g:lightline_winwidth_config = extend({
-            \ 'compact': 60,
-            \ 'default': 90,
+            \ 'compact': 80,
+            \ 'default': 100,
             \ 'normal':  120,
             \ }, get(g:, 'lightline_winwidth_config', {}))
 
