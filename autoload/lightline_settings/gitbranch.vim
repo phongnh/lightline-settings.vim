@@ -27,8 +27,8 @@ def GetGitBranch(): string
 enddef
 
 # Extract JIRA / YouTrack ticket number
-var ticket_number_pattern = '^\([A-Z]\{3,}-\d\{1,}\)'
-var nested_ticket_number_pattern = '^\([A-Z]\{3,}-\d\{1,}\)\(\/[A-Z]\{3,}-\d\{1,}\)\+'
+const ticket_number_pattern = '^\([A-Z]\{3,}-\d\{1,}\)'
+const nested_ticket_number_pattern = '^\([A-Z]\{3,}-\d\{1,}\)\(\/[A-Z]\{3,}-\d\{1,}\)\+'
 
 # JIRA-123/JIRA-456-*
 def ExtractNestedTicketNumbers(branch: string): string
@@ -58,7 +58,7 @@ def TruncateBranch(branch: string, length: number): string
 enddef
 
 def SplitBranch(branch: string, length: number): string
-    var branch_tail = fnamemodify(branch, ':t')
+    const branch_tail = fnamemodify(branch, ':t')
     if strlen(branch_tail) <= length
         return branch_tail
     endif
@@ -84,7 +84,7 @@ def SplitBranch(branch: string, length: number): string
     return truncated_branch .. g:lightline_symbols.ellipsis
 enddef
 
-var shorten_branch_rules: list<any> = [
+const shorten_branch_rules: list<any> = [
     (branch) => branch,
     (branch) => g:lightline_shorten_path ? pathshorten(branch) : branch,
     (branch) => fnamemodify(branch, ':t'),
@@ -95,7 +95,7 @@ var shorten_branch_rules: list<any> = [
 
 def ShortenBranch(branch: string, length: number): string
     for F in shorten_branch_rules
-        var shortened_branch = F(branch)
+        const shortened_branch = F(branch)
         if strlen(shortened_branch) <= length
             return shortened_branch
         endif
@@ -104,7 +104,7 @@ def ShortenBranch(branch: string, length: number): string
 enddef
 
 def FormatBranch(branch: string): string
-    var winwidth = lightline_settings#GetWinWidth(0)
+    const winwidth = lightline_settings#GetWinWidth(0)
 
     if winwidth >= g:lightline_winwidth_config.normal
         return ShortenBranch(branch, 50)
@@ -114,7 +114,7 @@ def FormatBranch(branch: string): string
 enddef
 
 export def Name(...args: list<any>): string
-    var branch = FormatBranch(GetGitBranch())
+    const branch = FormatBranch(GetGitBranch())
 
     if !empty(branch)
         return g:lightline_symbols.branch .. ' ' .. branch

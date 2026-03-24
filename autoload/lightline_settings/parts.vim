@@ -68,7 +68,7 @@ g:lightline_filetype_modes = {
     startuptime:       'StartupTime',
 }
 
-var lightline_filename_integrations = {
+const lightline_filename_integrations = {
     ControlP:          'lightline_settings#ctrlp#Mode',
     '__CtrlSF__':        'lightline_settings#ctrlsf#Mode',
     '__CtrlSFPreview__': 'lightline_settings#ctrlsf#PreviewMode',
@@ -76,7 +76,7 @@ var lightline_filename_integrations = {
     '__Tagbar__':        'lightline_settings#tagbar#Mode',
 }
 
-var lightline_filetype_integrations = {
+const lightline_filetype_integrations = {
     cmdline:         'lightline_settings#cmdline#Mode',
     ctrlp:           'lightline_settings#ctrlp#Mode',
     nerdtree:        'lightline_settings#nerdtree#Mode',
@@ -113,7 +113,7 @@ def BufferType(): string
 enddef
 
 def FileNameImpl(): string
-    var fname = expand('%')
+    const fname = expand('%')
     return !empty(fname) ? fnamemodify(fname, ':~:.') : '[No Name]'
 enddef
 
@@ -122,7 +122,7 @@ def IsClipboardEnabled(): bool
 enddef
 
 def IsCompact(...args: list<any>): bool
-    var winnr = get(args, 0, 0)
+    const winnr = get(args, 0, 0)
     return lightline_settings#GetWinWidth(winnr) <= g:lightline_winwidth_config.compact ||
         count([
             IsClipboardEnabled(),
@@ -158,7 +158,7 @@ def Shiftwidth(): number
 enddef
 
 export def Indentation(...args: list<any>): string
-    var compact = get(args, 0, IsCompact())
+    const compact = get(args, 0, IsCompact())
     if &expandtab
         return (compact ? 'SPC' : 'Spaces') .. ': ' .. Shiftwidth()
     else
@@ -199,7 +199,7 @@ export def FileEncodingAndFormat(): string
 
     var parts: list<string> = []
 
-    var encoding = !empty(&fileencoding) ? &fileencoding : &encoding
+    const encoding = !empty(&fileencoding) ? &fileencoding : &encoding
     if !empty(encoding) && encoding !=# 'utf-8'
         add(parts, encoding)
     endif
@@ -227,13 +227,13 @@ export def InactiveFileName(...args: list<any>): string
 enddef
 
 export def Integration(): dict<any>
-    var ft = BufferType()
+    const ft = BufferType()
 
     if has_key(lightline_filetype_integrations, ft)
         return function(lightline_filetype_integrations[ft])()
     endif
 
-    var fname = expand('%:t')
+    const fname = expand('%:t')
 
     if has_key(lightline_filename_integrations, fname)
         return function(lightline_filename_integrations[fname])()

@@ -1,7 +1,7 @@
 vim9script
 
 export def SectionA(...args: list<any>): string
-    var integration = lightline_settings#parts#Integration()
+    const integration = lightline_settings#parts#Integration()
     if !empty(integration)
         return integration['section_a']
     endif
@@ -14,7 +14,7 @@ export def SectionA(...args: list<any>): string
 enddef
 
 export def SectionB(...args: list<any>): string
-    var integration = lightline_settings#parts#Integration()
+    const integration = lightline_settings#parts#Integration()
     if !empty(integration)
         return get(integration, 'section_b', '')
     endif
@@ -27,7 +27,7 @@ export def SectionB(...args: list<any>): string
 enddef
 
 export def SectionC(...args: list<any>): string
-    var integration = lightline_settings#parts#Integration()
+    const integration = lightline_settings#parts#Integration()
     if !empty(integration)
         return get(integration, 'section_c', '')
     endif
@@ -36,7 +36,7 @@ export def SectionC(...args: list<any>): string
 enddef
 
 export def SectionX(...args: list<any>): string
-    var integration = lightline_settings#parts#Integration()
+    const integration = lightline_settings#parts#Integration()
     if !empty(integration)
         return get(integration, 'section_x', '')
     endif
@@ -49,7 +49,7 @@ export def SectionX(...args: list<any>): string
 enddef
 
 export def SectionY(...args: list<any>): string
-    var integration = lightline_settings#parts#Integration()
+    const integration = lightline_settings#parts#Integration()
     if !empty(integration)
         return get(integration, 'section_y', '')
     endif
@@ -62,7 +62,7 @@ export def SectionY(...args: list<any>): string
 enddef
 
 export def SectionZ(...args: list<any>): string
-    var integration = lightline_settings#parts#Integration()
+    const integration = lightline_settings#parts#Integration()
     if !empty(integration)
         return get(integration, 'section_z', '')
     endif
@@ -71,7 +71,7 @@ export def SectionZ(...args: list<any>): string
 enddef
 
 export def InactiveSectionA(...args: list<any>): string
-    var integration = lightline_settings#parts#Integration()
+    const integration = lightline_settings#parts#Integration()
     if !empty(integration)
         return lightline#concatenate([
             integration['section_a'],

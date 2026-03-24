@@ -4,7 +4,7 @@ vim9script
 var lightline_ctrlp: dict<any> = {}
 
 def GetCurrentDir(): string
-    var cwd = getcwd()
+    const cwd = getcwd()
     var dir = fnamemodify(cwd, ':~:.')
     dir = empty(dir) ? cwd : dir
     return len(dir) > 30 ? pathshorten(dir) : dir

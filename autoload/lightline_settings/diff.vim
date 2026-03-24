@@ -2,7 +2,7 @@ vim9script
 
 export def Mode(...args: list<any>): dict<any>
     var result = {section_a: 'Diff'}
-    var bufname = expand('%:t')
+    const bufname = expand('%:t')
     if exists('t:diffpanel') && t:diffpanel.bufname ==# bufname
         # https://github.com/mbbill/undotree
         result['section_b'] = t:diffpanel.GetStatusLine()

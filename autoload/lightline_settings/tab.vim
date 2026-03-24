@@ -5,17 +5,17 @@ def TabNumber(n: number): string
 enddef
 
 def TabBufferType(n: number): string
-    var ft = gettabwinvar(n, tabpagewinnr(n), '&filetype')
+    const ft = gettabwinvar(n, tabpagewinnr(n), '&filetype')
     return !empty(ft) ? ft : gettabwinvar(n, tabpagewinnr(n), '&buftype')
 enddef
 
 def TabBufferName(n: number): string
-    var ft = TabBufferType(n)
+    const ft = TabBufferType(n)
     if has_key(g:lightline_filetype_modes, ft)
         return g:lightline_filetype_modes[ft]
     endif
-    var bufnr = tabpagebuflist(n)[tabpagewinnr(n) - 1]
-    var bufname = expand('#' .. bufnr .. ':t')
+    const bufnr = tabpagebuflist(n)[tabpagewinnr(n) - 1]
+    const bufname = expand('#' .. bufnr .. ':t')
     var fname: string
     if get(g:lightline_buffer_count_by_basename, bufname, 0) > 1
         fname = substitute(expand('#' .. bufnr .. ':p'), '.*/\([^/]\+/\)', '\1', '')
@@ -31,7 +31,7 @@ def TabReadonly(n: number): string
 enddef
 
 export def Modified(n: number): string
-    var winnr = tabpagewinnr(n)
+    const winnr = tabpagewinnr(n)
     if gettabwinvar(n, winnr, '&modified')
         return !gettabwinvar(n, winnr, '&modifiable') ? '+-' : '+'
     else

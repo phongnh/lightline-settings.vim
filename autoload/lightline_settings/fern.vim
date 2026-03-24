@@ -2,8 +2,8 @@ vim9script
 
 # https://github.com/lambdalisue/fern.vim
 export def Mode(...args: list<any>): dict<any>
-    var bufname = get(args, 0, expand('%'))
-    var data = matchlist(bufname, '^fern://\(.\+\)/file://\(.\+\)\$')
+    const bufname = get(args, 0, expand('%'))
+    const data = matchlist(bufname, '^fern://\(.\+\)/file://\(.\+\)\$')
 
     if empty(data)
         return {section_a: 'Fern'}

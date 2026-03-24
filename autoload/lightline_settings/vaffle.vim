@@ -2,7 +2,7 @@ vim9script
 
 # https://github.com/cocopon/vaffle.vim
 export def Mode(...args: list<any>): dict<any>
-    var bufname = get(args, 0, expand('%'))
-    var dir = get(matchlist(bufname, '^vaffle://\(\d\+\)/\(.\+\)$'), 2, '')
+    const bufname = get(args, 0, expand('%'))
+    const dir = get(matchlist(bufname, '^vaffle://\(\d\+\)/\(.\+\)$'), 2, '')
     return {section_a: 'Vaffle', section_c: !empty(dir) ? fnamemodify(dir, ':p:~:.:h') : ''}
 enddef

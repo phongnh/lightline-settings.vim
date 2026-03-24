@@ -1,7 +1,7 @@
 vim9script
 
 # https://github.com/tpope/vim-fugitive
-var names = {staged: 'Staged', unstaged: 'Unstaged', untracked: 'Untracked'}
+const names = {staged: 'Staged', unstaged: 'Unstaged', untracked: 'Untracked'}
 
 def FugitiveStatus(): list<string>
     if exists('b:fugitive_status')

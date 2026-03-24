@@ -67,7 +67,7 @@ def GetStyle(style: any): string
     endif
 
     if result ==? 'random'
-        var rand = str2nr(matchstr(reltimestr(reltime()), '\v\.@<=\d+')[1 :])
+        const rand = str2nr(matchstr(reltimestr(reltime()), '\v\.@<=\d+')[1 :])
         result = keys(lightline_separator_styles)[rand % len(lightline_separator_styles)]
     endif
 
@@ -75,10 +75,10 @@ def GetStyle(style: any): string
 enddef
 
 def SetStatuslineSeparators(style: any)
-    var style_str = GetStyle(style)
+    const style_str = GetStyle(style)
 
-    var separator    = get(lightline_separator_styles, style_str, lightline_separator_styles['default'])
-    var subseparator = get(lightline_subseparator_styles, style_str, lightline_subseparator_styles['default'])
+    const separator    = get(lightline_separator_styles, style_str, lightline_separator_styles['default'])
+    const subseparator = get(lightline_subseparator_styles, style_str, lightline_subseparator_styles['default'])
 
     extend(g:lightline, {
         separator:    deepcopy(separator),
@@ -87,10 +87,10 @@ def SetStatuslineSeparators(style: any)
 enddef
 
 def SetTablineSeparators(style: any)
-    var style_str = GetStyle(style)
+    const style_str = GetStyle(style)
 
-    var separator    = get(lightline_separator_styles, style_str, lightline_separator_styles['default'])
-    var subseparator = get(lightline_subseparator_styles, style_str, lightline_subseparator_styles['default'])
+    const separator    = get(lightline_separator_styles, style_str, lightline_separator_styles['default'])
+    const subseparator = get(lightline_subseparator_styles, style_str, lightline_subseparator_styles['default'])
 
     extend(g:lightline, {
         tabline_separator:    deepcopy(separator),

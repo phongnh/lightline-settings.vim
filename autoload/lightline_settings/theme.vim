@@ -1,7 +1,7 @@
 vim9script
 
 # Theme mappings
-var lightline_theme_mappings = extend({
+const lightline_theme_mappings = extend({
     '^\(solarized\|soluarized\|flattened\|neosolarized\)': 'solarized',
     '^gruvbox$': 'gruvbox_material',
     '^gruvbox-baby$': 'gruvbox_material',
@@ -25,7 +25,7 @@ def FindTheme()
         return
     endif
 
-    var lightline_theme_var = g:lightline_theme .. (&background == 'light' ? '_light' : '_dark')
+    const lightline_theme_var = g:lightline_theme .. (&background == 'light' ? '_light' : '_dark')
     if index(lightline_themes, lightline_theme_var) > -1
         g:lightline_theme = lightline_theme_var
         return
@@ -48,7 +48,7 @@ enddef
 export def Set(theme: string)
     g:lightline_theme = theme
     # Reload palette
-    var colorscheme_path = findfile(printf('autoload/lightline/colorscheme/%s.vim', theme), &rtp)
+    const colorscheme_path = findfile(printf('autoload/lightline/colorscheme/%s.vim', theme), &rtp)
     if !empty(colorscheme_path) && filereadable(colorscheme_path)
         if exists('g:lightline')
             g:lightline.colorscheme = g:lightline_theme
