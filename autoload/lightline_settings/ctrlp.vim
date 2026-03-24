@@ -38,7 +38,7 @@ export def Mode(...args: list<any>): dict<any>
         section_z: lightline_ctrlp.dir,
     }
 
-    if lightline_ctrlp.main
+    if lightline_ctrlp.main != 0
         lightline#link('nR'[lightline_ctrlp.regex])
 
         extend(result, {
