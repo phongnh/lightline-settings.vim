@@ -7,6 +7,6 @@ export def Mode(...args: list<any>): dict<any>
             '<C-C>: edit',
             '<CR>: execute',
         ], 0),
-        section_x: lightline_settings#lineinfo#Simple(),
+        section_x: lightline_settings#components#Position(),
     }
 enddef
