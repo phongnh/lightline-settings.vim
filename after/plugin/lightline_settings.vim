@@ -1,4 +1,7 @@
 vim9script
 
-lightline_settings#Init()
-lightline_settings#theme#Detect()
+import autoload 'lightline_settings.vim'
+import autoload 'lightline_settings/theme.vim'
+
+lightline_settings.Init()
+theme.Detect()
