@@ -167,15 +167,6 @@ def ZoomStatus(...args: list<any>): string
     return get(g:, 'lightline_zoomstate', 0) ? '[Z]' : ''
 enddef
 
-export def LineInfo(...args: list<any>): string
-    if g:lightline_show_linenr > 1
-        return Ruler()
-    elseif g:lightline_show_linenr > 0
-        return Position()
-    endif
-    return ''
-enddef
-
 export def Progress(...args: list<any>): string
     if line('w0') == 1 && line('w$') == line('$')
         return 'All'

@@ -45,7 +45,12 @@ export def SectionX(...args: list<any>): string
         return ''
     endif
 
-    return lightline_settings#components#LineInfo()
+    if g:lightline_show_linenr > 1
+        return lightline_settings#components#Ruler()
+    elseif g:lightline_show_linenr > 0
+        return lightline_settings#components#Position()
+    endif
+    return ''
 enddef
 
 export def SectionY(...args: list<any>): string
