@@ -10,7 +10,7 @@ def GetCurrentDir(): string
     return len(dir) > 30 ? pathshorten(dir) : dir
 enddef
 
-export def MainStatus(focus: any, byfname: any, regex: any, prev: any, item: any, next: any, marked: any): string
+export def MainStatus(focus: string, byfname: string, regex: any, prev: string, item: string, next: string, marked: string): string
     lightline_ctrlp.main    = true
     lightline_ctrlp.focus   = focus
     lightline_ctrlp.byfname = byfname
