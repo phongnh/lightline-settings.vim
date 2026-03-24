@@ -1,8 +1,5 @@
 " https://github.com/mhinz/vim-grepper
 function! s:GrepperSideStatus() abort
-    if exists('b:grepper_side_statusline')
-        return b:grepper_side_statusline
-    endif
     if !empty(b:grepper_side_status)
         return printf(
                     \ 'Found %d %s in %d %s.',

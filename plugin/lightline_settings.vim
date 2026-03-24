@@ -1,6 +1,6 @@
 " lightline_settings.vim
 " Maintainer: Phong Nguyen
-" Version:    0.1.0
+" Version:    1.0.0
 
 if exists('g:loaded_vim_lightline_settings') || v:version < 700
     finish
@@ -136,7 +136,6 @@ if g:lightline_show_devicons
                 \ 'mac':   "\ue711",
                 \ 'unix':  "\ue712",
                 \ })
-    let g:lightline_symbols.unix = '[unix]'
     " Show Vim Logo in Tabline
     let g:lightline.component.tablabel    = "\ue7c5 "
     let g:lightline.component.bufferlabel = "\ue7c5 "

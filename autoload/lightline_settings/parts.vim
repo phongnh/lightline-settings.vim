@@ -184,11 +184,11 @@ endfunction
 
 if g:lightline_show_linenr > 1
     function! lightline_settings#parts#LineInfo(...) abort
-        return call('lightline_settings#lineinfo#Full', a:000) .. ' '
+        return call('lightline_settings#lineinfo#Full', a:000)
     endfunction
 elseif g:lightline_show_linenr > 0
     function! lightline_settings#parts#LineInfo(...) abort
-        return call('lightline_settings#lineinfo#Simple', a:000) .. ' '
+        return call('lightline_settings#lineinfo#Simple', a:000)
     endfunction
 endif
 

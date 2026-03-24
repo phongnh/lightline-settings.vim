@@ -38,6 +38,7 @@ function! lightline_settings#sections#SectionX(...) abort
     if len(l:integration)
         return get(l:integration, 'section_x', '')
     endif
+
     if lightline_settings#GetWinWidth(0) <= g:lightline_winwidth_config.compact
         return ''
     endif

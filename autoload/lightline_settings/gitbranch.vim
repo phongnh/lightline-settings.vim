@@ -17,7 +17,7 @@ function! s:GetGitBranch() abort
         endif
         " Caching
         let s:git_branch_cache = l:branch
-        let b:git_branch_time = reltime()
+        let s:git_branch_time = reltime()
     endif
 
     return s:git_branch_cache
