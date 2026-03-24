@@ -54,7 +54,7 @@ export def Mode(...args: list<any>): dict<any>
         })
     else
         extend(result, {
-            section_y: lightline_ctrlp.len,
+            section_y: 'Files: ' .. lightline_ctrlp.len,
         })
     endif
 
