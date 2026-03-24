@@ -251,7 +251,7 @@ enddef
 
 export def GitBranch(...args: list<any>): string
     if g:lightline_show_git_branch > 0
-        return lightline_settings#gitbranch#Name()
+        return lightline_settings#gitbranch#Component()
     endif
     return ''
 enddef

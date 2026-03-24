@@ -113,7 +113,7 @@ def FormatBranch(branch: string): string
     return ShortenBranch(branch, 30)
 enddef
 
-export def Name(...args: list<any>): string
+export def Component(...args: list<any>): string
     const branch = FormatBranch(GetGitBranch())
 
     if !empty(branch)

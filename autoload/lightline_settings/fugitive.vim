@@ -15,7 +15,7 @@ enddef
 export def Mode(...args: list<any>): dict<any>
     return {
         section_a: 'Git Status',
-        section_b: lightline_settings#gitbranch#Name(),
+        section_b: lightline_settings#gitbranch#Component(),
         section_c: lightline#concatenate(FugitiveStatus(), 0),
     }
 enddef
