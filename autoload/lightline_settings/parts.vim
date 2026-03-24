@@ -97,7 +97,7 @@ def BufferType(): string
     return !empty(&filetype) ? &filetype : &buftype
 enddef
 
-def FileNameImpl(): string
+def GetFileName(): string
     const fname = expand('%')
     return !empty(fname) ? fnamemodify(fname, ':~:.') : '[No Name]'
 enddef
@@ -204,11 +204,11 @@ export def FileType(...args: list<any>): string
 enddef
 
 export def FileName(...args: list<any>): string
-    return Readonly() .. lightline_settings#FormatFileName(FileNameImpl()) .. ZoomStatus() .. Modified()
+    return Readonly() .. lightline_settings#FormatFileName(GetFileName()) .. ZoomStatus() .. Modified()
 enddef
 
 export def InactiveFileName(...args: list<any>): string
-    return Readonly() .. FileNameImpl() .. Modified()
+    return Readonly() .. GetFileName() .. Modified()
 enddef
 
 export def Integration(): dict<any>
