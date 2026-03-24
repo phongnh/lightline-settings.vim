@@ -176,6 +176,21 @@ export def LineInfo(...args: list<any>): string
     return ''
 enddef
 
+export def Ruler(...args: list<any>): string
+    var percent: string
+    if line('w0') == 1 && line('w$') == line('$')
+        percent = 'All'
+    elseif line('w0') == 1
+        percent = 'Top'
+    elseif line('w$') == line('$')
+        percent = 'Bot'
+    else
+        percent = (line('.') * 100 / line('$')) .. '%'
+    endif
+
+    return printf('%d,%d %s', line('.'), col('.'), percent)
+enddef
+
 export def FileEncodingAndFormat(): string
     # Skip encoding check if it's utf-8 and format is unix (common case)
     if &fileencoding ==# 'utf-8' && &fileformat ==# 'unix' && !&bomb && &eol
