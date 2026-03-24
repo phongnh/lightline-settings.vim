@@ -21,7 +21,7 @@ export def MainStatus(focus: string, byfname: string, regex: number, prev: strin
     lightline_ctrlp.marked  = marked
     lightline_ctrlp.dir     = GetCurrentDir()
 
-    return call('lightline#statusline', [0])
+    return lightline#statusline(0)
 enddef
 
 export def ProgressStatus(len: string): string
@@ -29,7 +29,7 @@ export def ProgressStatus(len: string): string
     lightline_ctrlp.len  = len
     lightline_ctrlp.dir  = GetCurrentDir()
 
-    return call('lightline#statusline', [0])
+    return lightline#statusline(0)
 enddef
 
 export def Mode(...args: list<any>): dict<any>
