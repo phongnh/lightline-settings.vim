@@ -1,21 +1,5 @@
 vim9script
 
-export def Trim(str: string): string
-    if exists('*trim')
-        return trim(str)
-    else
-        return substitute(str, '^\s*\(.\{-}\)\s*$', '\1', '')
-    endif
-enddef
-
-export def ShortenPath(filename: string): string
-    if exists('*pathshorten')
-        return pathshorten(filename)
-    else
-        return substitute(filename, '\v\w\zs.{-}\ze(\\|/)', '', 'g')
-    endif
-enddef
-
 # Cache window width to avoid repeated winwidth() calls
 var cached_winwidth = 0
 var cached_winwidth_nr = 0
@@ -54,7 +38,7 @@ export def FormatFileName(fname: string, ...args: list<any>): string
     endif
 
     if len(path) > maxlen && g:lightline_shorten_path
-        path = ShortenPath(path)
+        path = pathshorten(path)
     endif
 
     if len(path) > maxlen

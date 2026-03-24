@@ -7,7 +7,7 @@ def GetCurrentDir(): string
     var cwd = getcwd()
     var dir = fnamemodify(cwd, ':~:.')
     dir = empty(dir) ? cwd : dir
-    return len(dir) > 30 ? lightline_settings#ShortenPath(dir) : dir
+    return len(dir) > 30 ? pathshorten(dir) : dir
 enddef
 
 export def MainStatus(focus: any, byfname: any, regex: any, prev: any, item: any, next: any, marked: any): string
