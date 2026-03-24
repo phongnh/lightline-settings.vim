@@ -188,7 +188,7 @@ export def Ruler(...args: list<any>): string
         percent = (line('.') * 100 / line('$')) .. '%'
     endif
 
-    return printf('%d,%d %s', line('.'), col('.'), percent)
+    return printf('%3d:%-3d %3s', line('.'), charcol('.'), percent)
 enddef
 
 export def FileEncodingAndFormat(): string
