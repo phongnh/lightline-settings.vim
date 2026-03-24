@@ -19,8 +19,8 @@ export def SectionB(...args: list<any>): string
         return get(integration, 'section_b', '')
     endif
 
-    if lightline_settings#GetWinWidth(0) >= g:lightline_winwidth_config.default
-        return lightline_settings#components#GitBranch()
+    if g:lightline_show_git_branch > 0 && lightline_settings#GetWinWidth(0) >= g:lightline_winwidth_config.default
+        return lightline_settings#components#Branch()
     endif
 
     return ''

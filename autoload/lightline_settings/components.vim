@@ -249,9 +249,6 @@ export def Integration(): dict<any>
     return {}
 enddef
 
-export def GitBranch(...args: list<any>): string
-    if g:lightline_show_git_branch > 0
-        return lightline_settings#gitbranch#Component()
-    endif
-    return ''
+export def Branch(...args: list<any>): string
+    return lightline_settings#gitbranch#Component()
 enddef
