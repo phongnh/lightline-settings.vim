@@ -11,7 +11,7 @@ export def Status(current: any, sort: any, fname: any, flags: any, ...args: list
     return lightline#statusline(0)
 enddef
 
-export def Mode(...args: list<any>): dict<any>
+export def Statusline(...args: list<any>): dict<any>
     var flags: string
     if empty(lightline_tagbar.flags)
         flags = ''

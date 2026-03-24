@@ -1,6 +1,6 @@
 vim9script
 
-export def Mode(...args: list<any>): dict<any>
+export def Statusline(...args: list<any>): dict<any>
     var result = {section_a: 'Diff'}
     const bufname = expand('%:t')
     if exists('t:diffpanel') && t:diffpanel.bufname ==# bufname

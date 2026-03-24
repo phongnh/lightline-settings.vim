@@ -1,7 +1,7 @@
 vim9script
 
 # https://github.com/lambdalisue/fern.vim
-export def Mode(...args: list<any>): dict<any>
+export def Statusline(...args: list<any>): dict<any>
     const bufname = get(args, 0, expand('%'))
     const data = matchlist(bufname, '^fern://\(.\+\)/file://\(.\+\)\$')
 

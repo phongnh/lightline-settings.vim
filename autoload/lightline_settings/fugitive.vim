@@ -12,7 +12,7 @@ def FugitiveStatus(): list<string>
     return []
 enddef
 
-export def Mode(...args: list<any>): dict<any>
+export def Statusline(...args: list<any>): dict<any>
     return {
         section_a: 'Git Status',
         section_b: lightline_settings#gitbranch#Component(),

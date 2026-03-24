@@ -14,6 +14,6 @@ def GrepperSideStatus(): string
     return ''
 enddef
 
-export def Mode(...args: list<any>): dict<any>
+export def Statusline(...args: list<any>): dict<any>
     return {section_a: 'GrepperSide', section_b: GrepperSideStatus()}
 enddef

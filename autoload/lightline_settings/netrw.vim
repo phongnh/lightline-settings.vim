@@ -1,6 +1,6 @@
 vim9script
 
-export def Mode(...args: list<any>): dict<any>
+export def Statusline(...args: list<any>): dict<any>
     return {
         section_a: 'Netrw',
         section_c: exists('b:netrw_curdir') ? fnamemodify(b:netrw_curdir, ':p:~:.:h') : '',

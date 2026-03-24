@@ -32,7 +32,7 @@ export def ProgressStatus(len: string): string
     return lightline#statusline(0)
 enddef
 
-export def Mode(...args: list<any>): dict<any>
+export def Statusline(...args: list<any>): dict<any>
     var result = {
         section_a: 'CtrlP',
         section_z: lightline_ctrlp.dir,

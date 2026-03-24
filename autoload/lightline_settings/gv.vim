@@ -1,7 +1,7 @@
 vim9script
 
 # https://github.com/junegunn/gv.vim
-export def Mode(...args: list<any>): dict<any>
+export def Statusline(...args: list<any>): dict<any>
     return {
         section_a: 'GV',
         section_b: lightline#concatenate([

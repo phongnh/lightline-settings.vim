@@ -1,7 +1,7 @@
 vim9script
 
 # https://github.com/wsdjeg/FlyGrep.vim
-export def Mode(...args: list<any>): dict<any>
+export def Statusline(...args: list<any>): dict<any>
     return {
         section_a: 'FlyGrep',
         section_b: call('SpaceVim#plugins#flygrep#mode', []),

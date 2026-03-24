@@ -1,6 +1,6 @@
 vim9script
 
-export def Mode(...args: list<any>): dict<any>
+export def Statusline(...args: list<any>): dict<any>
     return {
         section_a: 'Git Rebase',
         section_b: lightline_settings#gitbranch#Component(),

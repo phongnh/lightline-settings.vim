@@ -25,7 +25,7 @@ def GetBufName(): string
     return bufname
 enddef
 
-export def Mode(...args: list<any>): dict<any>
+export def Statusline(...args: list<any>): dict<any>
     return {
         section_a: GetMode(),
         section_c: GetBufName(),
