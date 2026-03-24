@@ -10,7 +10,7 @@ def GetCurrentDir(): string
     return len(dir) > 30 ? pathshorten(dir) : dir
 enddef
 
-export def MainStatus(focus: string, byfname: string, regex: any, prev: string, item: string, next: string, marked: string): string
+export def MainStatus(focus: string, byfname: string, regex: number, prev: string, item: string, next: string, marked: string): string
     lightline_ctrlp.main    = true
     lightline_ctrlp.focus   = focus
     lightline_ctrlp.byfname = byfname
@@ -24,7 +24,7 @@ export def MainStatus(focus: string, byfname: string, regex: any, prev: string, 
     return call('lightline#statusline', [0])
 enddef
 
-export def ProgressStatus(len: any): string
+export def ProgressStatus(len: string): string
     lightline_ctrlp.main = false
     lightline_ctrlp.len  = len
     lightline_ctrlp.dir  = GetCurrentDir()
@@ -54,7 +54,7 @@ export def Mode(...args: list<any>): dict<any>
         })
     else
         extend(result, {
-            section_y: 'Files: ' .. lightline_ctrlp.len,
+            section_y: lightline_ctrlp.len,
         })
     endif
 
