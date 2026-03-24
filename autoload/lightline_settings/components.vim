@@ -235,7 +235,7 @@ export def Integration(): dict<any>
         return function(lightline_filename_integrations[fname])()
     elseif fname =~# '^NrrwRgn_\zs.*\ze_\d\+$'
         # Fallback to filename check if NrrwRgn buffer's filetype is not set
-        return function('lightline_settings#nrrwrgn#Statusline')()
+        return lightline_settings#nrrwrgn#Statusline()
     endif
 
     if has_key(g:lightline_filetype_modes, ft)
