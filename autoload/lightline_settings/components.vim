@@ -188,6 +188,10 @@ export def Progress(...args: list<any>): string
     endif
 enddef
 
+export def Position(...args: list<any>): string
+    return printf('%3d:%-3d', line('.'), charcol('.'))
+enddef
+
 export def Ruler(...args: list<any>): string
     return printf('%3d:%-3d %3s', line('.'), charcol('.'), Progress())
 enddef
