@@ -348,7 +348,7 @@ var mode_map = {
 - All 46 files normalized with `ggVG=`
 
 ### Naming Conventions
-- Exported functions: PascalCase (e.g., `export def Mode()`)
+- Exported functions: PascalCase (e.g., `export def Statusline()`)
 - Script-local functions: PascalCase (e.g., `def GetIcon()`)
 - Variables: snake_case (e.g., `var icon_function`)
 - Funcref variables: PascalCase (e.g., `var IconFunction`)

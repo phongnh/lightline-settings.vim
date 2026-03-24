@@ -59,38 +59,38 @@ g:lightline_filetype_modes = {
 }
 
 const lightline_filename_integrations = {
-    ControlP:            'lightline_settings#ctrlp#Mode',
-    '__CtrlSF__':        'lightline_settings#ctrlsf#Mode',
-    '__CtrlSFPreview__': 'lightline_settings#ctrlsf#PreviewMode',
-    '__flygrep__':       'lightline_settings#flygrep#Mode',
-    '__Tagbar__':        'lightline_settings#tagbar#Mode',
+    ControlP:            'lightline_settings#ctrlp#Statusline',
+    '__CtrlSF__':        'lightline_settings#ctrlsf#Statusline',
+    '__CtrlSFPreview__': 'lightline_settings#ctrlsf#PreviewStatusline',
+    '__flygrep__':       'lightline_settings#flygrep#Statusline',
+    '__Tagbar__':        'lightline_settings#tagbar#Statusline',
 }
 
 const lightline_filetype_integrations = {
-    cmdline:         'lightline_settings#cmdline#Mode',
-    ctrlp:           'lightline_settings#ctrlp#Mode',
-    nerdtree:        'lightline_settings#nerdtree#Mode',
-    netrw:           'lightline_settings#netrw#Mode',
-    dirvish:         'lightline_settings#dirvish#Mode',
-    molder:          'lightline_settings#molder#Mode',
-    vaffle:          'lightline_settings#vaffle#Mode',
-    fern:            'lightline_settings#fern#Mode',
-    undotree:        'lightline_settings#undotree#Mode',
-    diff:            'lightline_settings#diff#Mode',
-    tagbar:          'lightline_settings#tagbar#Mode',
-    NrrwRgn:         'lightline_settings#nrrwrgn#Mode',
-    git:             'lightline_settings#git#Mode',
-    gitcommit:       'lightline_settings#gitcommit#Mode',
-    gitrebase:       'lightline_settings#gitrebase#Mode',
-    fugitive:        'lightline_settings#fugitive#Mode',
-    GV:              'lightline_settings#gv#Mode',
-    terminal:        'lightline_settings#terminal#Mode',
-    help:            'lightline_settings#help#Mode',
-    man:             'lightline_settings#man#Mode',
-    qf:              'lightline_settings#quickfix#Mode',
-    ctrlsf:          'lightline_settings#ctrlsf#Mode',
-    GrepperSide:     'lightline_settings#grepper#Mode',
-    SpaceVimFlyGrep: 'lightline_settings#flygrep#Mode',
+    cmdline:         'lightline_settings#cmdline#Statusline',
+    ctrlp:           'lightline_settings#ctrlp#Statusline',
+    nerdtree:        'lightline_settings#nerdtree#Statusline',
+    netrw:           'lightline_settings#netrw#Statusline',
+    dirvish:         'lightline_settings#dirvish#Statusline',
+    molder:          'lightline_settings#molder#Statusline',
+    vaffle:          'lightline_settings#vaffle#Statusline',
+    fern:            'lightline_settings#fern#Statusline',
+    undotree:        'lightline_settings#undotree#Statusline',
+    diff:            'lightline_settings#diff#Statusline',
+    tagbar:          'lightline_settings#tagbar#Statusline',
+    NrrwRgn:         'lightline_settings#nrrwrgn#Statusline',
+    git:             'lightline_settings#git#Statusline',
+    gitcommit:       'lightline_settings#gitcommit#Statusline',
+    gitrebase:       'lightline_settings#gitrebase#Statusline',
+    fugitive:        'lightline_settings#fugitive#Statusline',
+    GV:              'lightline_settings#gv#Statusline',
+    terminal:        'lightline_settings#terminal#Statusline',
+    help:            'lightline_settings#help#Statusline',
+    man:             'lightline_settings#man#Statusline',
+    qf:              'lightline_settings#quickfix#Statusline',
+    ctrlsf:          'lightline_settings#ctrlsf#Statusline',
+    GrepperSide:     'lightline_settings#grepper#Statusline',
+    SpaceVimFlyGrep: 'lightline_settings#flygrep#Statusline',
 }
 
 def BufferType(): string
@@ -235,7 +235,7 @@ export def Integration(): dict<any>
         return function(lightline_filename_integrations[fname])()
     elseif fname =~# '^NrrwRgn_\zs.*\ze_\d\+$'
         # Fallback to filename check if NrrwRgn buffer's filetype is not set
-        return function('lightline_settings#nrrwrgn#Mode')()
+        return function('lightline_settings#nrrwrgn#Statusline')()
     endif
 
     if has_key(g:lightline_filetype_modes, ft)
