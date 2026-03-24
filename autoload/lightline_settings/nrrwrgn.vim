@@ -20,7 +20,7 @@ def GetBufName(): string
     var bufname = !empty(status) && !empty(status.fullname) ? status.fullname : bufname(get(b:, 'orig_buf', '%'))
     bufname = fnamemodify(bufname, ':~:.')
     if !empty(status) && !status.multi
-        bufname = $'{buffer} [{status.start[1]}-{status.end[1]}]''
+        bufname = $'{bufname} [{status.start[1]}-{status.end[1]}]'
     endif
     return bufname
 enddef
