@@ -37,7 +37,7 @@ g:lightline_filetype_modes = {
     startify:          'Startify',
     dashboard:         'Dashboard',
     tagbar:            'Tagbar',
-    'vim-plug':          'Plugins',
+    'vim-plug':        'Plugins',
     terminal:          'TERMINAL',
     help:              'HELP',
     man:               'MAN',
@@ -59,7 +59,7 @@ g:lightline_filetype_modes = {
 }
 
 const lightline_filename_integrations = {
-    ControlP:          'lightline_settings#ctrlp#Mode',
+    ControlP:            'lightline_settings#ctrlp#Mode',
     '__CtrlSF__':        'lightline_settings#ctrlsf#Mode',
     '__CtrlSFPreview__': 'lightline_settings#ctrlsf#PreviewMode',
     '__flygrep__':       'lightline_settings#flygrep#Mode',
