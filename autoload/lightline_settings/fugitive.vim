@@ -6,8 +6,8 @@ const names = {staged: 'Staged', unstaged: 'Unstaged', untracked: 'Untracked'}
 def FugitiveStatus(): list<string>
     if exists('b:fugitive_status')
         return ['staged', 'unstaged', 'untracked']
-            ->filter('len(b:fugitive_status[v:val]) > 0')
-            ->map('names[v:val] .. ": " .. len(b:fugitive_status[v:val])')
+            ->filter((_, key) => len(b:fugitive_status[key]) > 0)
+            ->map((_, key) => $'{names[key]}: {len(b:fugitive_status[key])}')
     endif
     return []
 enddef
