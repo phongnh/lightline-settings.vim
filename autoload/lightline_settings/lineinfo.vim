@@ -1,18 +1,20 @@
-function! lightline_settings#lineinfo#Simple(...) abort
-    return printf('%3d:%-3d', line('.'), col('.'))
-endfunction
+vim9script
 
-function! lightline_settings#lineinfo#Full(...) abort
+export def Simple(...args: list<any>): string
+    return printf('%3d:%-3d', line('.'), col('.'))
+enddef
+
+export def Full(...args: list<any>): string
+    var percent: string
     if line('w0') == 1 && line('w$') == line('$')
-        let l:percent = 'All'
+        percent = 'All'
     elseif line('w0') == 1
-        let l:percent = 'Top'
+        percent = 'Top'
     elseif line('w$') == line('$')
-        let l:percent = 'Bot'
+        percent = 'Bot'
     else
-        let l:percent = (line('.') * 100 / line('$')) .. '%'
+        percent = (line('.') * 100 / line('$')) .. '%'
     endif
 
-    return printf('%4d:%-3d %3s', line('.'), col('.'), l:percent)
-endfunction
-
+    return printf('%4d:%-3d %3s', line('.'), col('.'), percent)
+enddef

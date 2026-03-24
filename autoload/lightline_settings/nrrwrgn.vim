@@ -1,31 +1,33 @@
-" https://github.com/chrisbra/NrrwRgn
-let s:visual_mode_indicators = { '': '', 'v': ' [C]', 'V': '', '': ' [B]', '\<C-V>': ' [B]' }
+vim9script
 
-function! s:GetMode() abort
-    let l:name = exists('b:nrrw_instn') ? 'NrrwRgn#' .. b:nrrw_instn : 'NrrwRgn'
-    let l:prefix = stridx(bufname('%'), 'NrrwRgn_multi') == 0 ? 'Multi' : ''
-    let l:visual = ''
-    let l:status = nrrwrgn#NrrwRgnStatus()
-    if !empty(l:status)
-        let l:prefix = l:status.multi ? 'Multi' : ''
-        let l:visual = s:visual_mode_indicators[l:status.visual]
+# https://github.com/chrisbra/NrrwRgn
+var visual_mode_indicators = {'': '', 'v': ' [C]', 'V': '', "\<C-V>": ' [B]'}
+
+def GetMode(): string
+    var name = exists('b:nrrw_instn') ? 'NrrwRgn#' .. b:nrrw_instn : 'NrrwRgn'
+    var prefix = stridx(bufname('%'), 'NrrwRgn_multi') == 0 ? 'Multi' : ''
+    var visual = ''
+    var status = call('nrrwrgn#NrrwRgnStatus', [])
+    if !empty(status)
+        prefix = status.multi ? 'Multi' : ''
+        visual = visual_mode_indicators[status.visual]
     endif
-    return '[' .. l:prefix .. l:name .. ']' .. l:visual
-endfunction
+    return '[' .. prefix .. name .. ']' .. visual
+enddef
 
-function! s:GetBufName() abort
-    let l:status = nrrwrgn#NrrwRgnStatus()
-    let l:bufname = !empty(l:status) ? l:status.fullname : bufname(get(b:, 'orig_buf', '%'))
-    let l:bufname = fnamemodify(l:bufname, ':~:.')
-    if !empty(l:status) && !l:status.multi
-        let l:bufname = l:bufname .. printf(' [%d-%d]', l:status.start[1], l:status.end[1])
+def GetBufName(): string
+    var status = call('nrrwrgn#NrrwRgnStatus', [])
+    var bufname = !empty(status) ? status.fullname : bufname(get(b:, 'orig_buf', '%'))
+    bufname = fnamemodify(bufname, ':~:.')
+    if !empty(status) && !status.multi
+        bufname = bufname .. printf(' [%d-%d]', status.start[1], status.end[1])
     endif
-    return l:bufname
-endfunction
+    return bufname
+enddef
 
-function! lightline_settings#nrrwrgn#Mode(...) abort
+export def Mode(...args: list<any>): dict<any>
     return {
-                \ 'section_a': s:GetMode(),
-                \ 'section_c': s:GetBufName(),
-                \ }
-endfunction
+        section_a: GetMode(),
+        section_c: GetBufName(),
+    }
+enddef

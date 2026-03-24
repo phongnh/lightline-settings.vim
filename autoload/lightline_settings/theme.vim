@@ -1,71 +1,77 @@
-" Theme mappings
-let s:lightline_theme_mappings = extend({
-            \ '^\(solarized\|soluarized\|flattened\|neosolarized\)': 'solarized',
-            \ '^gruvbox$': 'gruvbox_material',
-            \ '^gruvbox-baby$': 'gruvbox_material',
-            \ '^gruvbox-baby': 'gruvbox',
-            \ '^gruvbox': 'gruvbox',
-            \ '^retrobox$': 'gruvbox',
-            \ '^habamax$': 'deus',
-            \ }, get(g:, 'lightline_theme_mappings', {}))
+vim9script
 
-function! s:LoadThemes() abort
-    if !exists('s:lightline_themes')
-        let s:lightline_themes = map(split(globpath(&rtp, 'autoload/lightline/colorscheme/*.vim')), "fnamemodify(v:val, ':t:r')")
+# Theme mappings
+var lightline_theme_mappings = extend({
+    '^\(solarized\|soluarized\|flattened\|neosolarized\)': 'solarized',
+    '^gruvbox$': 'gruvbox_material',
+    '^gruvbox-baby$': 'gruvbox_material',
+    '^gruvbox-baby': 'gruvbox',
+    '^gruvbox': 'gruvbox',
+    '^retrobox$': 'gruvbox',
+    '^habamax$': 'deus',
+}, get(g:, 'lightline_theme_mappings', {}))
+
+var lightline_themes: list<string>
+
+def LoadThemes()
+    if empty(lightline_themes)
+        lightline_themes = map(split(globpath(&rtp, 'autoload/lightline/colorscheme/*.vim')), "fnamemodify(v:val, ':t:r')")
     endif
-endfunction
+enddef
 
-function! s:FindTheme() abort
-    let g:lightline_theme = tr(get(g:, 'colors_name', 'default'), ' -', '__')
-    if index(s:lightline_themes, g:lightline_theme) > -1
+def FindTheme()
+    g:lightline_theme = tr(get(g:, 'colors_name', 'default'), ' -', '__')
+    if index(lightline_themes, g:lightline_theme) > -1
         return
     endif
 
-    let l:lightline_theme = g:lightline_theme .. (&background == 'light' ? '_light' : '_dark')
-    if index(s:lightline_themes, l:lightline_theme) > -1
-        let g:lightline_theme = l:lightline_theme
+    var lightline_theme_var = g:lightline_theme .. (&background == 'light' ? '_light' : '_dark')
+    if index(lightline_themes, lightline_theme_var) > -1
+        g:lightline_theme = lightline_theme_var
         return
     endif
 
-    for [l:pattern, l:theme] in items(s:lightline_theme_mappings)
-        if match(g:lightline_theme, l:pattern) > -1 && index(s:lightline_themes, l:theme) > -1
-            let g:lightline_theme = l:theme
+    for [pattern, theme] in items(lightline_theme_mappings)
+        if match(g:lightline_theme, pattern) > -1 && index(lightline_themes, theme) > -1
+            g:lightline_theme = theme
             return
         endif
     endfor
 
-    let g:lightline_theme = 'default'
-endfunction
+    g:lightline_theme = 'default'
+enddef
 
-function! lightline_settings#theme#List(...) abort
-    return join(s:lightline_themes, "\n")
-endfunction
+export def List(...args: list<any>): string
+    return join(lightline_themes, "\n")
+enddef
 
-function! lightline_settings#theme#Set(theme) abort
-    let g:lightline_theme = a:theme
-    " Reload palette
-    let l:colorscheme_path = findfile(printf('autoload/lightline/colorscheme/%s.vim', a:theme), &rtp)
-    if !empty(l:colorscheme_path) && filereadable(l:colorscheme_path)
-        let g:lightline.colorscheme = g:lightline_theme
-        execute 'source' l:colorscheme_path
+export def Set(theme: string)
+    g:lightline_theme = theme
+    # Reload palette
+    var colorscheme_path = findfile(printf('autoload/lightline/colorscheme/%s.vim', theme), &rtp)
+    if !empty(colorscheme_path) && filereadable(colorscheme_path)
+        if exists('g:lightline')
+            g:lightline.colorscheme = g:lightline_theme
+        endif
+        execute 'source' colorscheme_path
     endif
-    call lightline_settings#ReloadLightline()
-endfunction
+    lightline_settings#ReloadLightline()
+enddef
 
-function! lightline_settings#theme#Apply() abort
-    call s:LoadThemes()
-    call s:FindTheme()
-    call lightline_settings#theme#Set(g:lightline_theme)
-endfunction
+export def Apply()
+    LoadThemes()
+    FindTheme()
+    Set(g:lightline_theme)
+enddef
 
-function! lightline_settings#theme#Detect() abort
+export def Detect()
     if has('vim_starting') && exists('g:lightline_theme') && g:lightline_theme ==# 'default'
-        call s:LoadThemes()
-        call s:FindTheme()
+        LoadThemes()
+        FindTheme()
         if g:lightline_theme !=# 'default'
-            call lightline_settings#theme#Set(g:lightline_theme)
+            Set(g:lightline_theme)
         endif
     elseif !exists('g:lightline_theme')
-        call lightline_settings#theme#Apply()
+        Apply()
     endif
-endfunction
+enddef

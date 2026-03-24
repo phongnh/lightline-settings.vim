@@ -1,7 +1,9 @@
-function! lightline_settings#git#Mode(...) abort
+vim9script
+
+export def Mode(...args: list<any>): dict<any>
     return {
-                \ 'section_a': 'Git',
-                \ 'section_c': expand('%:t'),
-                \ 'section_x': lightline_settings#lineinfo#Simple(),
-                \ }
-endfunction
+        section_a: 'Git',
+        section_c: expand('%:t'),
+        section_x: lightline_settings#lineinfo#Simple(),
+    }
+enddef

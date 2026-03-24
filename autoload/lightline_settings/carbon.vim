@@ -1,4 +1,6 @@
-" https://github.com/SidOfc/carbon.nvim
-function! lightline_settings#carbon#Mode(...) abort
-    return { 'section_a': 'Carbon', 'section_c': exists('b:carbon') ? fnamemodify(b:carbon['path'], ':p:~:.:h') : '' }
-endfunction
+vim9script
+
+# https://github.com/SidOfc/carbon.nvim
+export def Mode(...args: list<any>): dict<any>
+    return {section_a: 'Carbon', section_c: exists('b:carbon') ? fnamemodify(b:carbon['path'], ':p:~:.:h') : ''}
+enddef

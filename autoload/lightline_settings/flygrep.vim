@@ -1,9 +1,11 @@
-" https://github.com/wsdjeg/FlyGrep.vim
-function! lightline_settings#flygrep#Mode(...) abort
+vim9script
+
+# https://github.com/wsdjeg/FlyGrep.vim
+export def Mode(...args: list<any>): dict<any>
     return {
-                \ 'section_a': 'FlyGrep',
-                \ 'section_b': SpaceVim#plugins#flygrep#mode(),
-                \ 'section_c': fnamemodify(getcwd(), ':~'),
-                \ 'section_z': SpaceVim#plugins#flygrep#lineNr(),
-                \ }
-endfunction
+        section_a: 'FlyGrep',
+        section_b: call('SpaceVim#plugins#flygrep#mode', []),
+        section_c: fnamemodify(getcwd(), ':~'),
+        section_z: call('SpaceVim#plugins#flygrep#lineNr', []),
+    }
+enddef

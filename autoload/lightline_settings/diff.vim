@@ -1,12 +1,14 @@
-function! lightline_settings#diff#Mode(...) abort
-    let l:result = { 'section_a': 'Diff' }
-    let l:bufname = expand('%:t')
-    if exists('t:diffpanel') && t:diffpanel.bufname ==# l:bufname
-        " https://github.com/mbbill/undotree
-        let l:result['section_b'] = t:diffpanel.GetStatusLine()
-    elseif l:bufname ==# '__Gundo_Preview__'
-        " https://github.com/sjl/gundo.vim
-        let l:result['section_a'] = 'Gundo Preview'
+vim9script
+
+export def Mode(...args: list<any>): dict<any>
+    var result = {section_a: 'Diff'}
+    var bufname = expand('%:t')
+    if exists('t:diffpanel') && t:diffpanel.bufname ==# bufname
+        # https://github.com/mbbill/undotree
+        result['section_b'] = t:diffpanel.GetStatusLine()
+    elseif bufname ==# '__Gundo_Preview__'
+        # https://github.com/sjl/gundo.vim
+        result['section_a'] = 'Gundo Preview'
     endif
-    return l:result
-endfunction
+    return result
+enddef
