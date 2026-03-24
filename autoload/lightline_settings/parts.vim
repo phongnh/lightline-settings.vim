@@ -184,9 +184,9 @@ enddef
 
 export def LineInfo(...args: list<any>): string
     if g:lightline_show_linenr > 1
-        return call('lightline_settings#lineinfo#Full', args)
+        return lightline_settings#lineinfo#Full()
     elseif g:lightline_show_linenr > 0
-        return call('lightline_settings#lineinfo#Simple', args)
+        return lightline_settings#lineinfo#Simple()
     endif
     return ''
 enddef
