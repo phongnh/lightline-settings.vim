@@ -48,7 +48,7 @@ else
     green  = ['#79740e', '100']
 endif
 
-const p = {normal: {}, inactive: {}, insert: {}, replace: {}, visual: {}, tabline: {}, terminal: {}}
+var p = {normal: {}, inactive: {}, insert: {}, replace: {}, visual: {}, tabline: {}, terminal: {}}
 
 p.normal.left     = [[bg0, fg4, 'bold'], [fg4, bg2]]
 p.normal.right    = [[bg0, fg4], [fg4, bg2]]
