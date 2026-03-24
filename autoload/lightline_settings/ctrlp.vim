@@ -11,7 +11,7 @@ def GetCurrentDir(): string
 enddef
 
 export def MainStatus(focus: any, byfname: any, regex: any, prev: any, item: any, next: any, marked: any): string
-    lightline_ctrlp.main    = 1
+    lightline_ctrlp.main    = true
     lightline_ctrlp.focus   = focus
     lightline_ctrlp.byfname = byfname
     lightline_ctrlp.regex   = regex
@@ -25,7 +25,7 @@ export def MainStatus(focus: any, byfname: any, regex: any, prev: any, item: any
 enddef
 
 export def ProgressStatus(len: any): string
-    lightline_ctrlp.main = 0
+    lightline_ctrlp.main = false
     lightline_ctrlp.len  = len
     lightline_ctrlp.dir  = GetCurrentDir()
 
@@ -38,7 +38,7 @@ export def Mode(...args: list<any>): dict<any>
         section_z: lightline_ctrlp.dir,
     }
 
-    if lightline_ctrlp.main != 0
+    if lightline_ctrlp.main
         lightline#link('nR'[lightline_ctrlp.regex])
 
         extend(result, {
