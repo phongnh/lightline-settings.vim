@@ -68,17 +68,15 @@ def SplitBranch(branch: string, length: number): string
         sep = '_'
         parts = split(branch_tail, sep)
     endif
-    if len(parts) == 1
-        return TruncateBranch(branch_tail, length)
-    endif
-    var truncated_branch = ''
-    for part in parts
+    var truncated_branch = parts[0]
+    for idx in range(1, len(parts) - 1)
+        var part = parts[idx]
         if strlen(truncated_branch .. sep .. part) > length
             break
         endif
         truncated_branch = truncated_branch .. sep .. part
     endfor
-    if empty(truncated_branch)
+    if strlen(truncated_branch) > length
         return TruncateBranch(branch_tail, length)
     endif
     return truncated_branch .. g:lightline_symbols.ellipsis
@@ -90,7 +88,6 @@ const shorten_branch_rules: list<any> = [
     (branch) => fnamemodify(branch, ':t'),
     (branch) => ExtractNestedTicketNumbers(branch),
     (branch) => ExtractTicketNumber(branch),
-    (branch) => SplitBranch(branch, 30),
 ]
 
 def ShortenBranch(branch: string, length: number): string
@@ -100,7 +97,7 @@ def ShortenBranch(branch: string, length: number): string
             return shortened_branch
         endif
     endfor
-    return TruncateBranch(branch, 30)
+    return SplitBranch(branch, 30)
 enddef
 
 def FormatBranch(branch: string): string
