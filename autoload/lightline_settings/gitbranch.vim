@@ -65,17 +65,15 @@ function! s:SplitBranch(branch, length) abort
         let l:sep = '_'
         let l:parts = split(l:branch, l:sep)
     endif
-    if len(l:parts) == 1
-        return s:TruncateBranch(l:branch, a:length)
-    endif
-    let l:truncated_branch = ''
-    for l:part in l:parts
-        if strlen(l:truncated_branch .. l:sep .. l:part) > a:length then
+    let l:truncated_branch = l:parts[0]
+    for l:idx in range(1, len(l:parts) - 1)
+        let l:part = l:parts[l:idx]
+        if strlen(l:truncated_branch .. l:sep .. l:part) > a:length
             break
         endif
         let l:truncated_branch = l:truncated_branch .. l:sep .. l:part
     endfor
-    if empty(l:truncated_branch)
+    if strlen(l:truncated_branch) > a:length
         return s:TruncateBranch(l:branch, a:length)
     endif
     return l:truncated_branch .. g:lightline_symbols.ellipsis
@@ -87,7 +85,6 @@ let s:shorten_branch_rules = [
             \ { branch -> fnamemodify(branch, ':t') },
             \ { branch -> s:ExtractNestedTicketNumbers(branch) },
             \ { branch -> s:ExtractTicketNumber(branch) },
-            \ { branch -> s:SplitBranch(branch, 30) },
             \ ]
 
 function! s:ShortenBranch(branch, length) abort
@@ -97,7 +94,7 @@ function! s:ShortenBranch(branch, length) abort
             return l:branch
         endif
     endfor
-    return s:TruncateBranch(a:branch, 30)
+    return s:SplitBranch(a:branch, 30)
 endfunction
 
 function! s:FormatBranch(branch) abort
