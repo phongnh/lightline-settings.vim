@@ -2,7 +2,7 @@ vim9script
 
 # Theme mappings
 const lightline_theme_mappings = extend({
-    '^\(solarized\|soluarized\|flattened\|neosolarized\)': 'solarized',
+    '^\(solarized\|flattened\|NeoSolarized\)': 'solarized',
     '^gruvbox$': 'gruvbox_material',
     '^gruvbox-baby$': 'gruvbox_material',
     '^gruvbox-baby': 'gruvbox',
