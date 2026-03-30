@@ -173,10 +173,17 @@ def UpdateBufferCount()
     endfor
 enddef
 
+import autoload 'lightline_settings/theme.vim'
+
 augroup LightlineSettings
     autocmd!
-    autocmd ColorScheme * lightline_settings#theme#Apply()
-    autocmd OptionSet background lightline_settings#theme#Apply()
+    if v:vim_did_enter
+        theme.Detect()
+    else
+        autocmd VimEnter * ++once theme.Detect()
+    endif
+    autocmd ColorScheme * theme.Apply()
+    autocmd OptionSet background theme.Apply()
     # Only update on BufAdd/BufDelete for better performance
     autocmd BufAdd,BufDelete,BufFilePost * call('UpdateBufferCount', [])
     autocmd CmdwinEnter * set filetype=cmdline syntax=vim
