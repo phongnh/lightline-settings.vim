@@ -185,6 +185,6 @@ augroup LightlineSettings
     autocmd ColorScheme * theme.Apply()
     autocmd OptionSet background theme.Apply()
     # Only update on BufAdd/BufDelete for better performance
-    autocmd BufAdd,BufDelete,BufFilePost * call('UpdateBufferCount', [])
+    autocmd BufAdd,BufDelete,BufFilePost * UpdateBufferCount()
     autocmd CmdwinEnter * set filetype=cmdline syntax=vim
 augroup END
