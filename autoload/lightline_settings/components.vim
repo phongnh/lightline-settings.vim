@@ -1,182 +1,173 @@
-" Alternate status dictionaries
-let g:lightline_filename_modes = {
-            \ 'ControlP':             'CtrlP',
-            \ '__CtrlSF__':           'CtrlSF',
-            \ '__CtrlSFPreview__':    'Preview',
-            \ '__flygrep__':          'FlyGrep',
-            \ '__Tagbar__':           'Tagbar',
-            \ '__Gundo__':            'Gundo',
-            \ '__Gundo_Preview__':    'Gundo Preview',
-            \ '__Mundo__':            'Mundo',
-            \ '__Mundo_Preview__':    'Mundo Preview',
-            \ '[BufExplorer]':        'BufExplorer',
-            \ '[Command Line]':       'Command Line',
-            \ '[Plugins]':            'Plugins',
-            \ '__committia_status__': 'Git Status',
-            \ '__committia_diff__':   'Git Diff',
-            \ '__doc__':              'Document',
-            \ '__LSP_SETTINGS__':     'LSP Settings',
-            \ }
+vim9script
 
-let g:lightline_filetype_modes = {
-            \ 'bufexplorer':       'BufExplorer',
-            \ 'simplebuffer':      'SimpleBuffer',
-            \ 'netrw':             'Netrw',
-            \ 'molder':            'Molder',
-            \ 'dirvish':           'Dirvish',
-            \ 'vaffle':            'Vaffle',
-            \ 'nerdtree':          'NERDTree',
-            \ 'fern':              'Fern',
-            \ 'neo-tree':          'NeoTree',
-            \ 'carbon.explorer':   'Carbon',
-            \ 'oil':               'Oil',
-            \ 'NvimTree':          'NvimTree',
-            \ 'CHADTree':          'CHADTree',
-            \ 'LuaTree':           'LuaTree',
-            \ 'Mundo':             'Mundo',
-            \ 'MundoDiff':         'Mundo Preview',
-            \ 'undotree':          'Undo',
-            \ 'diff':              'Diff',
-            \ 'gundo':             'Gundo',
-            \ 'startify':          'Startify',
-            \ 'alpha':             'Alpha',
-            \ 'dashboard':         'Dashboard',
-            \ 'ministarter':       'Starter',
-            \ 'tagbar':            'Tagbar',
-            \ 'vim-plug':          'Plugins',
-            \ 'terminal':          'TERMINAL',
-            \ 'help':              'HELP',
-            \ 'man':               'MAN',
-            \ 'qf':                'Quickfix',
-            \ 'godoc':             'GoDoc',
-            \ 'gedoc':             'GeDoc',
-            \ 'gitcommit':         'Commit Message',
-            \ 'gitrebase':         'Git Rebase',
-            \ 'fugitive':          'Git Status',
-            \ 'fugitiveblame':     'FugitiveBlame',
-            \ 'gitmessengerpopup': 'Git Messenger',
-            \ 'GV':                'GV',
-            \ 'agit':              'Agit',
-            \ 'agit_diff':         'Git Diff',
-            \ 'agit_stat':         'Git Stat',
-            \ 'GrepperSide':       'GrepperSide',
-            \ 'SpaceVimFlyGrep':   'FlyGrep',
-            \ 'startuptime':       'StartupTime',
-            \ }
+# Alternate status dictionaries
+g:lightline_filename_modes = {
+    ControlP:             'CtrlP',
+    '__CtrlSF__':           'CtrlSF',
+    '__CtrlSFPreview__':    'Preview',
+    '__flygrep__':          'FlyGrep',
+    '__Tagbar__':           'Tagbar',
+    '__Gundo__':            'Gundo',
+    '__Gundo_Preview__':    'Gundo Preview',
+    '__Mundo__':            'Mundo',
+    '__Mundo_Preview__':    'Mundo Preview',
+    '[BufExplorer]':        'BufExplorer',
+    '[Command Line]':       'Command Line',
+    '[Plugins]':            'Plugins',
+    '__committia_status__': 'Git Status',
+    '__committia_diff__':   'Git Diff',
+    '__doc__':              'Document',
+    '__LSP_SETTINGS__':     'LSP Settings',
+}
 
-let s:lightline_filename_integrations = {
-            \ 'ControlP':          'lightline_settings#ctrlp#Statusline',
-            \ '__CtrlSF__':        'lightline_settings#ctrlsf#Statusline',
-            \ '__CtrlSFPreview__': 'lightline_settings#ctrlsf#PreviewStatusline',
-            \ '__flygrep__':       'lightline_settings#flygrep#Statusline',
-            \ '__Tagbar__':        'lightline_settings#tagbar#Statusline',
-            \ }
+g:lightline_filetype_modes = {
+    bufexplorer:       'BufExplorer',
+    simplebuffer:      'SimpleBuffer',
+    netrw:             'Netrw',
+    molder:            'Molder',
+    dirvish:           'Dirvish',
+    vaffle:            'Vaffle',
+    nerdtree:          'NERDTree',
+    fern:              'Fern',
+    Mundo:             'Mundo',
+    MundoDiff:         'Mundo Preview',
+    undotree:          'Undo',
+    diff:              'Diff',
+    gundo:             'Gundo',
+    startify:          'Startify',
+    dashboard:         'Dashboard',
+    tagbar:            'Tagbar',
+    'vim-plug':        'Plugins',
+    terminal:          'TERMINAL',
+    help:              'HELP',
+    man:               'MAN',
+    qf:                'Quickfix',
+    godoc:             'GoDoc',
+    gedoc:             'GeDoc',
+    gitcommit:         'Commit Message',
+    gitrebase:         'Git Rebase',
+    fugitive:          'Git Status',
+    fugitiveblame:     'FugitiveBlame',
+    gitmessengerpopup: 'Git Messenger',
+    GV:                'GV',
+    agit:              'Agit',
+    agit_diff:         'Git Diff',
+    agit_stat:         'Git Stat',
+    GrepperSide:       'GrepperSide',
+    SpaceVimFlyGrep:   'FlyGrep',
+    startuptime:       'StartupTime',
+}
 
-let s:lightline_filetype_integrations = {
-            \ 'cmdline':         'lightline_settings#cmdline#Statusline',
-            \ 'ctrlp':           'lightline_settings#ctrlp#Statusline',
-            \ 'nerdtree':        'lightline_settings#nerdtree#Statusline',
-            \ 'netrw':           'lightline_settings#netrw#Statusline',
-            \ 'dirvish':         'lightline_settings#dirvish#Statusline',
-            \ 'molder':          'lightline_settings#molder#Statusline',
-            \ 'vaffle':          'lightline_settings#vaffle#Statusline',
-            \ 'fern':            'lightline_settings#fern#Statusline',
-            \ 'carbon.explorer': 'lightline_settings#carbon#Statusline',
-            \ 'neo-tree':        'lightline_settings#neotree#Statusline',
-            \ 'oil':             'lightline_settings#oil#Statusline',
-            \ 'undotree':        'lightline_settings#undotree#Statusline',
-            \ 'diff':            'lightline_settings#diff#Statusline',
-            \ 'tagbar':          'lightline_settings#tagbar#Statusline',
-            \ 'NrrwRgn':         'lightline_settings#nrrwrgn#Statusline',
-            \ 'git':             'lightline_settings#git#Statusline',
-            \ 'gitcommit':       'lightline_settings#gitcommit#Statusline',
-            \ 'gitrebase':       'lightline_settings#gitrebase#Statusline',
-            \ 'fugitive':        'lightline_settings#fugitive#Statusline',
-            \ 'GV':              'lightline_settings#gv#Statusline',
-            \ 'terminal':        'lightline_settings#terminal#Statusline',
-            \ 'help':            'lightline_settings#help#Statusline',
-            \ 'man':             'lightline_settings#man#Statusline',
-            \ 'qf':              'lightline_settings#quickfix#Statusline',
-            \ 'ctrlsf':          'lightline_settings#ctrlsf#Statusline',
-            \ 'GrepperSide':     'lightline_settings#grepper#Statusline',
-            \ 'SpaceVimFlyGrep': 'lightline_settings#flygrep#Statusline',
-            \ }
+const lightline_filename_integrations = {
+    ControlP:            'lightline_settings#ctrlp#Statusline',
+    '__CtrlSF__':        'lightline_settings#ctrlsf#Statusline',
+    '__CtrlSFPreview__': 'lightline_settings#ctrlsf#PreviewStatusline',
+    '__flygrep__':       'lightline_settings#flygrep#Statusline',
+    '__Tagbar__':        'lightline_settings#tagbar#Statusline',
+}
 
-function! s:BufferType() abort
+const lightline_filetype_integrations = {
+    cmdline:         'lightline_settings#cmdline#Statusline',
+    ctrlp:           'lightline_settings#ctrlp#Statusline',
+    nerdtree:        'lightline_settings#nerdtree#Statusline',
+    netrw:           'lightline_settings#netrw#Statusline',
+    dirvish:         'lightline_settings#dirvish#Statusline',
+    molder:          'lightline_settings#molder#Statusline',
+    vaffle:          'lightline_settings#vaffle#Statusline',
+    fern:            'lightline_settings#fern#Statusline',
+    undotree:        'lightline_settings#undotree#Statusline',
+    diff:            'lightline_settings#diff#Statusline',
+    tagbar:          'lightline_settings#tagbar#Statusline',
+    NrrwRgn:         'lightline_settings#nrrwrgn#Statusline',
+    git:             'lightline_settings#git#Statusline',
+    gitcommit:       'lightline_settings#gitcommit#Statusline',
+    gitrebase:       'lightline_settings#gitrebase#Statusline',
+    fugitive:        'lightline_settings#fugitive#Statusline',
+    GV:              'lightline_settings#gv#Statusline',
+    terminal:        'lightline_settings#terminal#Statusline',
+    help:            'lightline_settings#help#Statusline',
+    man:             'lightline_settings#man#Statusline',
+    qf:              'lightline_settings#quickfix#Statusline',
+    ctrlsf:          'lightline_settings#ctrlsf#Statusline',
+    GrepperSide:     'lightline_settings#grepper#Statusline',
+    SpaceVimFlyGrep: 'lightline_settings#flygrep#Statusline',
+}
+
+def BufferType(): string
     return !empty(&filetype) ? &filetype : &buftype
-endfunction
+enddef
 
-function! s:FileName() abort
-    let l:fname = expand('%')
-    return !empty(l:fname) ? fnamemodify(l:fname, ':~:.') : '[No Name]'
-endfunction
+def GetFileName(): string
+    const fname = expand('%')
+    return !empty(fname) ? fnamemodify(fname, ':~:.') : '[No Name]'
+enddef
 
-function! s:IsClipboardEnabled() abort
+def IsClipboardEnabled(): bool
     return stridx(&clipboard, 'unnamed') > -1
-endfunction
+enddef
 
-function! s:IsCompact(...) abort
-    let l:winnr = get(a:, 1, 0)
-    return lightline_settings#GetWinWidth(l:winnr) <= g:lightline_winwidth_config.compact ||
-                \ count([
-                \   s:IsClipboardEnabled(),
-                \   &paste,
-                \   &spell,
-                \   &bomb,
-                \   !&eol,
-                \ ], 1) > 1
-endfunction
+def IsCompact(...args: list<any>): bool
+    const winnr = get(args, 0, 0)
+    return lightline_settings#GetWinWidth(winnr) <= g:lightline_winwidth_config.compact ||
+        count([
+            IsClipboardEnabled(),
+            &paste,
+            &spell,
+            &bomb,
+            !&eol,
+        ], 1) > 1
+enddef
 
-function! lightline_settings#components#Mode() abort
-    if s:IsCompact()
+export def Mode(): string
+    if IsCompact()
         return get(g:lightline_short_mode_map, mode(), '')
     else
         return lightline#mode()
     endif
-endfunction
+enddef
 
-function! lightline_settings#components#Clipboard() abort
-    return s:IsClipboardEnabled() ? g:lightline_symbols.clipboard : ''
-endfunction
+export def Clipboard(): string
+    return IsClipboardEnabled() ? g:lightline_symbols.clipboard : ''
+enddef
 
-function! lightline_settings#components#Paste() abort
+export def Paste(): string
     return &paste ? g:lightline_symbols.paste : ''
-endfunction
+enddef
 
-function! lightline_settings#components#Spell() abort
+export def Spell(): string
     return &spell ? toupper(tr(&spelllang, ',', '/')) : ''
-endfunction
+enddef
 
-function! s:Shiftwidth() abort
+def Shiftwidth(): number
     return exists('*shiftwidth') ? shiftwidth() : &shiftwidth
-endfunction
+enddef
 
-function! lightline_settings#components#Indentation(...) abort
-    let l:compact = get(a:, 1, s:IsCompact())
+export def Indentation(...args: list<any>): string
+    const compact = get(args, 0, IsCompact())
     if &expandtab
-        return (l:compact ? 'SPC' : 'Spaces') .. ': ' .. s:Shiftwidth()
+        return (compact ? 'SPC' : 'Spaces') .. ': ' .. Shiftwidth()
     else
-        return (l:compact ? 'TAB' : 'Tab Size') .. ': ' .. &tabstop
+        return (compact ? 'TAB' : 'Tab Size') .. ': ' .. &tabstop
     endif
-endfunction
+enddef
 
-function! lightline_settings#components#Readonly(...) abort
+export def Readonly(...args: list<any>): string
     return &readonly ? g:lightline_symbols.readonly .. ' ' : ''
-endfunction
+enddef
 
-function! lightline_settings#components#Modified(...) abort
+export def Modified(...args: list<any>): string
     if &modified
         return !&modifiable ? '[+-]' : '[+]'
     else
         return !&modifiable ? '[-]' : ''
     endif
-endfunction
+enddef
 
-function! s:ZoomStatus(...) abort
+def ZoomStatus(...args: list<any>): string
     return get(g:, 'lightline_zoomstate', 0) ? '[Z]' : ''
-endfunction
+enddef
 
-function! lightline_settings#components#Progress(...) abort
+export def Progress(...args: list<any>): string
     if line('w0') == 1 && line('w$') == line('$')
         return 'All'
     elseif line('w0') == 1
@@ -186,78 +177,78 @@ function! lightline_settings#components#Progress(...) abort
     else
         return (line('.') * 100 / line('$')) .. '%'
     endif
-endfunction
+enddef
 
-function! lightline_settings#components#Position(...) abort
+export def Position(...args: list<any>): string
     return printf('%4d:%-3d', line('.'), charcol('.'))
-endfunction
+enddef
 
-function! lightline_settings#components#Ruler(...) abort
-    return printf('%4d:%-3d %3s', line('.'), charcol('.'), lightline_settings#components#Progress())
-endfunction
+export def Ruler(...args: list<any>): string
+    return printf('%4d:%-3d %3s', line('.'), charcol('.'), Progress())
+enddef
 
-function! lightline_settings#components#FileEncodingAndFormat() abort
-    " Skip encoding check if it's utf-8 and format is unix (common case)
+export def FileEncodingAndFormat(): string
+    # Skip encoding check if it's utf-8 and format is unix (common case)
     if &fileencoding ==# 'utf-8' && &fileformat ==# 'unix' && !&bomb && &eol
         return ''
     endif
 
-    let l:parts = []
+    var parts: list<string> = []
 
-    let l:encoding = !empty(&fileencoding) ? &fileencoding : &encoding
-    if !empty(l:encoding) && l:encoding !=# 'utf-8'
-        call add(l:parts, l:encoding)
+    const encoding = !empty(&fileencoding) ? &fileencoding : &encoding
+    if !empty(encoding) && encoding !=# 'utf-8'
+        add(parts, encoding)
     endif
 
-    if &bomb | call add(l:parts, g:lightline_symbols.bomb) | endif
-    if !&eol | call add(l:parts, g:lightline_symbols.noeol) | endif
+    if &bomb | add(parts, g:lightline_symbols.bomb) | endif
+    if !&eol | add(parts, g:lightline_symbols.noeol) | endif
 
     if !empty(&fileformat) && &fileformat !=# 'unix'
-        call add(l:parts, get(g:lightline_symbols, &fileformat, &fileformat))
+        add(parts, get(g:lightline_symbols, &fileformat, &fileformat))
     endif
 
-    return join(l:parts, ' ')
-endfunction
+    return join(parts, ' ')
+enddef
 
-function! lightline_settings#components#FileType(...) abort
-    return s:BufferType() .. lightline_settings#devicons#FileType(expand('%'))
-endfunction
+export def FileType(...args: list<any>): string
+    return BufferType() .. lightline_settings#devicons#FileType(expand('%'))
+enddef
 
-function! lightline_settings#components#FileName(...) abort
-    return lightline_settings#components#Readonly() .. lightline_settings#FormatFileName(s:FileName()) .. s:ZoomStatus() .. lightline_settings#components#Modified()
-endfunction
+export def FileName(...args: list<any>): string
+    return Readonly() .. lightline_settings#FormatFileName(GetFileName()) .. ZoomStatus() .. Modified()
+enddef
 
-function! lightline_settings#components#InactiveFileName(...) abort
-    return lightline_settings#components#Readonly() .. s:FileName() .. lightline_settings#components#Modified()
-endfunction
+export def InactiveFileName(...args: list<any>): string
+    return Readonly() .. GetFileName() .. Modified()
+enddef
 
-function! lightline_settings#components#Integration() abort
-    let l:ft = s:BufferType()
+export def Integration(): dict<any>
+    const ft = BufferType()
 
-    if has_key(s:lightline_filetype_integrations, l:ft)
-        return function(s:lightline_filetype_integrations[l:ft])()
+    if has_key(lightline_filetype_integrations, ft)
+        return function(lightline_filetype_integrations[ft])()
     endif
 
-    let l:fname = expand('%:t')
+    const fname = expand('%:t')
 
-    if has_key(s:lightline_filename_integrations, l:fname)
-        return function(s:lightline_filename_integrations[l:fname])()
-    elseif l:fname =~# '^NrrwRgn_\zs.*\ze_\d\+$'
-        " Fallback to filename check if NrrwRgn buffer's filetype is not set
+    if has_key(lightline_filename_integrations, fname)
+        return function(lightline_filename_integrations[fname])()
+    elseif fname =~# '^NrrwRgn_\zs.*\ze_\d\+$'
+        # Fallback to filename check if NrrwRgn buffer's filetype is not set
         return lightline_settings#nrrwrgn#Statusline()
     endif
 
-    if has_key(g:lightline_filetype_modes, l:ft)
-        return { 'section_a': g:lightline_filetype_modes[l:ft] }
+    if has_key(g:lightline_filetype_modes, ft)
+        return {section_a: g:lightline_filetype_modes[ft]}
     endif
 
-    if has_key(g:lightline_filename_modes, l:fname)
-        return { 'section_a': g:lightline_filename_modes[l:fname] }
+    if has_key(g:lightline_filename_modes, fname)
+        return {section_a: g:lightline_filename_modes[fname]}
     endif
 
     return {}
-endfunction
+enddef
 
-function! lightline_settings#components#Branch(...) abort
+export def Branch(...args: list<any>): string
     return lightline_settings#gitbranch#Component()
-endfunction
+enddef

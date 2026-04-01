@@ -1,7 +1,9 @@
-function! lightline_settings#man#Statusline(...) abort
+vim9script
+
+export def Statusline(...args: list<any>): dict<any>
     return {
-                \ 'section_a': 'MAN',
-                \ 'section_b': expand('%:t'),
-                \ 'section_x': lightline_settings#components#Ruler(),
-                \ }
-endfunction
+        section_a: 'MAN',
+        section_b: expand('%:t'),
+        section_x: lightline_settings#components#Ruler(),
+    }
+enddef

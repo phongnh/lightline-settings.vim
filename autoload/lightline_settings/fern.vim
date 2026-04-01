@@ -1,18 +1,20 @@
-" https://github.com/lambdalisue/fern.vim
-function! lightline_settings#fern#Statusline(...) abort
-    let l:bufname = get(a:, 1, expand('%'))
-    let l:data = matchlist(l:bufname, '^fern://\(.\+\)/file://\(.\+\)\$')
+vim9script
 
-    if empty(l:data)
-        return { 'section_a': 'Fern' }
+# https://github.com/lambdalisue/fern.vim
+export def Statusline(...args: list<any>): dict<any>
+    const bufname = get(args, 0, expand('%'))
+    const data = matchlist(bufname, '^fern://\(.\+\)/file://\(.\+\)\$')
+
+    if empty(data)
+        return {section_a: 'Fern'}
     endif
 
-    let l:name = get(l:data, 1, '')
-    let l:name = stridx(l:name, 'drawer') > -1 ? 'Drawer' : 'Fern'
+    var name = get(data, 1, '')
+    name = stridx(name, 'drawer') > -1 ? 'Drawer' : 'Fern'
 
-    let l:folder = get(l:data, 2, '')
-    let l:folder = substitute(l:folder, ';\?\(#.\+\)\?\$\?$', '', '')
-    let l:folder = fnamemodify(l:folder, ':p:~:.:h')
+    var folder = get(data, 2, '')
+    folder = substitute(folder, ';\?\(#.\+\)\?\$\?$', '', '')
+    folder = fnamemodify(folder, ':p:~:.:h')
 
-    return { 'section_a': l:name, 'section_c': l:folder }
-endfunction
+    return {section_a: name, section_c: folder}
+enddef

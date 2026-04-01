@@ -1,3 +1,5 @@
-function! lightline_settings#terminal#Statusline(...) abort
-    return { 'section_a': 'TERMINAL', 'section_c': expand('%') }
-endfunction
+vim9script
+
+export def Statusline(...args: list<any>): dict<any>
+    return {section_a: 'TERMINAL', section_c: expand('%')}
+enddef
