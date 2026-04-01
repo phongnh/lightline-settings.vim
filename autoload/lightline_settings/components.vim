@@ -176,19 +176,25 @@ function! s:ZoomStatus(...) abort
     return get(g:, 'lightline_zoomstate', 0) ? '[Z]' : ''
 endfunction
 
-function! lightline_settings#components#LineInfo(...) abort
-    return ''
+function! lightline_settings#components#Progress(...) abort
+    if line('w0') == 1 && line('w$') == line('$')
+        return 'All'
+    elseif line('w0') == 1
+        return 'Top'
+    elseif line('w$') == line('$')
+        return 'Bot'
+    else
+        return (line('.') * 100 / line('$')) .. '%'
+    endif
 endfunction
 
-if g:lightline_show_linenr > 1
-    function! lightline_settings#components#LineInfo(...) abort
-        return call('lightline_settings#lineinfo#Full', a:000)
-    endfunction
-elseif g:lightline_show_linenr > 0
-    function! lightline_settings#components#LineInfo(...) abort
-        return call('lightline_settings#lineinfo#Simple', a:000)
-    endfunction
-endif
+function! lightline_settings#components#Position(...) abort
+    return printf('%4d:%-3d', line('.'), charcol('.'))
+endfunction
+
+function! lightline_settings#components#Ruler(...) abort
+    return printf('%4d:%-3d %3s', line('.'), charcol('.'), lightline_settings#components#Progress())
+endfunction
 
 function! lightline_settings#components#FileEncodingAndFormat() abort
     " Skip encoding check if it's utf-8 and format is unix (common case)

@@ -5,6 +5,6 @@ function! lightline_settings#cmdline#Statusline(...) abort
                 \   '<C-C>: edit',
                 \   '<CR>: execute',
                 \ ], 0),
-                \ 'section_x': lightline_settings#lineinfo#Simple(),
+                \ 'section_x': lightline_settings#components#Position(),
                 \ }
 endfunction

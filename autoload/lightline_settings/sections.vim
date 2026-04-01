@@ -43,7 +43,12 @@ function! lightline_settings#sections#SectionX(...) abort
         return ''
     endif
 
-    return lightline_settings#components#LineInfo()
+    if g:lightline_show_linenr > 1
+        return lightline_settings#components#Ruler()
+    elseif g:lightline_show_linenr > 0
+        return lightline_settings#components#Position()
+    endif
+    return ''
 endfunction
 
 function!  lightline_settings#sections#SectionY(...) abort
