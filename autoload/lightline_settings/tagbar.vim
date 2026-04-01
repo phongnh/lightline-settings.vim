@@ -1,29 +1,24 @@
-vim9script
+" https://github.com/preservim/tagbar
+let s:lightline_tagbar = {}
 
-# https://github.com/preservim/tagbar
-var lightline_tagbar: dict<any> = {}
-
-export def Status(current: any, sort: any, fname: any, flags: any, ...args: list<any>): string
-    lightline_tagbar.sort  = sort
-    lightline_tagbar.fname = fname
-    lightline_tagbar.flags = flags
+function! lightline_settings#tagbar#Status(current, sort, fname, flags, ...) abort
+    let s:lightline_tagbar.sort  = a:sort
+    let s:lightline_tagbar.fname = a:fname
+    let s:lightline_tagbar.flags = a:flags
 
     return lightline#statusline(0)
-enddef
+endfunction
 
-export def Statusline(...args: list<any>): dict<any>
-    var flags: string
-    if empty(lightline_tagbar.flags)
-        flags = ''
-    elseif type(lightline_tagbar.flags) == v:t_list
-        flags = '[' .. join(lightline_tagbar.flags, '') .. ']'
+function! lightline_settings#tagbar#Mode(...) abort
+    if empty(s:lightline_tagbar.flags)
+        let l:flags = ''
     else
-        flags = '[' .. string(lightline_tagbar.flags) .. ']'
+        let l:flags = '[' .. join(s:lightline_tagbar.flags, '') .. ']'
     endif
 
     return {
-        section_a: lightline_tagbar.sort,
-        section_b: flags,
-        section_c: lightline_tagbar.fname,
-    }
-enddef
+                \ 'section_a': s:lightline_tagbar.sort,
+                \ 'section_b': l:flags,
+                \ 'section_c': s:lightline_tagbar.fname,
+                \ }
+endfunction

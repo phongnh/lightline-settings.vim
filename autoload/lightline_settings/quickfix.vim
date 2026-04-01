@@ -1,8 +1,6 @@
-vim9script
-
-export def Statusline(...args: list<any>): dict<any>
+function! lightline_settings#quickfix#Mode(...) abort
     return {
-        section_a: getwininfo(win_getid())[0]['loclist'] ? 'Location' : 'Quickfix',
-        section_b: trim(get(w:, 'quickfix_title', '')),
-    }
-enddef
+                \ 'section_a': getwininfo(win_getid())[0]['loclist'] ? 'Location' : 'Quickfix',
+                \ 'section_b': lightline_settings#Trim(get(w:, 'quickfix_title', '')),
+                \ }
+endfunction

@@ -1,29 +1,27 @@
-vim9script
-
-var icon_type = 0  # 0: none, 1: nerdfont, 2: webdevicons, 3: custom
-
-export def FileType(filename: string): string
-    if icon_type == 1
-        return ' ' .. call('nerdfont#find', [filename]) .. ' '
-    elseif icon_type == 2
-        return ' ' .. call('WebDevIconsGetFileTypeSymbol', [filename]) .. ' '
-    elseif icon_type == 3
-        return ' ' .. call(g:LightlineWebDevIconsFind, [filename]) .. ' '
-    endif
+function! lightline_settings#devicons#FileType(filename) abort
     return ''
-enddef
+endfunction
 
-export def Detect(): bool
+function! lightline_settings#devicons#Detect() abort
     if !empty(findfile('autoload/nerdfont.vim', &rtp))
-        icon_type = 1
-        return true
+        function! lightline_settings#devicons#FileType(filename) abort
+            return ' ' .. nerdfont#find(a:filename) .. ' '
+        endfunction
+
+        return 1
     elseif !empty(findfile('plugin/webdevicons.vim', &rtp))
-        icon_type = 2
-        return true
+        function! lightline_settings#devicons#FileType(filename) abort
+            return ' ' .. WebDevIconsGetFileTypeSymbol(a:filename) .. ' '
+        endfunction
+
+        return 1
     elseif exists('g:LightlineWebDevIconsFind')
-        icon_type = 3
-        return true
+        function! lightline_settings#devicons#FileType(filename) abort
+            return ' ' .. g:LightlineWebDevIconsFind(a:filename) .. ' '
+        endfunction
+
+        return 1
     endif
 
-    return false
-enddef
+    return 0
+endfunction

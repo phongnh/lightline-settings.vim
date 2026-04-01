@@ -1,90 +1,83 @@
-vim9script
-
-export def SectionA(...args: list<any>): string
-    const integration = lightline_settings#components#Integration()
-    if !empty(integration)
-        return integration['section_a']
+function! lightline_settings#sections#SectionA(...) abort
+    let l:integration = lightline_settings#parts#Integration()
+    if len(l:integration)
+        return l:integration['section_a']
     endif
 
     return lightline#concatenate([
-        lightline_settings#components#Mode(),
-        lightline_settings#components#Clipboard(),
-        lightline_settings#components#Paste(),
-    ], 0)
-enddef
+                \   lightline_settings#parts#Mode(),
+                \   lightline_settings#parts#Clipboard(),
+                \   lightline_settings#parts#Paste(),
+                \ ], 0)
+endfunction
 
-export def SectionB(...args: list<any>): string
-    const integration = lightline_settings#components#Integration()
-    if !empty(integration)
-        return get(integration, 'section_b', '')
+function! lightline_settings#sections#SectionB(...) abort
+    let l:integration = lightline_settings#parts#Integration()
+    if len(l:integration)
+        return get(l:integration, 'section_b', '')
     endif
 
-    if g:lightline_show_git_branch > 0 && lightline_settings#GetWinWidth(0) >= g:lightline_winwidth_config.default
-        return lightline_settings#components#Branch()
+    if lightline_settings#GetWinWidth(0) >= g:lightline_winwidth_config.default
+        return lightline_settings#parts#GitBranch()
     endif
 
     return ''
-enddef
+endfunction
 
-export def SectionC(...args: list<any>): string
-    const integration = lightline_settings#components#Integration()
-    if !empty(integration)
-        return get(integration, 'section_c', '')
+function! lightline_settings#sections#SectionC(...) abort
+    let l:integration = lightline_settings#parts#Integration()
+    if len(l:integration)
+        return get(l:integration, 'section_c', '')
     endif
 
-    return lightline_settings#components#FileName()
-enddef
+    return lightline_settings#parts#FileName()
+endfunction
 
-export def SectionX(...args: list<any>): string
-    const integration = lightline_settings#components#Integration()
-    if !empty(integration)
-        return get(integration, 'section_x', '')
+function! lightline_settings#sections#SectionX(...) abort
+    let l:integration = lightline_settings#parts#Integration()
+    if len(l:integration)
+        return get(l:integration, 'section_x', '')
     endif
 
     if lightline_settings#GetWinWidth(0) <= g:lightline_winwidth_config.compact
         return ''
     endif
 
-    if g:lightline_show_linenr > 1
-        return lightline_settings#components#Ruler()
-    elseif g:lightline_show_linenr > 0
-        return lightline_settings#components#Position()
-    endif
-    return ''
-enddef
+    return lightline_settings#parts#LineInfo()
+endfunction
 
-export def SectionY(...args: list<any>): string
-    const integration = lightline_settings#components#Integration()
-    if !empty(integration)
-        return get(integration, 'section_y', '')
+function!  lightline_settings#sections#SectionY(...) abort
+    let l:integration = lightline_settings#parts#Integration()
+    if len(l:integration)
+        return get(l:integration, 'section_y', '')
     endif
 
     return lightline#concatenate([
-        lightline_settings#components#Spell(),
-        lightline_settings#components#Indentation(),
-        lightline_settings#components#FileEncodingAndFormat(),
-    ], 1)
-enddef
+                \   lightline_settings#parts#Spell(),
+                \   lightline_settings#parts#Indentation(),
+                \   lightline_settings#parts#FileEncodingAndFormat(),
+                \ ], 1)
+endfunction
 
-export def SectionZ(...args: list<any>): string
-    const integration = lightline_settings#components#Integration()
-    if !empty(integration)
-        return get(integration, 'section_z', '')
+function!  lightline_settings#sections#SectionZ(...) abort
+    let l:integration = lightline_settings#parts#Integration()
+    if len(l:integration)
+        return get(l:integration, 'section_z', '')
     endif
 
-    return lightline_settings#components#FileType()
-enddef
+    return lightline_settings#parts#FileType()
+endfunction
 
-export def InactiveSectionA(...args: list<any>): string
-    const integration = lightline_settings#components#Integration()
-    if !empty(integration)
+function!  lightline_settings#sections#InactiveSectionA(...) abort
+    let l:integration = lightline_settings#parts#Integration()
+    if len(l:integration)
         return lightline#concatenate([
-            integration['section_a'],
-            get(integration, 'section_b', ''),
-            get(integration, 'section_c', ''),
-        ], 0)
+                    \   l:integration['section_a'],
+                    \   get(l:integration, 'section_b', ''),
+                    \   get(l:integration, 'section_c', ''),
+                    \ ], 0)
     endif
 
-    # plugin/statusline.vim[+]
-    return lightline_settings#components#InactiveFileName()
-enddef
+    " plugin/statusline.vim[+]
+    return lightline_settings#parts#InactiveFileName()
+endfunction

@@ -1,3 +1,1 @@
-vim9script
-
-lightline#update()
+call lightline#update()
