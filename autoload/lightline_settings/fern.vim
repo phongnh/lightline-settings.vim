@@ -1,5 +1,5 @@
 " https://github.com/lambdalisue/fern.vim
-function! lightline_settings#fern#Mode(...) abort
+function! lightline_settings#fern#Statusline(...) abort
     let l:bufname = get(a:, 1, expand('%'))
     let l:data = matchlist(l:bufname, '^fern://\(.\+\)/file://\(.\+\)\$')
 

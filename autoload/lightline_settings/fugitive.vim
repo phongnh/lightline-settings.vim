@@ -10,10 +10,10 @@ function! s:FugitiveStatus() abort
     return []
 endfunction
 
-function! lightline_settings#fugitive#Mode(...) abort
+function! lightline_settings#fugitive#Statusline(...) abort
     return {
                 \ 'section_a': 'Git Status',
-                \ 'section_b': lightline_settings#gitbranch#Name(),
+                \ 'section_b': lightline_settings#gitbranch#Component(),
                 \ 'section_c': lightline#concatenate(s:FugitiveStatus(), 0),
                 \ }
 endfunction
