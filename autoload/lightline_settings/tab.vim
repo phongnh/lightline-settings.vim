@@ -1,41 +1,44 @@
-function! s:TabNumber(n) abort
-    return a:n .. ': '
-endfunction
+vim9script
 
-function! s:TabBufferType(n) abort
-    let l:ft = gettabwinvar(a:n, tabpagewinnr(a:n), '&filetype')
-    return !empty(l:ft) ? l:ft : gettabwinvar(a:n, tabpagewinnr(a:n), '&buftype')
-endfunction
+def TabNumber(n: number): string
+    return n .. ': '
+enddef
 
-function! s:TabBufferName(n) abort
-    let l:ft = s:TabBufferType(a:n)
-    if has_key(g:lightline_filetype_modes, l:ft)
-        return g:lightline_filetype_modes[l:ft]
+def TabBufferType(n: number): string
+    const ft = gettabwinvar(n, tabpagewinnr(n), '&filetype')
+    return !empty(ft) ? ft : gettabwinvar(n, tabpagewinnr(n), '&buftype')
+enddef
+
+def TabBufferName(n: number): string
+    const ft = TabBufferType(n)
+    if has_key(g:lightline_filetype_modes, ft)
+        return g:lightline_filetype_modes[ft]
     endif
-    let l:bufnr = tabpagebuflist(a:n)[tabpagewinnr(a:n) - 1]
-    let l:bufname = expand('#' .. l:bufnr .. ':t')
-    if get(g:lightline_buffer_count_by_basename, l:bufname, 0) > 1
-        let l:fname = substitute(expand('#' .. l:bufnr .. ':p'), '.*/\([^/]\+/\)', '\1', '')
+    const bufnr = tabpagebuflist(n)[tabpagewinnr(n) - 1]
+    const bufname = expand('#' .. bufnr .. ':t')
+    var fname: string
+    if get(g:lightline_buffer_count_by_basename, bufname, 0) > 1
+        fname = substitute(expand('#' .. bufnr .. ':p'), '.*/\([^/]\+/\)', '\1', '')
     else
-        let l:fname = l:bufname
+        fname = bufname
     endif
-    return l:fname =~# '^\[preview' ? 'Preview' : get(g:lightline_filename_modes, l:fname, l:fname)
-endfunction
+    return fname =~# '^\[preview' ? 'Preview' : get(g:lightline_filename_modes, fname, fname)
+enddef
 
-" Copied from https://github.com/itchyny/lightline-powerful/blob/master/autoload/lightline_powerful.vim
-function! s:TabReadonly(n) abort
-    return gettabwinvar(a:n, tabpagewinnr(a:n), '&readonly') ? g:lightline_symbols.readonly .. ' ' : ''
-endfunction
+# Copied from https://github.com/itchyny/lightline-powerful/blob/master/autoload/lightline_powerful.vim
+def TabReadonly(n: number): string
+    return gettabwinvar(n, tabpagewinnr(n), '&readonly') ? g:lightline_symbols.readonly .. ' ' : ''
+enddef
 
-function! lightline_settings#tab#Modified(n) abort
-    let l:winnr = tabpagewinnr(a:n)
-    if gettabwinvar(a:n, l:winnr, '&modified')
-        return !gettabwinvar(a:n, l:winnr, '&modifiable') ? '+-' : '+'
+export def Modified(n: number): string
+    const winnr = tabpagewinnr(n)
+    if gettabwinvar(n, winnr, '&modified')
+        return !gettabwinvar(n, winnr, '&modifiable') ? '+-' : '+'
     else
-        return !gettabwinvar(a:n, l:winnr, '&modifiable') ? '-' : ''
+        return !gettabwinvar(n, winnr, '&modifiable') ? '-' : ''
     endif
-endfunction
+enddef
 
-function! lightline_settings#tab#Name(n) abort
-    return s:TabNumber(a:n) .. s:TabReadonly(a:n) .. s:TabBufferName(a:n)
-endfunction
+export def Name(n: number): string
+    return TabNumber(n) .. TabReadonly(n) .. TabBufferName(n)
+enddef

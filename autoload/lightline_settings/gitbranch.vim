@@ -1,118 +1,121 @@
-let s:git_branch_expiry = 5.0 " 5 seconds
-let s:git_branch_cache = ''
-let s:git_branch_time = ''
+vim9script
 
-function! s:GetGitBranch() abort
-    " If cache is empty or older than 5 seconds, update it
-    if empty(s:git_branch_cache) || reltimefloat(reltime(s:git_branch_time)) > s:git_branch_expiry
+var git_branch_expiry = 5.0 # 5 seconds
+var git_branch_cache = ''
+var git_branch_time: list<any> = []
+
+def GetGitBranch(): string
+    # If cache is empty or older than 5 seconds, update it
+    if empty(git_branch_cache) || reltimefloat(reltime(git_branch_time)) > git_branch_expiry
+        var branch: string
         if exists('*FugitiveHead')
-            let l:branch = FugitiveHead()
-            if empty(l:branch) && !exists('b:git_dir')
-                call FugitiveDetect()
-                let l:branch = FugitiveHead()
+            branch = call('FugitiveHead', [])
+            if empty(branch) && !exists('b:git_dir')
+                call('FugitiveDetect', [])
+                branch = call('FugitiveHead', [])
             endif
         else
-            let l:branch = system('git branch --show-current 2>/dev/null')
-            let l:branch = lightline_settings#Trim(l:branch)
+            branch = system('git branch --show-current 2>/dev/null')
+            branch = trim(branch)
         endif
-        " Caching
-        let s:git_branch_cache = l:branch
-        let s:git_branch_time = reltime()
+        # Caching
+        git_branch_cache = branch
+        git_branch_time = reltime()
     endif
 
-    return s:git_branch_cache
-endfunction
+    return git_branch_cache
+enddef
 
-" Extract JIRA / YouTrack ticket number
-let s:ticket_number_pattern = '^\([A-Z]\{3,}-\d\{1,}\)'
-let s:nested_ticket_number_pattern = '^\([A-Z]\{3,}-\d\{1,}\)\(\/[A-Z]\{3,}-\d\{1,}\)\+'
+# Extract JIRA / YouTrack ticket number
+const ticket_number_pattern = '^\([A-Z]\{3,}-\d\{1,}\)'
+const nested_ticket_number_pattern = '^\([A-Z]\{3,}-\d\{1,}\)\(\/[A-Z]\{3,}-\d\{1,}\)\+'
 
-" JIRA-123/JIRA-456-*
-function! s:ExtractNestedTicketNumbers(branch) abort
-    if match(a:branch, s:nested_ticket_number_pattern) > -1
-        let l:result = []
-        for l:part in split(a:branch, '/')
-            if match(l:part, s:ticket_number_pattern) > -1
-                call add(l:result, matchstr(l:part, s:ticket_number_pattern))
+# JIRA-123/JIRA-456-*
+def ExtractNestedTicketNumbers(branch: string): string
+    if match(branch, nested_ticket_number_pattern) > -1
+        var result: list<string> = []
+        for part in split(branch, '/')
+            if match(part, ticket_number_pattern) > -1
+                add(result, matchstr(part, ticket_number_pattern))
             endif
         endfor
-        return join(l:result, '/')
+        return join(result, '/')
     endif
-    return a:branch
-endfunction
+    return branch
+enddef
 
-function! s:ExtractTicketNumber(branch) abort
-    for l:part in split(a:branch, '/')->reverse()
-        if match(l:part, s:ticket_number_pattern) > -1
-            return matchstr(l:part, s:ticket_number_pattern)
+def ExtractTicketNumber(branch: string): string
+    for part in split(branch, '/')->reverse()
+        if match(part, ticket_number_pattern) > -1
+            return matchstr(part, ticket_number_pattern)
         endif
     endfor
-    return a:branch
-endfunction
+    return branch
+enddef
 
-function! s:TruncateBranch(branch, length) abort
-    return strcharpart(a:branch, 0, a:length - 1) .. g:lightline_symbols.ellipsis
-endfunction
+def TruncateBranch(branch: string, length: number): string
+    return strcharpart(branch, 0, length - 1) .. g:lightline_symbols.ellipsis
+enddef
 
-function! s:SplitBranch(branch, length) abort
-    let l:branch = fnamemodify(a:branch, ':t')
-    if strlen(l:branch) <= a:length
-        return l:branch
+def SplitBranch(branch: string, length: number): string
+    const branch_tail = fnamemodify(branch, ':t')
+    if strlen(branch_tail) <= length
+        return branch_tail
     endif
-    let l:sep = '-'
-    let l:parts = split(l:branch, l:sep)
-    if len(l:parts) == 1
-        let l:sep = '_'
-        let l:parts = split(l:branch, l:sep)
+    var sep = '-'
+    var parts = split(branch_tail, sep)
+    if len(parts) == 1
+        sep = '_'
+        parts = split(branch_tail, sep)
     endif
-    let l:truncated_branch = l:parts[0]
-    for l:idx in range(1, len(l:parts) - 1)
-        let l:part = l:parts[l:idx]
-        if strlen(l:truncated_branch .. l:sep .. l:part) > a:length
+    var truncated_branch = parts[0]
+    for idx in range(1, len(parts) - 1)
+        var part = parts[idx]
+        if strlen(truncated_branch .. sep .. part) > length
             break
         endif
-        let l:truncated_branch = l:truncated_branch .. l:sep .. l:part
+        truncated_branch = truncated_branch .. sep .. part
     endfor
-    if strlen(l:truncated_branch) > a:length
-        return s:TruncateBranch(l:branch, a:length)
+    if strlen(truncated_branch) > length
+        return TruncateBranch(branch_tail, length)
     endif
-    return l:truncated_branch .. g:lightline_symbols.ellipsis
-endfunction
+    return truncated_branch .. g:lightline_symbols.ellipsis
+enddef
 
-let s:shorten_branch_rules = [
-            \ { branch -> branch },
-            \ { branch -> g:lightline_shorten_path ? lightline_settings#ShortenPath(branch) : branch },
-            \ { branch -> fnamemodify(branch, ':t') },
-            \ { branch -> s:ExtractNestedTicketNumbers(branch) },
-            \ { branch -> s:ExtractTicketNumber(branch) },
-            \ ]
+const shorten_branch_rules: list<any> = [
+    (branch) => branch,
+    (branch) => g:lightline_shorten_path ? pathshorten(branch) : branch,
+    (branch) => fnamemodify(branch, ':t'),
+    (branch) => ExtractNestedTicketNumbers(branch),
+    (branch) => ExtractTicketNumber(branch),
+]
 
-function! s:ShortenBranch(branch, length) abort
-    for l:F in s:shorten_branch_rules
-        let l:branch = l:F(a:branch)
-        if strlen(l:branch) <= a:length
-            return l:branch
+def ShortenBranch(branch: string, length: number): string
+    for F in shorten_branch_rules
+        const shortened_branch = F(branch)
+        if strlen(shortened_branch) <= length
+            return shortened_branch
         endif
     endfor
-    return s:SplitBranch(a:branch, 30)
-endfunction
+    return SplitBranch(branch, 30)
+enddef
 
-function! s:FormatBranch(branch) abort
-    let l:winwidth = lightline_settings#GetWinWidth(0)
+def FormatBranch(branch: string): string
+    const winwidth = lightline_settings#GetWinWidth(0)
 
-    if l:winwidth >= g:lightline_winwidth_config.normal
-        return s:ShortenBranch(a:branch, 50)
+    if winwidth >= g:lightline_winwidth_config.normal
+        return ShortenBranch(branch, 50)
     endif
 
-    return s:ShortenBranch(a:branch, 30)
-endfunction
+    return ShortenBranch(branch, 30)
+enddef
 
-function! lightline_settings#gitbranch#Name(...) abort
-    let l:branch = s:FormatBranch(s:GetGitBranch())
+export def Component(...args: list<any>): string
+    const branch = FormatBranch(GetGitBranch())
 
-    if !empty(l:branch)
-        return g:lightline_symbols.branch .. ' ' .. l:branch
+    if !empty(branch)
+        return g:lightline_symbols.branch .. ' ' .. branch
     endif
 
-    return l:branch
-endfunction
+    return branch
+enddef
