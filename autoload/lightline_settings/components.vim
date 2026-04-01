@@ -258,12 +258,6 @@ function! lightline_settings#components#Integration() abort
     return {}
 endfunction
 
-function! lightline_settings#components#GitBranch(...) abort
-    return ''
+function! lightline_settings#components#Branch(...) abort
+    return lightline_settings#gitbranch#Component()
 endfunction
-
-if g:lightline_show_git_branch > 0
-    function! lightline_settings#components#GitBranch(...) abort
-        return lightline_settings#gitbranch#Name()
-    endfunction
-endif
