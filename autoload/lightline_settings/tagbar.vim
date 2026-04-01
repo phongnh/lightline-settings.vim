@@ -9,7 +9,7 @@ function! lightline_settings#tagbar#Status(current, sort, fname, flags, ...) abo
     return lightline#statusline(0)
 endfunction
 
-function! lightline_settings#tagbar#Mode(...) abort
+function! lightline_settings#tagbar#Statusline(...) abort
     if empty(s:lightline_tagbar.flags)
         let l:flags = ''
     else

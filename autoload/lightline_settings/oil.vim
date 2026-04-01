@@ -9,6 +9,6 @@ function! s:GetCurrentDir(bufname) abort
     return !empty(l:dir) ? fnamemodify(l:dir, ':p:~:.:h') : ''
 endfunction
 
-function! lightline_settings#oil#Mode(...) abort
+function! lightline_settings#oil#Statusline(...) abort
     return { 'section_a': 'Oil', 'section_c': s:GetCurrentDir(get(a:, 1, expand('%'))) }
 endfunction

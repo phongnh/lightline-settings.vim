@@ -1,5 +1,5 @@
 " https://github.com/preservim/nerdtree
-function! lightline_settings#nerdtree#Mode(...) abort
+function! lightline_settings#nerdtree#Statusline(...) abort
     return {
                 \ 'section_a': 'NERDTree',
                 \ 'section_c': exists('b:NERDTree') ? fnamemodify(b:NERDTree.root.path.str(), ':p:~:.:h') : '',

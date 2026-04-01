@@ -1,4 +1,4 @@
-function! lightline_settings#help#Mode(...) abort
+function! lightline_settings#help#Statusline(...) abort
     return {
                 \ 'section_a': 'HELP',
                 \ 'section_c': expand('%:~:.'),

@@ -1,5 +1,5 @@
 " https://github.com/dyng/ctrlsf.vim
-function! lightline_settings#ctrlsf#Mode(...) abort
+function! lightline_settings#ctrlsf#Statusline(...) abort
     return {
                 \ 'section_a': 'CtrlSF',
                 \ 'section_b': substitute(ctrlsf#utils#SectionB(), 'Pattern: ', '', ''),
@@ -8,6 +8,6 @@ function! lightline_settings#ctrlsf#Mode(...) abort
                 \ }
 endfunction
 
-function! lightline_settings#ctrlsf#PreviewMode(...) abort
+function! lightline_settings#ctrlsf#PreviewStatusline(...) abort
     return { 'section_a': 'Preview', 'section_c': fnamemodify(ctrlsf#utils#PreviewSectionC(), ':~:.') }
 endfunction

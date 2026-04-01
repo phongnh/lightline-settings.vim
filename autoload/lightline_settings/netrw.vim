@@ -1,4 +1,4 @@
-function! lightline_settings#netrw#Mode(...) abort
+function! lightline_settings#netrw#Statusline(...) abort
     return {
                 \ 'section_a': 'Netrw',
                 \ 'section_c': exists('b:netrw_curdir') ? fnamemodify(b:netrw_curdir, ':p:~:.:h') : '',

@@ -30,7 +30,7 @@ function! lightline_settings#ctrlp#ProgressStatus(len) abort
     return lightline#statusline(0)
 endfunction
 
-function! lightline_settings#ctrlp#Mode(...) abort
+function! lightline_settings#ctrlp#Statusline(...) abort
     let l:result = {
                 \ 'section_a': 'CtrlP',
                 \ 'section_z': s:lightline_ctrlp.dir,

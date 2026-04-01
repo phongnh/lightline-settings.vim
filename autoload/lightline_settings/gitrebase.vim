@@ -1,4 +1,4 @@
-function! lightline_settings#gitrebase#Mode(...) abort
+function! lightline_settings#gitrebase#Statusline(...) abort
     return {
                 \ 'section_a': 'Git Rebase',
                 \ 'section_b': lightline_settings#gitbranch#Name(),

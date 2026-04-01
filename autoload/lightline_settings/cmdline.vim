@@ -1,4 +1,4 @@
-function! lightline_settings#cmdline#Mode(...) abort
+function! lightline_settings#cmdline#Statusline(...) abort
     return {
                 \ 'section_a': 'Command Line',
                 \ 'section_b': lightline#concatenate([
