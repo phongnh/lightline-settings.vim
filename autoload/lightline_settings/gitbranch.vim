@@ -15,11 +15,11 @@ function! s:GetGitBranch() abort
     else
         try
             let l:cwd = getcwd()
-            lcd %:p:h
+            noautocmd silent lcd %:p:h
             silent let l:branch = system('git branch --show-current 2>/dev/null')
             let l:branch = lightline_settings#Trim(l:branch)
         finally
-            execute 'lcd' l:cwd
+            noautocmd silent execute 'lcd' fnameescape(l:cwd)
         endtry
     endif
 
