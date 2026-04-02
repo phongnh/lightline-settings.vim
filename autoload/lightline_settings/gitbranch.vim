@@ -1,26 +1,33 @@
 let s:git_branch_expiry = 5.0 " 5 seconds
-let s:git_branch_cache = ''
-let s:git_branch_time = ''
+let s:git_branch_time = []
 
 function! s:GetGitBranch() abort
-    " If cache is empty or older than 5 seconds, update it
-    if empty(s:git_branch_cache) || reltimefloat(reltime(s:git_branch_time)) > s:git_branch_expiry
-        if exists('*FugitiveHead')
-            let l:branch = FugitiveHead()
-            if empty(l:branch) && !exists('b:git_dir')
-                call FugitiveDetect()
-                let l:branch = FugitiveHead()
-            endif
-        else
-            let l:branch = system('git branch --show-current 2>/dev/null')
-            let l:branch = lightline_settings#Trim(l:branch)
-        endif
-        " Caching
-        let s:git_branch_cache = l:branch
-        let s:git_branch_time = reltime()
+    if has_key(b:, 'lightline_git_branch') && reltimefloat(reltime(s:git_branch_time)) < s:git_branch_expiry
+        return b:lightline_git_branch
     endif
 
-    return s:git_branch_cache
+    if exists('*FugitiveHead')
+        let l:branch = FugitiveHead()
+        if empty(l:branch) && !exists('b:git_dir')
+            call FugitiveDetect()
+            let l:branch = FugitiveHead()
+        endif
+    else
+        try
+            let l:cwd = getcwd()
+            lcd %:p:h
+            silent let l:branch = system('git branch --show-current 2>/dev/null')
+            let l:branch = lightline_settings#Trim(l:branch)
+        finally
+            execute 'lcd' l:cwd
+        endtry
+    endif
+
+    " Caching
+    let b:lightline_git_branch = l:branch
+    let s:git_branch_time = reltime()
+
+    return b:lightline_git_branch
 endfunction
 
 " Extract JIRA / YouTrack ticket number
