@@ -6,6 +6,19 @@ if exists('g:loaded_vim_lightline_settings') || v:version < 700
     finish
 endif
 
+" Use Vim9script implementation if available, otherwise fall back to legacy
+if has('vim9script')
+    " Add vim9/ subdirectory to runtimepath so vim9/autoload/lightline_settings.vim
+    " is found when the Vim9script plugin sources it via 'import autoload'
+    let s:vim9dir = fnamemodify(resolve(expand('<sfile>:p')), ':h:h') .. '/vim9'
+    if &runtimepath !~# s:vim9dir
+        execute 'set runtimepath^=' . fnameescape(s:vim9dir)
+    endif
+    unlet! s:vim9dir
+    source <sfile>:p:h:h/vim9/plugin/lightline_settings.vim
+    finish
+endif
+
 let g:loaded_vim_lightline_settings = 1
 
 let s:save_cpo = &cpo
@@ -172,13 +185,57 @@ function! s:UpdateBufferCount() abort
     endfor
 endfunction
 
+function! s:init() abort
+    setglobal noshowmode laststatus=2
+
+    " Disable Vim Quickfix's statusline
+    let g:qf_disable_statusline = 1
+
+    " Disable NERDTree statusline
+    let g:NERDTreeStatusline = -1
+
+    " CtrlP Integration
+    if exists(':CtrlP') == 2
+        let g:ctrlp_status_func = {
+                    \ 'main': 'lightline_settings#ctrlp#MainStatus',
+                    \ 'prog': 'lightline_settings#ctrlp#ProgressStatus',
+                    \ }
+    endif
+
+    " Tagbar Integration
+    if exists(':Tagbar') == 2
+        let g:tagbar_status_func = 'lightline_settings#tagbar#Status'
+    endif
+
+    if exists(':ZoomWin') == 2
+        let g:lightline_zoomwin_funcref = []
+
+        if exists('g:ZoomWin_funcref')
+            if type(g:ZoomWin_funcref) == v:t_func
+                let g:lightline_zoomwin_funcref = [g:ZoomWin_funcref]
+            elseif type(g:ZoomWin_funcref) == v:t_list
+                let g:lightline_zoomwin_funcref = g:ZoomWin_funcref
+            endif
+        endif
+
+        let g:ZoomWin_funcref = function('lightline_settings#zoomwin#Status')
+    endif
+
+    call lightline_settings#theme#Detect()
+endfunction
+
 augroup LightlineSettings
     autocmd!
-    autocmd ColorScheme * call lightline_settings#theme#Apply()
-    autocmd OptionSet background call lightline_settings#theme#Apply()
+    autocmd CmdwinEnter * set filetype=cmdline syntax=vim
     " Only update on BufAdd/BufDelete for better performance
     autocmd BufAdd,BufDelete,BufFilePost * call s:UpdateBufferCount()
-    autocmd CmdwinEnter * set filetype=cmdline syntax=vim
+    autocmd ColorScheme * call lightline_settings#theme#Apply()
+    autocmd OptionSet background call lightline_settings#theme#Apply()
+    if v:vim_did_enter
+        call s:init()
+    else
+        autocmd VimEnter * ++once call s:init()
+    endif
 augroup END
 
 let &cpo = s:save_cpo
