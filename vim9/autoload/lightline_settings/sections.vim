@@ -41,15 +41,14 @@ export def SectionX(...args: list<any>): string
         return get(integration, 'section_x', '')
     endif
 
-    if lightline_settings#GetWinWidth(0) <= g:lightline_winwidth_config.compact
-        return ''
+    if lightline_settings#GetWinWidth(0) > g:lightline_winwidth_config.compact
+        if g:lightline_show_linenr > 1
+            return lightline_settings#components#Ruler()
+        elseif g:lightline_show_linenr > 0
+            return lightline_settings#components#Position()
+        endif
     endif
 
-    if g:lightline_show_linenr > 1
-        return lightline_settings#components#Ruler()
-    elseif g:lightline_show_linenr > 0
-        return lightline_settings#components#Position()
-    endif
     return ''
 enddef
 
