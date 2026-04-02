@@ -1,9 +1,7 @@
-vim9script
-
-# https://github.com/preservim/nerdtree
-export def Statusline(...args: list<any>): dict<any>
+" https://github.com/preservim/nerdtree
+function! lightline_settings#nerdtree#Statusline(...) abort
     return {
-        section_a: 'NERDTree',
-        section_c: exists('b:NERDTree') ? fnamemodify(b:NERDTree.root.path.str(), ':p:~:.:h') : '',
-    }
-enddef
+                \ 'section_a': 'NERDTree',
+                \ 'section_c': exists('b:NERDTree') ? fnamemodify(b:NERDTree.root.path.str(), ':p:~:.:h') : '',
+                \ }
+endfunction

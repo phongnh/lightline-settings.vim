@@ -1,93 +1,111 @@
-vim9script
+function! lightline_settings#Trim(str) abort
+    return substitute(a:str, '^\s*\(.\{-}\)\s*$', '\1', '')
+endfunction
 
-# Cache window width to avoid repeated winwidth() calls
-var cached_winwidth = 0
-var cached_winwidth_nr = 0
+if exists('*trim')
+    function! lightline_settings#Trim(str) abort
+        return trim(a:str)
+    endfunction
+endif
 
-def GetWinWidthImpl(winnr: number = 0): number
-    # Cache is only valid for current window in current update
-    if winnr == cached_winwidth_nr && cached_winwidth > 0
-        return cached_winwidth
+function! lightline_settings#ShortenPath(filename) abort
+    return substitute(a:filename, '\v\w\zs.{-}\ze(\\|/)', '', 'g')
+endfunction
+
+if exists('*pathshorten')
+    function! lightline_settings#ShortenPath(filename) abort
+        return pathshorten(a:filename)
+    endfunction
+endif
+
+" Cache window width to avoid repeated winwidth() calls
+let s:cached_winwidth = 0
+let s:cached_winwidth_nr = 0
+
+function! s:GetWinWidth(...) abort
+    let l:winnr = get(a:, 1, 0)
+    " Cache is only valid for current window in current update
+    if l:winnr == s:cached_winwidth_nr && s:cached_winwidth > 0
+        return s:cached_winwidth
     endif
-    cached_winwidth = winwidth(winnr)
-    cached_winwidth_nr = winnr
-    return cached_winwidth
-enddef
+    let s:cached_winwidth = winwidth(l:winnr)
+    let s:cached_winwidth_nr = l:winnr
+    return s:cached_winwidth
+endfunction
 
-# Expose for use in other modules
-export def GetWinWidth(...args: list<any>): number
-    var winnr = get(args, 0, 0)
-    return GetWinWidthImpl(winnr)
-enddef
+" Expose for use in other modules
+function! lightline_settings#GetWinWidth(...) abort
+    return call('s:GetWinWidth', a:000)
+endfunction
 
-# Clear width cache (called by lightline on update)
-export def ClearWidthCache()
-    cached_winwidth = 0
-    cached_winwidth_nr = 0
-enddef
+" Clear width cache (called by lightline on update)
+function! lightline_settings#ClearWidthCache() abort
+    let s:cached_winwidth = 0
+    let s:cached_winwidth_nr = 0
+endfunction
 
-export def FormatFileName(fname: string, ...args: list<any>): string
-    var path = fname
-    var maxlen = get(args, 0, 50)
+function! lightline_settings#FormatFileName(fname, ...) abort
+    let l:path = a:fname
+    let l:maxlen = get(a:, 1, 50)
 
-    # Use cached window width if available
-    var winwidth = GetWinWidth(0)
+    " Use cached window width if available
+    let l:winwidth = lightline_settings#GetWinWidth(0)
 
-    if winwidth <= g:lightline_winwidth_config.compact
-        return fnamemodify(path, ':t')
+    if l:winwidth <= g:lightline_winwidth_config.compact
+        return fnamemodify(l:path, ':t')
     endif
 
-    if len(path) > maxlen && g:lightline_shorten_path
-        path = pathshorten(path)
+    if len(l:path) > l:maxlen && g:lightline_shorten_path
+        let l:path = lightline_settings#ShortenPath(l:path)
     endif
 
-    if len(path) > maxlen
-        path = fnamemodify(path, ':t')
+    if len(l:path) > l:maxlen
+        let l:path = fnamemodify(l:path, ':t')
     endif
 
-    return path
-enddef
+    return l:path
+endfunction
 
-export def ReloadLightline()
-    lightline#init()
-    lightline#colorscheme()
-    lightline#update()
-enddef
+function! lightline_settings#ReloadLightline() abort
+    call lightline#init()
+    call lightline#colorscheme()
+    call lightline#update()
+endfunction
 
-export def Init()
+function! lightline_settings#Init() abort
     setglobal noshowmode laststatus=2
 
-    # Disable Vim Quickfix's statusline
-    g:qf_disable_statusline = 1
+    " Disable Vim Quickfix's statusline
+    let g:qf_disable_statusline = 1
 
-    # Disable NERDTree statusline
-    g:NERDTreeStatusline = -1
+    " Disable NERDTree statusline
+    let g:NERDTreeStatusline = -1
 
-    # CtrlP Integration
+    " CtrlP Integration
     if exists(':CtrlP') == 2
-        g:ctrlp_status_func = {
-            main: 'lightline_settings#ctrlp#MainStatus',
-            prog: 'lightline_settings#ctrlp#ProgressStatus',
-        }
+        let g:ctrlp_status_func = {
+                    \ 'main': 'lightline_settings#ctrlp#MainStatus',
+                    \ 'prog': 'lightline_settings#ctrlp#ProgressStatus',
+                    \ }
     endif
 
-    # Tagbar Integration
+    " Tagbar Integration
     if exists(':Tagbar') == 2
-        g:tagbar_status_func = 'lightline_settings#tagbar#Status'
+        let g:tagbar_status_func = 'lightline_settings#tagbar#Status'
     endif
 
     if exists(':ZoomWin') == 2
-        g:lightline_zoomwin_funcref = []
+        let g:lightline_zoomwin_funcref = []
 
         if exists('g:ZoomWin_funcref')
             if type(g:ZoomWin_funcref) == v:t_func
-                g:lightline_zoomwin_funcref = [g:ZoomWin_funcref]
+                let g:lightline_zoomwin_funcref = [g:ZoomWin_funcref]
             elseif type(g:ZoomWin_funcref) == v:t_list
-                g:lightline_zoomwin_funcref = g:ZoomWin_funcref
+                let g:lightline_zoomwin_funcref = g:ZoomWin_funcref
             endif
-            g:lightline_zoomwin_funcref = uniq(copy(g:lightline_zoomwin_funcref))
+            let g:lightline_zoomwin_funcref = uniq(copy(g:lightline_zoomwin_funcref))
         endif
 
-        g:ZoomWin_funcref = function('lightline_settings#zoomwin#Status')
+        let g:ZoomWin_funcref = function('lightline_settings#zoomwin#Status')
     endif
-enddef
+endfunction

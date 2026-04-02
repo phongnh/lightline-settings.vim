@@ -1,62 +1,60 @@
-vim9script
+" https://github.com/ctrlpvim/ctrlp.vim
+let s:lightline_ctrlp = {}
 
-# https://github.com/ctrlpvim/ctrlp.vim
-var lightline_ctrlp: dict<any> = {}
+function! s:GetCurrentDir() abort
+    let l:cwd = getcwd()
+    let l:dir = fnamemodify(l:cwd, ':~:.')
+    let l:dir = empty(l:dir) ? l:cwd : l:dir
+    return len(l:dir) > 30 ? lightline_settings#ShortenPath(l:dir) : l:dir
+endfunction
 
-def GetCurrentDir(): string
-    const cwd = getcwd()
-    var dir = fnamemodify(cwd, ':~:.')
-    dir = empty(dir) ? cwd : dir
-    return len(dir) > 30 ? pathshorten(dir) : dir
-enddef
-
-export def MainStatus(focus: string, byfname: string, regex: number, prev: string, item: string, next: string, marked: string): string
-    lightline_ctrlp.main    = true
-    lightline_ctrlp.focus   = focus
-    lightline_ctrlp.byfname = byfname
-    lightline_ctrlp.regex   = regex
-    lightline_ctrlp.prev    = prev
-    lightline_ctrlp.item    = item
-    lightline_ctrlp.next    = next
-    lightline_ctrlp.marked  = marked
-    lightline_ctrlp.dir     = GetCurrentDir()
+function! lightline_settings#ctrlp#MainStatus(focus, byfname, regex, prev, item, next, marked) abort
+    let s:lightline_ctrlp.main    = 1
+    let s:lightline_ctrlp.focus   = a:focus
+    let s:lightline_ctrlp.byfname = a:byfname
+    let s:lightline_ctrlp.regex   = a:regex
+    let s:lightline_ctrlp.prev    = a:prev
+    let s:lightline_ctrlp.item    = a:item
+    let s:lightline_ctrlp.next    = a:next
+    let s:lightline_ctrlp.marked  = a:marked
+    let s:lightline_ctrlp.dir     = s:GetCurrentDir()
 
     return lightline#statusline(0)
-enddef
+endfunction
 
-export def ProgressStatus(len: string): string
-    lightline_ctrlp.main = false
-    lightline_ctrlp.len  = len
-    lightline_ctrlp.dir  = GetCurrentDir()
+function! lightline_settings#ctrlp#ProgressStatus(len) abort
+    let s:lightline_ctrlp.main = 0
+    let s:lightline_ctrlp.len  = a:len
+    let s:lightline_ctrlp.dir  = s:GetCurrentDir()
 
     return lightline#statusline(0)
-enddef
+endfunction
 
-export def Statusline(...args: list<any>): dict<any>
-    var result = {
-        section_a: 'CtrlP',
-        section_z: lightline_ctrlp.dir,
-    }
+function! lightline_settings#ctrlp#Statusline(...) abort
+    let l:result = {
+                \ 'section_a': 'CtrlP',
+                \ 'section_z': s:lightline_ctrlp.dir,
+                \ }
 
-    if lightline_ctrlp.main
-        lightline#link('nR'[lightline_ctrlp.regex])
+    if s:lightline_ctrlp.main
+        call lightline#link('nR'[s:lightline_ctrlp.regex])
 
-        extend(result, {
-            section_b: lightline#concatenate([
-                lightline_ctrlp.prev,
-                '« ' .. lightline_ctrlp.item .. ' »',
-                lightline_ctrlp.next,
-            ], 0),
-            section_y: lightline#concatenate([
-                lightline_ctrlp.focus,
-                lightline_ctrlp.byfname,
-            ], 1),
-        })
+        call extend(l:result, {
+                    \ 'section_b': lightline#concatenate([
+                    \   s:lightline_ctrlp.prev,
+                    \   '« ' .. s:lightline_ctrlp.item .. ' »',
+                    \   s:lightline_ctrlp.next,
+                    \ ], 0),
+                    \ 'section_y': lightline#concatenate([
+                    \   s:lightline_ctrlp.focus,
+                    \   s:lightline_ctrlp.byfname,
+                    \ ], 1),
+                    \ })
     else
-        extend(result, {
-            section_y: lightline_ctrlp.len,
-        })
+        call extend(l:result, {
+                    \ 'section_y': s:lightline_ctrlp.len,
+                    \ })
     endif
 
-    return result
-enddef
+    return l:result
+endfunction

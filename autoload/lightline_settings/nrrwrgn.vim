@@ -1,33 +1,31 @@
-vim9script
+" https://github.com/chrisbra/NrrwRgn
+let s:visual_mode_indicators = { '': '', 'v': ' [C]', 'V': '', '': ' [B]', '\<C-V>': ' [B]' }
 
-# https://github.com/chrisbra/NrrwRgn
-const VISUAL_MODE_INDICATORS = {'': '', v: ' [C]', V: '', "\<C-V>": ' [B]'}
-
-def GetMode(): string
-    const name = exists('b:nrrw_instn') ? $'NrrwRgn#{b:nrrw_instn}' : 'NrrwRgn'
-    var prefix = stridx(bufname('%'), 'NrrwRgn_multi') == 0 ? 'Multi' : ''
-    var visual = ''
-    const status = call('nrrwrgn#NrrwRgnStatus', [])
-    if !empty(status)
-        prefix = status.multi ? 'Multi' : ''
-        visual = VISUAL_MODE_INDICATORS[status.visual]
+function! s:GetMode() abort
+    let l:name = exists('b:nrrw_instn') ? 'NrrwRgn#' .. b:nrrw_instn : 'NrrwRgn'
+    let l:prefix = stridx(bufname('%'), 'NrrwRgn_multi') == 0 ? 'Multi' : ''
+    let l:visual = ''
+    let l:status = nrrwrgn#NrrwRgnStatus()
+    if !empty(l:status)
+        let l:prefix = l:status.multi ? 'Multi' : ''
+        let l:visual = s:visual_mode_indicators[l:status.visual]
     endif
-    return $'[{prefix}{name}]{visual}'
-enddef
+    return '[' .. l:prefix .. l:name .. ']' .. l:visual
+endfunction
 
-def GetBufName(): string
-    const status = call('nrrwrgn#NrrwRgnStatus', [])
-    var bufname = !empty(status) && !empty(status.fullname) ? status.fullname : bufname(get(b:, 'orig_buf', '%'))
-    bufname = fnamemodify(bufname, ':~:.')
-    if !empty(status) && !status.multi
-        bufname = $'{bufname} [{status.start[1]}-{status.end[1]}]'
+function! s:GetBufName() abort
+    let l:status = nrrwrgn#NrrwRgnStatus()
+    let l:bufname = !empty(l:status) ? l:status.fullname : bufname(get(b:, 'orig_buf', '%'))
+    let l:bufname = fnamemodify(l:bufname, ':~:.')
+    if !empty(l:status) && !l:status.multi
+        let l:bufname = l:bufname .. printf(' [%d-%d]', l:status.start[1], l:status.end[1])
     endif
-    return bufname
-enddef
+    return l:bufname
+endfunction
 
-export def Statusline(...args: list<any>): dict<any>
+function! lightline_settings#nrrwrgn#Statusline(...) abort
     return {
-        section_a: GetMode(),
-        section_c: GetBufName(),
-    }
-enddef
+                \ 'section_a': s:GetMode(),
+                \ 'section_c': s:GetBufName(),
+                \ }
+endfunction
