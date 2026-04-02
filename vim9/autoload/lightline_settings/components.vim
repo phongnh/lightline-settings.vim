@@ -138,14 +138,10 @@ export def Spell(): string
     return &spell ? toupper(tr(&spelllang, ',', '/')) : ''
 enddef
 
-def Shiftwidth(): number
-    return exists('*shiftwidth') ? shiftwidth() : &shiftwidth
-enddef
-
 export def Indentation(...args: list<any>): string
     const compact = get(args, 0, IsCompact())
     if &expandtab
-        return (compact ? 'SPC' : 'Spaces') .. ': ' .. Shiftwidth()
+        return (compact ? 'SPC' : 'Spaces') .. ': ' .. shiftwidth()
     else
         return (compact ? 'TAB' : 'Tab Size') .. ': ' .. &tabstop
     endif
