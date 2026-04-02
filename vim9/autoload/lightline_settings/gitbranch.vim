@@ -25,10 +25,10 @@ def GetGitBranch(): string
     if branch is null_string
         const cwd = getcwd()
         try
-            lcd %:p:h
+            noautocmd silent lcd %:p:h
             silent branch = system('git branch --show-current 2>/dev/null')->trim()
         finally
-            execute 'lcd' cwd
+            noautocmd silent execute 'lcd' fnameescape(cwd)
         endtry
     endif
 
