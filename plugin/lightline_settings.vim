@@ -173,55 +173,18 @@ def UpdateBufferCount()
     endfor
 enddef
 
-def Init()
-    setglobal noshowmode laststatus=2
-
-    # Disable Vim Quickfix's statusline
-    g:qf_disable_statusline = 1
-
-    # Disable NERDTree statusline
-    g:NERDTreeStatusline = -1
-
-    # CtrlP Integration
-    if exists(':CtrlP') == 2
-        g:ctrlp_status_func = {
-            main: 'lightline_settings#ctrlp#MainStatus',
-            prog: 'lightline_settings#ctrlp#ProgressStatus',
-        }
-    endif
-
-    # Tagbar Integration
-    if exists(':Tagbar') == 2
-        g:tagbar_status_func = 'lightline_settings#tagbar#Status'
-    endif
-
-    if exists(':ZoomWin') == 2
-        g:lightline_zoomwin_funcref = []
-
-        if exists('g:ZoomWin_funcref')
-            if type(g:ZoomWin_funcref) == v:t_func
-                g:lightline_zoomwin_funcref = [g:ZoomWin_funcref]
-            elseif type(g:ZoomWin_funcref) == v:t_list
-                g:lightline_zoomwin_funcref = g:ZoomWin_funcref
-            endif
-        endif
-
-        g:ZoomWin_funcref = function('lightline_settings#zoomwin#Status')
-    endif
-
-    call lightline_settings#theme#Detect()
-enddef
+import autoload 'lightline_settings/theme.vim'
 
 augroup LightlineSettings
     autocmd!
-    autocmd CmdwinEnter * set filetype=cmdline syntax=vim
+    if v:vim_did_enter
+        theme.Detect()
+    else
+        autocmd VimEnter * ++once theme.Detect()
+    endif
+    autocmd ColorScheme * theme.Apply()
+    autocmd OptionSet background theme.Apply()
     # Only update on BufAdd/BufDelete for better performance
     autocmd BufAdd,BufDelete,BufFilePost * UpdateBufferCount()
-    autocmd ColorScheme * lightline_settings#theme#Apply()
-    autocmd OptionSet background lightline_settings#theme#Apply()
-    if v:vim_did_enter
-        Init()
-    else
-        autocmd VimEnter * ++once Init()
-    endif
+    autocmd CmdwinEnter * set filetype=cmdline syntax=vim
 augroup END
