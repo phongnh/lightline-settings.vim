@@ -1,29 +1,42 @@
 vim9script
 
-var git_branch_expiry = 5.0 # 5 seconds
-var git_branch_cache = ''
+const git_branch_expiry = 5.0 # 5 seconds
 var git_branch_time: list<any> = []
 
 def GetGitBranch(): string
-    # If cache is empty or older than 5 seconds, update it
-    if empty(git_branch_cache) || reltimefloat(reltime(git_branch_time)) > git_branch_expiry
-        var branch: string
-        if exists('*FugitiveHead')
-            branch = call('FugitiveHead', [])
-            if empty(branch) && !exists('b:git_dir')
-                call('FugitiveDetect', [])
-                branch = call('FugitiveHead', [])
-            endif
-        else
-            branch = system('git branch --show-current 2>/dev/null')
-            branch = trim(branch)
-        endif
-        # Caching
-        git_branch_cache = branch
-        git_branch_time = reltime()
+    if has_key(b:, 'lightline_git_branch') && reltimefloat(reltime(git_branch_time)) < git_branch_expiry
+        return b:lightline_git_branch
     endif
 
-    return git_branch_cache
+    var branch: string = null_string
+
+    # exists('*FugitiveHead') is resolved at compile time inside a def
+    # always return false for late-loaded plugins. Use try/call() instead so
+    # the lookup happens at runtime on every call.
+    try
+        branch = call('FugitiveHead', [])
+        if empty(branch) && !exists('b:git_dir')
+            call('FugitiveDetect', [])
+            branch = call('FugitiveHead', [])
+        endif
+    catch /E117:/
+    endtry
+
+    if branch is null_string
+        const cwd = getcwd()
+        try
+            lcd %:p:h
+            silent branch = system('git branch --show-current 2>/dev/null')->trim()
+        finally
+            execute 'lcd' cwd
+        endtry
+    endif
+
+    # Caching
+    b:lightline_git_branch = branch
+    git_branch_time = reltime()
+
+    return b:lightline_git_branch
 enddef
 
 # Extract JIRA / YouTrack ticket number
