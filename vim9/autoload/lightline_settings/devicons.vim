@@ -1,27 +1,33 @@
 vim9script
 
-var icon_type = 0  # 0: none, 1: nerdfont, 2: webdevicons, 3: custom
+def DefaultFind(filename: string): string
+    return ''
+enddef
+
+def NerdfontFind(filename: string): string
+    return ' ' .. call('nerdfont#find', [filename, 0]) .. ' '
+enddef
+
+def WebDevIconsFind(filename: string): string
+    return ' ' .. call('WebDevIconsGetFileTypeSymbol', [filename, 0]) .. ' '
+enddef
+
+# 0: none, 1: nerdfont, 2: webdevicons or SupraIcons
+var IconFindFunc: any = DefaultFind
 
 export def FileType(filename: string): string
-    if icon_type == 1
-        return ' ' .. call('nerdfont#find', [filename]) .. ' '
-    elseif icon_type == 2
-        return ' ' .. call('WebDevIconsGetFileTypeSymbol', [filename]) .. ' '
-    elseif icon_type == 3
-        return ' ' .. call(g:LightlineWebDevIconsFind, [filename]) .. ' '
-    endif
-    return ''
+    return call(IconFindFunc, [filename])
 enddef
 
 export def Detect(): bool
     if !empty(findfile('autoload/nerdfont.vim', &rtp))
-        icon_type = 1
+        IconFindFunc = NerdfontFind
         return true
     elseif !empty(findfile('plugin/webdevicons.vim', &rtp))
-        icon_type = 2
+        IconFindFunc = WebDevIconsFind
         return true
-    elseif exists('g:LightlineWebDevIconsFind')
-        icon_type = 3
+    elseif !empty(findfile('plugin/SupraIcons.vim', &rtp))
+        IconFindFunc = WebDevIconsFind
         return true
     endif
 

@@ -5,19 +5,13 @@ endfunction
 function! lightline_settings#devicons#Detect() abort
     if !empty(findfile('autoload/nerdfont.vim', &rtp))
         function! lightline_settings#devicons#FileType(filename) abort
-            return ' ' .. nerdfont#find(a:filename) .. ' '
+            return ' ' .. nerdfont#find(a:filename, 0) .. ' '
         endfunction
 
         return 1
-    elseif !empty(findfile('plugin/webdevicons.vim', &rtp))
+    elseif !empty(findfile('plugin/webdevicons.vim', &rtp)) || !empty(findfile('plugin/SupraIcons.vim', &rtp))
         function! lightline_settings#devicons#FileType(filename) abort
-            return ' ' .. WebDevIconsGetFileTypeSymbol(a:filename) .. ' '
-        endfunction
-
-        return 1
-    elseif exists('g:LightlineWebDevIconsFind')
-        function! lightline_settings#devicons#FileType(filename) abort
-            return ' ' .. g:LightlineWebDevIconsFind(a:filename) .. ' '
+            return ' ' .. WebDevIconsGetFileTypeSymbol(a:filename, 0) .. ' '
         endfunction
 
         return 1
