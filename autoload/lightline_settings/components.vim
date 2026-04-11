@@ -102,6 +102,8 @@ let s:lightline_filetype_integrations = {
             \ 'SpaceVimFlyGrep': 'lightline_settings#flygrep#Statusline',
             \ }
 
+let s:spelllang_maps = { 'en_us': 'US', 'en_gb': 'GB' }
+
 function! s:BufferType() abort
     return !empty(&filetype) ? &filetype : &buftype
 endfunction
@@ -144,7 +146,7 @@ function! lightline_settings#components#Paste() abort
 endfunction
 
 function! lightline_settings#components#Spell() abort
-    return &spell ? toupper(tr(&spelllang, ',', '/')) : ''
+    return &spell ? split(&spelllang, ',')->map('get(s:spelllang_maps, v:val, toupper(v:val))')->join('/') : ''
 endfunction
 
 function! s:Shiftwidth() abort

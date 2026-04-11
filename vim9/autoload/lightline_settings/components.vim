@@ -93,6 +93,8 @@ const lightline_filetype_integrations = {
     SpaceVimFlyGrep: 'lightline_settings#flygrep#Statusline',
 }
 
+const spelllang_maps = { 'en_us': 'US', 'en_gb': 'GB' }
+
 def BufferType(): string
     return !empty(&filetype) ? &filetype : &buftype
 enddef
@@ -135,7 +137,7 @@ export def Paste(): string
 enddef
 
 export def Spell(): string
-    return &spell ? toupper(tr(&spelllang, ',', '/')) : ''
+    return &spell ? split(&spelllang, ',')->map((_k, v) => get(spelllang_maps, v, toupper(v)))->join('/') : ''
 enddef
 
 export def Indentation(...args: list<any>): string
