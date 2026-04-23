@@ -182,7 +182,7 @@ export def Position(...args: list<any>): string
 enddef
 
 export def Ruler(...args: list<any>): string
-    return printf('%4d:%-3d %3s', line('.'), charcol('.'), Progress())
+    return Position() .. ' ' .. Progress()
 enddef
 
 export def FileEncodingAndFormat(): string

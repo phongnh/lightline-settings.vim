@@ -195,7 +195,7 @@ function! lightline_settings#components#Position(...) abort
 endfunction
 
 function! lightline_settings#components#Ruler(...) abort
-    return printf('%4d:%-3d %3s', line('.'), charcol('.'), lightline_settings#components#Progress())
+    return lightline_settings#components#Position() .. ' ' .. lightline_settings#components#Progress()
 endfunction
 
 function! lightline_settings#components#FileEncodingAndFormat() abort
