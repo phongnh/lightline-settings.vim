@@ -1,9 +1,14 @@
 vim9script
 
 export def Statusline(...args: list<any>): dict<any>
-    return {
+    var result = {
         section_a: 'Git',
         section_c: expand('%:t'),
         section_x: lightline_settings#components#Position(),
     }
+    if exists('g:_fugitive_last_job') && get(g:_fugitive_last_job, 'capture_bufnr', -1) == bufnr('%')
+        var cmd = g:_fugitive_last_job.git->extendnew(g:_fugitive_last_job.args)->join(' ')
+        result.section_c = cmd
+    endif
+    return result
 enddef
