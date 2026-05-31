@@ -6,7 +6,7 @@ export def Statusline(...args: list<any>): dict<any>
         section_c: expand('%:t'),
         section_x: lightline_settings#components#Position(),
     }
-    if exists('g:_fugitive_last_job') && get(g:_fugitive_last_job, 'capture_bufnr', -1) == bufnr('%')
+    if exists('g:_fugitive_last_job') && (g:_fugitive_last_job.file ==# expand('%:p') || get(g:_fugitive_last_job, 'capture_bufnr', -1) ==# bufnr('%'))
         var cmd = g:_fugitive_last_job.git->extendnew(g:_fugitive_last_job.args)->join(' ')
         result.section_c = cmd
     endif
