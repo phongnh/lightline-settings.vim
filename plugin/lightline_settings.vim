@@ -10,11 +10,13 @@ endif
 if has('vim9script')
     " Add vim9/ subdirectory to runtimepath so vim9/autoload/lightline_settings.vim
     " is found when the Vim9script plugin sources it via 'import autoload'
-    let s:vim9dir = fnamemodify(resolve(expand('<sfile>:p')), ':h:h') .. '/vim9'
+    let s:vimdir = fnamemodify(resolve(expand('<sfile>:p')), ':h:h')
+    let s:vim9dir = s:vimdir . '/vim9'
     if &runtimepath !~# s:vim9dir
-        execute 'set runtimepath^=' . fnameescape(s:vim9dir)
+        execute 'set runtimepath-=' . fnameescape(s:vimdir)
+        execute 'set runtimepath+=' . fnameescape(s:vim9dir)
     endif
-    unlet! s:vim9dir
+    unlet! s:vimdir s:vim9dir
     source <sfile>:p:h:h/vim9/plugin/lightline_settings.vim
     finish
 endif
