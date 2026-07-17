@@ -4,7 +4,7 @@ vim9script
 # Maintainer: Phong Nguyen
 # Version:    1.0.0
 
-if exists('g:loaded_vim_lightline_settings') || v:version < 700
+if exists('g:loaded_vim_lightline_settings')
     finish
 endif
 
@@ -147,45 +147,6 @@ endif
 command! LightlineReload lightline_settings#ReloadLightline()
 command! -nargs=1 -complete=custom,lightline_settings#theme#List LightlineTheme lightline_settings#theme#Set(<f-args>)
 
-def Init()
-    setglobal noshowmode laststatus=2
-
-    # Disable Vim Quickfix's statusline
-    g:qf_disable_statusline = 1
-
-    # Disable NERDTree statusline
-    g:NERDTreeStatusline = -1
-
-    # CtrlP Integration
-    if exists(':CtrlP') == 2
-        g:ctrlp_status_func = {
-            main: 'lightline_settings#ctrlp#MainStatus',
-            prog: 'lightline_settings#ctrlp#ProgressStatus',
-        }
-    endif
-
-    # Tagbar Integration
-    if exists(':Tagbar') == 2
-        g:tagbar_status_func = 'lightline_settings#tagbar#Status'
-    endif
-
-    if exists(':ZoomWin') == 2
-        g:lightline_zoomwin_funcref = []
-
-        if exists('g:ZoomWin_funcref')
-            if type(g:ZoomWin_funcref) == v:t_func
-                g:lightline_zoomwin_funcref = [g:ZoomWin_funcref]
-            elseif type(g:ZoomWin_funcref) == v:t_list
-                g:lightline_zoomwin_funcref = g:ZoomWin_funcref
-            endif
-        endif
-
-        g:ZoomWin_funcref = function('lightline_settings#zoomwin#Status')
-    endif
-
-    call lightline_settings#theme#Detect()
-enddef
-
 augroup LightlineSettings
     autocmd!
     autocmd CmdwinEnter * set filetype=cmdline syntax=vim
@@ -194,8 +155,8 @@ augroup LightlineSettings
     autocmd ColorScheme * lightline_settings#theme#Apply()
     autocmd OptionSet background lightline_settings#theme#Apply()
     if v:vim_did_enter
-        Init()
+        lightline_settings#Init()
     else
-        autocmd VimEnter * ++once Init()
+        autocmd VimEnter * ++once lightline_settings#Init()
     endif
 augroup END
