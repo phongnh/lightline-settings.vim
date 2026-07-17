@@ -29,5 +29,6 @@ export def FugitiveChanged()
     if bufnr > 0
         const cmd = join(extendnew(g:_fugitive_last_job.git, g:_fugitive_last_job.args), ' ')
         setbufvar(bufnr, 'fugitive_git_command', cmd)
+        lightline#update()
     endif
 enddef

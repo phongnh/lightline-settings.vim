@@ -27,5 +27,6 @@ function! lightline_settings#fugitive#FugitiveChanged() abort
     if l:bufnr > 0
         let l:cmd = join(extendnew(g:_fugitive_last_job.git, g:_fugitive_last_job.args), ' ')
         call setbufvar(l:bufnr, 'fugitive_git_command', l:cmd)
+        call lightline#update()
     endif
 endfunction
