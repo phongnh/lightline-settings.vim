@@ -150,6 +150,7 @@ command! -nargs=1 -complete=custom,lightline_settings#theme#List LightlineTheme 
 augroup LightlineSettings
     autocmd!
     autocmd CmdwinEnter * set filetype=cmdline syntax=vim
+    autocmd User FugitiveChanged lightline_settings#fugitive#FugitiveChanged()
     # Only update on BufAdd/BufDelete for better performance
     autocmd BufAdd,BufDelete,BufFilePost * lightline_settings#buffer_count#Update()
     autocmd ColorScheme * lightline_settings#theme#Apply()

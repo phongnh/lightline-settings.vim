@@ -4,8 +4,11 @@ function! lightline_settings#git#Statusline(...) abort
                 \ 'section_c': expand('%:t'),
                 \ 'section_x': lightline_settings#components#Position(),
                 \ }
-    if exists('g:_fugitive_last_job') && (g:_fugitive_last_job.file ==# expand('%:p') || get(g:_fugitive_last_job, 'capture_bufnr', -1) ==# bufnr('%'))
+    if exists('b:fugitive_git_command')
+        let l:result['section_c'] = b:fugitive_git_command
+    elseif exists('g:_fugitive_last_job') && get(g:_fugitive_last_job, 'capture_bufnr', -1) ==# bufnr('%')
         let l:cmd = join(extendnew(g:_fugitive_last_job.git, g:_fugitive_last_job.args), ' ')
+        call setbufvar(g:_fugitive_last_job.capture_bufnr, 'fugitive_git_command', l:cmd)
         let l:result['section_c'] = l:cmd
     endif
     return l:result
